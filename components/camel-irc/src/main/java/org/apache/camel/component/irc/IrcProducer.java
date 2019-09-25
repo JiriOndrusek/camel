@@ -54,8 +54,12 @@ public class IrcProducer extends DefaultProducer {
                 log.debug("Sending command: {}", msg);
                 connection.send(msg);
             } else if (targetChannel != null) {
-                log.debug("Sending to: {} message: {}", targetChannel, msg);
-                connection.doPrivmsg(targetChannel, msg);
+                if(endpoint.getConfiguration().findChannel(targetChannel) == null) {
+                    log.error("Cannot send to: {} message: {}, if channel is not defined in endpoint", targetChannel, msg);
+                } else {
+                    log.debug("Sending to: {} message: {}", targetChannel, msg);
+                    connection.doPrivmsg(targetChannel, msg);
+                }
             } else {
                 for (IrcChannel channel : endpoint.getConfiguration().getChannels()) {
                     log.debug("Sending to: {} message: {}", channel, msg);

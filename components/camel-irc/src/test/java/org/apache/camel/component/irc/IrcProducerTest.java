@@ -40,6 +40,7 @@ public class IrcProducerTest {
     private IRCEventAdapter listener;
     private Exchange exchange;
     private Message message;
+    private IrcChannel channel;
 
     @Before
     public void doSetup() {
@@ -49,6 +50,7 @@ public class IrcProducerTest {
         listener = mock(IRCEventAdapter.class);
         exchange = mock(Exchange.class);
         message = mock(Message.class);
+        channel = new IrcChannel();
 
         List<IrcChannel> channels = new ArrayList<>();
         channels.add(new IrcChannel("#chan1", null));
@@ -84,6 +86,7 @@ public class IrcProducerTest {
         when(exchange.getIn()).thenReturn(message);
         when(message.getBody(String.class)).thenReturn("PART foo");
         when(message.getHeader(IrcConstants.IRC_TARGET, String.class)).thenReturn("bottest");
+        when(configuration.findChannel("bottest")).thenReturn(channel);
 
         producer.process(exchange);
         verify(connection).send("PART foo");
