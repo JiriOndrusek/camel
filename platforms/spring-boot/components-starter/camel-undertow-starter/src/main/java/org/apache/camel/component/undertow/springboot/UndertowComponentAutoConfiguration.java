@@ -32,6 +32,10 @@ import org.apache.camel.spring.boot.util.GroupCondition;
 import org.apache.camel.spring.boot.util.HierarchicalPropertiesEvaluator;
 import org.apache.camel.support.IntrospectionSupport;
 import org.apache.camel.util.ObjectHelper;
+import org.keycloak.adapters.KeycloakConfigResolver;
+import org.keycloak.adapters.camel.undertow.UndertowKeycloakComponent;
+import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
+import org.keycloak.adapters.springboot.KeycloakSpringBootProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +71,8 @@ public class UndertowComponentAutoConfiguration {
     private UndertowComponentConfiguration configuration;
     @Autowired(required = false)
     private List<ComponentCustomizer<UndertowComponent>> customizers;
+    @Autowired
+    KeycloakSpringBootProperties properties;
 
     static class GroupConditions extends GroupCondition {
         public GroupConditions() {
@@ -78,7 +84,9 @@ public class UndertowComponentAutoConfiguration {
     @Bean(name = "undertow-component")
     @ConditionalOnMissingBean(UndertowComponent.class)
     public UndertowComponent configureUndertowComponent() throws Exception {
-        UndertowComponent component = new UndertowComponent();
+//        UndertowComponent component = new UndertowComponent();
+        UndertowKeycloakComponent component = new UndertowKeycloakComponent();
+        component.setProperties(properties);
         component.setCamelContext(camelContext);
         Map<String, Object> parameters = new HashMap<>();
         IntrospectionSupport.getProperties(configuration, parameters, null,
