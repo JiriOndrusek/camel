@@ -17,8 +17,10 @@
 package org.apache.camel.component.undertow;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import javax.net.ssl.SSLContext;
 
@@ -36,6 +38,7 @@ import org.apache.camel.cloud.DiscoverableService;
 import org.apache.camel.cloud.ServiceDefinition;
 import org.apache.camel.component.undertow.UndertowConstants.EventType;
 import org.apache.camel.component.undertow.handlers.CamelWebSocketHandler;
+import org.apache.camel.component.undertow.spi.UndertowSecurityProvider;
 import org.apache.camel.http.base.cookie.CookieHandler;
 import org.apache.camel.spi.HeaderFilterStrategy;
 import org.apache.camel.spi.HeaderFilterStrategyAware;
@@ -123,6 +126,13 @@ public class UndertowEndpoint extends DefaultEndpoint implements AsyncEndpoint, 
             + " this allows applications which use the Host header to generate accurate URL's for a proxied service."
     )
     private boolean preserveHostHeader = true;
+    @UriParam(label = "security", description = "todo")
+    private Object securityConfig;
+    @UriParam(label = "security", description = "todo")
+    private List<String> allowedRoles;
+
+    private UndertowSecurityProvider securityProvider;
+
     public UndertowEndpoint(String uri, UndertowComponent component) {
         super(uri, component);
         this.component = component;
@@ -131,6 +141,10 @@ public class UndertowEndpoint extends DefaultEndpoint implements AsyncEndpoint, 
     @Override
     public UndertowComponent getComponent() {
         return component;
+    }
+
+    public UndertowSecurityProvider getSecurityProvider() {
+        return securityProvider;
     }
 
     @Override
@@ -168,6 +182,10 @@ public class UndertowEndpoint extends DefaultEndpoint implements AsyncEndpoint, 
 
     public Exchange createExchange(HttpServerExchange httpExchange) throws Exception {
         Exchange exchange = createExchange(ExchangePattern.InOut);
+        if(getSecurityProvider() != null) {
+            getSecurityProvider().addPropertiesIntoExchange((key, value) -> exchange.getProperties().put(key, value), httpExchange);
+
+        }
 
         Message in = getUndertowHttpBinding().toCamelMessage(httpExchange, exchange);
 
@@ -427,9 +445,27 @@ public class UndertowEndpoint extends DefaultEndpoint implements AsyncEndpoint, 
         return preserveHostHeader;
     }
 
+    public Object getSecurityConfig() {
+        return securityConfig;
+    }
+
+    public void setSecurityConfig(Object securityConfig) {
+        this.securityConfig = securityConfig;
+    }
+
+    public List<String> getAllowedRoles() {
+        return allowedRoles;
+    }
+
+    public void setAllowedRoles(List<String> allowedRoles) {
+        this.allowedRoles = allowedRoles;
+    }
+
     @Override
     protected void doStart() throws Exception {
         super.doStart();
+
+        initSecurityProvider();
 
         final String scheme = httpURI.getScheme();
         this.isWebSocket = UndertowConstants.WS_PROTOCOL.equalsIgnoreCase(scheme) || UndertowConstants.WSS_PROTOCOL.equalsIgnoreCase(scheme);
@@ -486,6 +522,18 @@ public class UndertowEndpoint extends DefaultEndpoint implements AsyncEndpoint, 
             OptionMap.Builder builder = OptionMap.builder();
             builder.addAll(optionMap).set(Options.REUSE_ADDRESSES, reuseAddresses);
             optionMap = builder.getMap();
+        }
+    }
+
+    private void initSecurityProvider() throws Exception {
+        if(getSecurityConfig() != null) {
+            ServiceLoader<UndertowSecurityProvider> securityProvider = ServiceLoader.load(UndertowSecurityProvider.class);
+            if (securityProvider.iterator().hasNext()) {
+                UndertowSecurityProvider security = securityProvider.iterator().next();
+                if (security.acceptConfiguration(getSecurityConfig(), getAllowedRoles(), getEndpointUri())) {
+                    this.securityProvider = security;
+                }
+            }
         }
     }
 

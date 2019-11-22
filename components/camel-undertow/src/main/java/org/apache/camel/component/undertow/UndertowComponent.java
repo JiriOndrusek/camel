@@ -18,11 +18,7 @@ package org.apache.camel.component.undertow;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.net.ssl.SSLContext;
@@ -35,6 +31,7 @@ import org.apache.camel.Processor;
 import org.apache.camel.Producer;
 import org.apache.camel.SSLContextParametersAware;
 import org.apache.camel.component.extension.ComponentVerifierExtension;
+import org.apache.camel.component.undertow.spi.UndertowSecurityProvider;
 import org.apache.camel.spi.Metadata;
 import org.apache.camel.spi.RestApiConsumerFactory;
 import org.apache.camel.spi.RestConfiguration;
@@ -72,6 +69,11 @@ public class UndertowComponent extends DefaultComponent implements RestConsumerF
     private UndertowHostOptions hostOptions;
     @Metadata(label = "consumer", defaultValue = "false")
     private boolean muteException;
+    @Metadata(label = "security")
+    private Object securityConfig;
+    @Metadata(label = "security")
+    private List<String> allowedRoles;
+
 
     public UndertowComponent() {
         this(null);
@@ -85,6 +87,7 @@ public class UndertowComponent extends DefaultComponent implements RestConsumerF
 
     @Override
     protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
+
         URI uriHttpUriAddress = new URI(UnsafeUriCharactersEncoder.encodeHttpURI(remaining));
         URI endpointUri = URISupport.createRemainingURI(uriHttpUriAddress, parameters);
 
@@ -404,5 +407,27 @@ public class UndertowComponent extends DefaultComponent implements RestConsumerF
 
     public Set<HttpHandlerRegistrationInfo> getHandlers() {
         return handlers;
+    }
+
+    public Object getSecurityConfig() {
+        return securityConfig;
+    }
+
+    /**
+     * Security config for possible implementation of UndertowSecurityProvider
+     */
+    public void setSecurityConfig(Object securityConfig) {
+        this.securityConfig = securityConfig;
+    }
+
+    public List<String> getAllowedRoles() {
+        return allowedRoles;
+    }
+
+    /**
+     * List of roles for security reasons.
+     */
+    public void setAllowedRoles(List<String> allowedRoles) {
+        this.allowedRoles = allowedRoles;
     }
 }

@@ -147,6 +147,31 @@ public interface UndertowComponentBuilderFactory {
             return this;
         }
         /**
+         * List of roles for security reasons.
+         * 
+         * The option is a: <code>java.util.List<java.lang.String></code> type.
+         * 
+         * Group: security
+         */
+        default UndertowComponentBuilder allowedRoles(
+                java.util.List<java.lang.String> allowedRoles) {
+            doSetProperty("allowedRoles", allowedRoles);
+            return this;
+        }
+        /**
+         * Security config for possible implementation of
+         * UndertowSecurityProvider.
+         * 
+         * The option is a: <code>java.lang.Object</code> type.
+         * 
+         * Group: security
+         */
+        default UndertowComponentBuilder securityConfig(
+                java.lang.Object securityConfig) {
+            doSetProperty("securityConfig", securityConfig);
+            return this;
+        }
+        /**
          * To configure security using SSLContextParameters.
          * 
          * The option is a:
@@ -195,6 +220,8 @@ public interface UndertowComponentBuilderFactory {
             case "basicPropertyBinding": ((UndertowComponent) component).setBasicPropertyBinding((boolean) value); return true;
             case "hostOptions": ((UndertowComponent) component).setHostOptions((org.apache.camel.component.undertow.UndertowHostOptions) value); return true;
             case "undertowHttpBinding": ((UndertowComponent) component).setUndertowHttpBinding((org.apache.camel.component.undertow.UndertowHttpBinding) value); return true;
+            case "allowedRoles": ((UndertowComponent) component).setAllowedRoles((java.util.List<java.lang.String>) value); return true;
+            case "securityConfig": ((UndertowComponent) component).setSecurityConfig((java.lang.Object) value); return true;
             case "sslContextParameters": ((UndertowComponent) component).setSslContextParameters((org.apache.camel.support.jsse.SSLContextParameters) value); return true;
             case "useGlobalSslContextParameters": ((UndertowComponent) component).setUseGlobalSslContextParameters((boolean) value); return true;
             default: return false;

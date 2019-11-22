@@ -191,6 +191,19 @@ public interface ElytronComponentBuilderFactory {
             return this;
         }
         /**
+         * If enabled and Keycloak security options are defined, endpoints will
+         * be secured by Keycloak.
+         * 
+         * The option is a: <code>boolean</code> type.
+         * 
+         * Default: false
+         * Group: security
+         */
+        default ElytronComponentBuilder keycloakEnabled(boolean keycloakEnabled) {
+            doSetProperty("keycloakEnabled", keycloakEnabled);
+            return this;
+        }
+        /**
          * To configure security using SSLContextParameters.
          * 
          * The option is a:
@@ -242,6 +255,7 @@ public interface ElytronComponentBuilderFactory {
             case "mechanismName": ((ElytronComponent) component).setMechanismName((java.lang.String) value); return true;
             case "securityDomainBuilder": ((ElytronComponent) component).setSecurityDomainBuilder((org.wildfly.security.auth.server.SecurityDomain.Builder) value); return true;
             case "undertowHttpBinding": ((ElytronComponent) component).setUndertowHttpBinding((org.apache.camel.component.undertow.UndertowHttpBinding) value); return true;
+            case "keycloakEnabled": ((ElytronComponent) component).setKeycloakEnabled((boolean) value); return true;
             case "sslContextParameters": ((ElytronComponent) component).setSslContextParameters((org.apache.camel.support.jsse.SSLContextParameters) value); return true;
             case "useGlobalSslContextParameters": ((ElytronComponent) component).setUseGlobalSslContextParameters((boolean) value); return true;
             default: return false;

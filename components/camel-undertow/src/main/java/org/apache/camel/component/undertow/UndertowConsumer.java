@@ -119,6 +119,14 @@ public class UndertowConsumer extends DefaultConsumer implements HttpHandler, Su
 
     @Override
     public void handleRequest(HttpServerExchange httpExchange) throws Exception {
+        if (getEndpoint().getSecurityProvider() != null) {
+            boolean authenticated = getEndpoint().getSecurityProvider().handleAuthentication(httpExchange);
+            if(!authenticated) {
+                //todo log
+                return;
+            };
+        }
+
         HttpString requestMethod = httpExchange.getRequestMethod();
 
         if (Methods.OPTIONS.equals(requestMethod) && !getEndpoint().isOptionsEnabled()) {

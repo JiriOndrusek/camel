@@ -66,6 +66,10 @@ public class UndertowEndpointConfigurer extends PropertyConfigurerSupport implem
         case "sendTimeout": target.setSendTimeout(property(camelContext, java.lang.Integer.class, value)); return true;
         case "sendtoall":
         case "sendToAll": target.setSendToAll(property(camelContext, java.lang.Boolean.class, value)); return true;
+        case "allowedroles":
+        case "allowedRoles": target.setAllowedRoles(property(camelContext, java.util.List.class, value)); return true;
+        case "securityconfig":
+        case "securityConfig": target.setSecurityConfig(property(camelContext, java.lang.Object.class, value)); return true;
         case "sslcontextparameters":
         case "sslContextParameters": target.setSslContextParameters(property(camelContext, org.apache.camel.support.jsse.SSLContextParameters.class, value)); return true;
         default: return false;
