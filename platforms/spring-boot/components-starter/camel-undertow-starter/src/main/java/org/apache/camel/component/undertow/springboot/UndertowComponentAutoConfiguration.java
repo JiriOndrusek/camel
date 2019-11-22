@@ -78,7 +78,12 @@ public class UndertowComponentAutoConfiguration {
     @Bean(name = "undertow-component")
     @ConditionalOnMissingBean(UndertowComponent.class)
     public UndertowComponent configureUndertowComponent() throws Exception {
-        UndertowComponent component = new UndertowComponent();
+        UndertowComponent component;
+        if (undertowComponentSupplier != null) {
+            component = undertowComponentSupplier.get();
+        } else {
+            component = new UndertowComponent();
+        }
         component.setCamelContext(camelContext);
         Map<String, Object> parameters = new HashMap<>();
         IntrospectionSupport.getProperties(configuration, parameters, null,

@@ -51,6 +51,7 @@ import org.apache.camel.util.ObjectHelper;
 import org.apache.camel.util.PropertiesHelper;
 import org.apache.camel.util.URISupport;
 import org.apache.camel.util.UnsafeUriCharactersEncoder;
+import org.keycloak.adapters.camel.undertow.UndertowKeycloakEndpoint;
 
 /**
  * Represents the component that manages {@link UndertowEndpoint}.
@@ -72,6 +73,8 @@ public class UndertowComponent extends DefaultComponent implements RestConsumerF
     private UndertowHostOptions hostOptions;
     @Metadata(label = "consumer", defaultValue = "false")
     private boolean muteException;
+    @Metadata(label = "security", defaultValue = "false")
+    private boolean keycloakEnabled;
 
     public UndertowComponent() {
         this(null);
@@ -132,6 +135,9 @@ public class UndertowComponent extends DefaultComponent implements RestConsumerF
     }
 
     protected UndertowEndpoint createEndpointInstance(URI endpointUri, UndertowComponent component) throws URISyntaxException {
+        if (keycloakEnabled) {
+            return new UndertowKeycloakEndpoint(endpointUri.toString(), component);
+        }
         return new UndertowEndpoint(endpointUri.toString(), component);
     }
 
@@ -428,5 +434,17 @@ public class UndertowComponent extends DefaultComponent implements RestConsumerF
 
     public Set<HttpHandlerRegistrationInfo> getHandlers() {
         return handlers;
+    }
+
+
+    public boolean isKeycloakEnabled() {
+        return keycloakEnabled;
+    }
+
+    /**
+     * If enabled and Keycloak security options are defined, endpoints will be secured by Keycloak.
+     */
+    public void setKeycloakEnabled(boolean keycloakEnabled) {
+        this.keycloakEnabled = keycloakEnabled;
     }
 }

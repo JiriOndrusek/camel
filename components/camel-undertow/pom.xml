@@ -57,6 +57,11 @@
             <artifactId>undertow-core</artifactId>
             <version>${undertow-version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-camel-undertow</artifactId>
+            <version>7.0.1</version>
+        </dependency>
 
         <!-- testing -->
         <dependency>

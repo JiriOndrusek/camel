@@ -62,6 +62,11 @@ public class UndertowComponentConfiguration
      */
     private Boolean muteException = false;
     /**
+     * If enabled and Keycloak security options are defined, endpoints will be
+     * secured by Keycloak.
+     */
+    private Boolean keycloakEnabled = false;
+    /**
      * Whether the component should use basic property binding (Camel 2.x) or
      * the newer property binding with additional capabilities
      */
@@ -127,6 +132,14 @@ public class UndertowComponentConfiguration
 
     public void setMuteException(Boolean muteException) {
         this.muteException = muteException;
+    }
+
+    public Boolean getKeycloakEnabled() {
+        return keycloakEnabled;
+    }
+
+    public void setKeycloakEnabled(Boolean keycloakEnabled) {
+        this.keycloakEnabled = keycloakEnabled;
     }
 
     public Boolean getBasicPropertyBinding() {
