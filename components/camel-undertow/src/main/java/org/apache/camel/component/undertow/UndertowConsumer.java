@@ -97,10 +97,14 @@ public class UndertowConsumer extends DefaultConsumer implements HttpHandler {
             if (endpoint.getHandlers() != null) {
                 httpHandler = this.wrapHandler(httpHandler, endpoint);
             }
-            endpoint.getComponent().registerEndpoint(endpoint.getHttpHandlerRegistrationInfo(), endpoint.getSslContext(), Handlers.httpContinueRead(
-                    // wrap with EagerFormParsingHandler to enable undertow form parsers
-                    httpHandler));
+            registerEndpoint(endpoint, httpHandler);
         }
+    }
+
+    protected void registerEndpoint(UndertowEndpoint endpoint, HttpHandler httpHandler) {
+        endpoint.getComponent().registerEndpoint(endpoint.getHttpHandlerRegistrationInfo(), endpoint.getSslContext(), Handlers.httpContinueRead(
+                // wrap with EagerFormParsingHandler to enable undertow form parsers
+                httpHandler));
     }
 
     @Override

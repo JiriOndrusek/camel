@@ -131,6 +131,7 @@
         <include>org.apache.camel:camel-ehcache</include>
         <include>org.apache.camel:camel-elasticsearch-rest</include>
         <include>org.apache.camel:camel-elsql</include>
+        <include>org.apache.camel:camel-elytron</include>
         <include>org.apache.camel:camel-etcd</include>
         <include>org.apache.camel:camel-eventadmin</include>
         <include>org.apache.camel:camel-exec</include>
@@ -492,6 +493,7 @@
         <include>org.apache.camel.springboot:camel-ehcache-starter</include>
         <include>org.apache.camel.springboot:camel-elasticsearch-rest-starter</include>
         <include>org.apache.camel.springboot:camel-elsql-starter</include>
+        <include>org.apache.camel.springboot:camel-elytron-starter</include>
         <include>org.apache.camel.springboot:camel-etcd-starter</include>
         <include>org.apache.camel.springboot:camel-exec-starter</include>
         <include>org.apache.camel.springboot:camel-facebook-starter</include>

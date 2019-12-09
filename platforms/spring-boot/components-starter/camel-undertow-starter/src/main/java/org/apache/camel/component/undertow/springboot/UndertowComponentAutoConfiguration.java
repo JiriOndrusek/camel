@@ -68,7 +68,7 @@ public class UndertowComponentAutoConfiguration {
     @Autowired(required = false)
     private List<ComponentCustomizer<UndertowComponent>> customizers;
 
-    public static class GroupConditions extends GroupCondition {
+    static class GroupConditions extends GroupCondition {
         public GroupConditions() {
             super("camel.component", "camel.component.undertow");
         }
@@ -78,7 +78,7 @@ public class UndertowComponentAutoConfiguration {
     @Bean(name = "undertow-component")
     @ConditionalOnMissingBean(UndertowComponent.class)
     public UndertowComponent configureUndertowComponent() throws Exception {
-        UndertowComponent component = createComponent();
+        UndertowComponent component = new UndertowComponent();
         component.setCamelContext(camelContext);
         Map<String, Object> parameters = new HashMap<>();
         IntrospectionSupport.getProperties(configuration, parameters, null,
@@ -124,9 +124,5 @@ public class UndertowComponentAutoConfiguration {
             }
         }
         return component;
-    }
-
-    protected UndertowComponent createComponent() {
-        return new UndertowComponent();
     }
 }

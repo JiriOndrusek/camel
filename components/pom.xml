@@ -164,6 +164,7 @@
         <module>camel-ehcache</module>
         <module>camel-elasticsearch-rest</module>
         <module>camel-elsql</module>
+        <module>camel-elytron</module>
         <module>camel-etcd</module>
         <module>camel-eventadmin</module>
         <module>camel-exec</module>
@@ -339,7 +340,6 @@
         <module>camel-tika</module>
         <module>camel-twilio</module>
         <module>camel-twitter</module>
-        <module>camel-undertow-elytron</module>
         <module>camel-univocity-parsers</module>
         <module>camel-velocity</module>
         <module>camel-vertx</module>
