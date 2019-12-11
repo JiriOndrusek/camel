@@ -25,12 +25,16 @@ import org.wildfly.security.auth.permission.LoginPermission;
 import org.wildfly.security.auth.realm.SimpleMapBackedSecurityRealm;
 import org.wildfly.security.auth.realm.SimpleRealmEntry;
 import org.wildfly.security.auth.server.SecurityDomain;
+import org.wildfly.security.authz.MapAttributes;
+import org.wildfly.security.authz.RoleMapper;
+import org.wildfly.security.authz.Roles;
 import org.wildfly.security.credential.PasswordCredential;
 import org.wildfly.security.password.PasswordFactory;
 import org.wildfly.security.password.spec.ClearPasswordSpec;
 import org.wildfly.security.permission.PermissionVerifier;
 
 import java.security.Provider;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,7 +64,14 @@ public class MyCamelApplication {
             PasswordFactory passwordFactory = PasswordFactory.getInstance(ALGORITHM_CLEAR, elytronProvider);
 
             Map<String, SimpleRealmEntry> passwordMap = new HashMap<>();
-            passwordMap.put("camel", new SimpleRealmEntry(Collections.singletonList(new PasswordCredential(passwordFactory.generatePassword(new ClearPasswordSpec("changeit".toCharArray()))))));
+            passwordMap.put("admin",
+                    new SimpleRealmEntry(Collections.singletonList(new PasswordCredential(passwordFactory.generatePassword(new ClearPasswordSpec("admin".toCharArray())))),
+                    new MapAttributes(Collections.singletonMap("Roles", Arrays.asList("user", "admin")))));
+            passwordMap.put("user",
+                    new SimpleRealmEntry(Collections.singletonList(new PasswordCredential(passwordFactory.generatePassword(new ClearPasswordSpec("user".toCharArray())))),
+                    new MapAttributes(Collections.singletonMap("Roles", Collections.singletonList("user")))));
+            passwordMap.put("guest",
+                     new SimpleRealmEntry(Collections.singletonList(new PasswordCredential(passwordFactory.generatePassword(new ClearPasswordSpec("guest".toCharArray()))))));
 
             SimpleMapBackedSecurityRealm simpleRealm = new SimpleMapBackedSecurityRealm(() -> new Provider[] { elytronProvider });
             simpleRealm.setPasswordMap(passwordMap);
@@ -70,6 +81,14 @@ public class MyCamelApplication {
 
             builder.addRealm("TestRealm", simpleRealm).build();
             builder.setPermissionMapper((principal, roles) -> PermissionVerifier.from(new LoginPermission()));
+            builder.setRoleMapper(RoleMapper.constant(Roles.of("guest")).or((roles) -> roles));
+
+//            builder.setRoleMapper(new RoleMapper() {
+//                @Override
+//                public Roles mapRoles(Roles roles) {
+//                    return null;
+//                }
+//            });
 
             return builder;
     }

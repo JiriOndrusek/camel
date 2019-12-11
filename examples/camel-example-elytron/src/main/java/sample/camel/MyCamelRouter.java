@@ -30,11 +30,24 @@ public class MyCamelRouter extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
-        from("elytron:http://localhost:8081/camel_elytron")
+        from("elytron:http://localhost:8081/camel_elytron_guest?allowedRoles=guest")
                 .process(exchange -> {
                         SecurityIdentity securityIdentity = (SecurityIdentity)exchange.getIn().getHeader("securityIdentity");
-                        exchange.getIn().setBody("Hello " + securityIdentity.getPrincipal());
+                        exchange.getIn().setBody("Page for guests. Hello " + securityIdentity.getPrincipal());
                     });
+
+        from("elytron:http://localhost:8081/camel_elytron_user?allowedRoles=user")
+                .process(exchange -> {
+                        SecurityIdentity securityIdentity = (SecurityIdentity)exchange.getIn().getHeader("securityIdentity");
+                        exchange.getIn().setBody("Page for users. Hello " + securityIdentity.getPrincipal());
+                    });
+
+        from("elytron:http://localhost:8081/camel_elytron_admin?allowedRoles=admin")
+                .process(exchange -> {
+                    SecurityIdentity securityIdentity = (SecurityIdentity)exchange.getIn().getHeader("securityIdentity");
+                    exchange.getIn().setBody("Page for admins. Hello " + securityIdentity.getPrincipal());
+                });
+
     }
 
 }

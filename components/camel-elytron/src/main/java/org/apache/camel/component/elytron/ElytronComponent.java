@@ -80,7 +80,7 @@ public class ElytronComponent extends UndertowComponent {
 
     @Override
     public HttpHandler registerEndpoint(HttpHandlerRegistrationInfo registrationInfo, SSLContext sslContext, HttpHandler handler) {
-
+        //injecting elytron
         return super.registerEndpoint(registrationInfo, sslContext, wrap(handler, getSecurityDomain()));
     }
 

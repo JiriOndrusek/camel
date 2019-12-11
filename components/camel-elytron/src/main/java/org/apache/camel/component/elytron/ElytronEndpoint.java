@@ -18,11 +18,18 @@ package org.apache.camel.component.elytron;
 
 
 import io.undertow.server.HttpServerExchange;
+import org.apache.camel.Consumer;
 import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
 import org.apache.camel.component.undertow.UndertowComponent;
 import org.apache.camel.component.undertow.UndertowEndpoint;
 import org.apache.camel.spi.UriEndpoint;
+import org.apache.camel.spi.UriParam;
 import org.wildfly.security.auth.server.SecurityIdentity;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -41,6 +48,14 @@ public class ElytronEndpoint extends UndertowEndpoint {
         return (ElytronComponent) super.getComponent();
     }
 
+    @UriParam(label = "allowedRoles")
+    private List<String> allowedRoles = Collections.emptyList();
+
+    @Override
+    public Consumer createConsumer(Processor processor) throws Exception {
+        return new ElytronConsumer(this, processor);
+    }
+
     @Override
     public Exchange createExchange(HttpServerExchange httpExchange) throws Exception {
         Exchange exchange = super.createExchange(httpExchange);
@@ -50,5 +65,21 @@ public class ElytronEndpoint extends UndertowEndpoint {
         exchange.getIn().setHeader("securityIdentity", securityIdentity);
 
         return exchange;
+    }
+
+    /**
+     * TODO Comma separated lost of allowed roles.
+     * @return
+     */
+    public List<String> getAllowedRoles() {
+        return allowedRoles;
+    }
+
+    public void setAllowedRoles(List<String> allowedRoles) {
+        this.allowedRoles = allowedRoles;
+    }
+
+    public void setAllowedRoles(String allowedRoles) {
+        this.allowedRoles = allowedRoles == null ? null : Arrays.asList(allowedRoles.split("\\s*,\\s*"));
     }
 }
