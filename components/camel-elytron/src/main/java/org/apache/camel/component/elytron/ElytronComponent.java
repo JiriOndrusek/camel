@@ -28,12 +28,13 @@ import org.apache.camel.spi.annotations.Component;
 import org.wildfly.elytron.web.undertow.server.ElytronContextAssociationHandler;
 import org.wildfly.elytron.web.undertow.server.ElytronRunAsHandler;
 import org.wildfly.security.WildFlyElytronProvider;
-import org.wildfly.security.auth.server.HttpAuthenticationFactory;
 import org.wildfly.security.auth.server.MechanismConfiguration;
 import org.wildfly.security.auth.server.MechanismConfigurationSelector;
 import org.wildfly.security.auth.server.MechanismRealmConfiguration;
 import org.wildfly.security.auth.server.SecurityDomain;
+import org.wildfly.security.auth.server.http.HttpAuthenticationFactory;
 import org.wildfly.security.http.HttpAuthenticationException;
+import org.wildfly.security.http.HttpConstants;
 import org.wildfly.security.http.HttpServerAuthenticationMechanismFactory;
 import org.wildfly.security.http.util.FilterServerMechanismFactory;
 import org.wildfly.security.http.util.SecurityProviderServerMechanismFactory;
@@ -45,10 +46,18 @@ import java.security.Provider;
 import java.util.Collections;
 
 /**
+ * Elytron component brings elytron security over came-undertow component.
+ *
+ * Component work either as producer and as consumer.
+ *
+ * User has to define its SecurityDomain.Builder which will be used for creation of security domain.
+ * MechanismName then allows to define mechanism, which will take care of authentication from security context.
+ * MechanusmName should be selected with regard to default securityRealm.
+ *
+ * Example: to use bearer_token, mechanism name has to be "BEARER_TOKEN" and realm has to be TokenSecurityRealm.
  *
  * @author JiriOndrusek
  */
-//TODO
 @Metadata(label = "verifiers", enums = "parameters,connectivity")
 @Component("elytron")
 public class ElytronComponent extends UndertowComponent {
@@ -57,6 +66,8 @@ public class ElytronComponent extends UndertowComponent {
 
     @Metadata(label = "elytron")
     private SecurityDomain.Builder securityDomainBuilder;
+    @Metadata(label = "elytron", defaultValue = HttpConstants.BEARER_TOKEN)
+    private String mechanismName;
 
     private SecurityDomain securityDomain;
 
@@ -85,8 +96,7 @@ public class ElytronComponent extends UndertowComponent {
     }
 
     /**
-     * TODO
-     * @return
+     * Definition of Builder, which will be used for creation of security domain.
      */
     public SecurityDomain.Builder getSecurityDomainBuilder() {
         return securityDomainBuilder;
@@ -94,6 +104,18 @@ public class ElytronComponent extends UndertowComponent {
 
     public void setSecurityDomainBuilder(SecurityDomain.Builder securityDomainBuilder) {
         this.securityDomainBuilder = securityDomainBuilder;
+    }
+
+
+    /**
+     * Name of the mechanism, which will be used for selection of authentication mechanism.
+     */
+    public String getMechanismName() {
+        return mechanismName;
+    }
+
+    public void setMechanismName(String mechanismName) {
+        this.mechanismName = mechanismName;
     }
 
     SecurityDomain getSecurityDomain() {
@@ -104,17 +126,10 @@ public class ElytronComponent extends UndertowComponent {
         return securityDomain;
     }
 
-    private static HttpHandler wrap(final HttpHandler toWrap, final SecurityDomain securityDomain) {
+    private HttpHandler wrap(final HttpHandler toWrap, final SecurityDomain securityDomain) {
         HttpAuthenticationFactory httpAuthenticationFactory = createHttpAuthenticationFactory(securityDomain);
 
         HttpHandler rootHandler = new ElytronRunAsHandler(toWrap);
-
-        /*
-         * In this example we know the ElytronRunAsHandler is calling a single handler that is not going to switch to blocking,
-         * as the ElytronRunAsHandler is associating the identity with a ThreadLocal if it was possible the handler could switch
-         * from non-blocking to blocking we would insert the BlockingHandler here.
-         */
-
         rootHandler = new AuthenticationCallHandler(rootHandler);
         rootHandler = new AuthenticationConstraintHandler(rootHandler);
 
@@ -122,7 +137,7 @@ public class ElytronComponent extends UndertowComponent {
                 .setNext(rootHandler)
                 .setMechanismSupplier(() -> {
                     try {
-                        return Collections.singletonList(httpAuthenticationFactory.createMechanism("BASIC"));
+                        return Collections.singletonList(httpAuthenticationFactory.createMechanism(mechanismName));
                     } catch (HttpAuthenticationException e) {
                         throw new RuntimeException(e);
                     }
@@ -130,9 +145,9 @@ public class ElytronComponent extends UndertowComponent {
     }
 
 
-    private static HttpAuthenticationFactory createHttpAuthenticationFactory(final SecurityDomain securityDomain) {
+    private HttpAuthenticationFactory createHttpAuthenticationFactory(final SecurityDomain securityDomain) {
         HttpServerAuthenticationMechanismFactory providerFactory = new SecurityProviderServerMechanismFactory(() -> new Provider[]{elytronProvider});
-        HttpServerAuthenticationMechanismFactory httpServerMechanismFactory = new FilterServerMechanismFactory(providerFactory, true, "BASIC");
+        HttpServerAuthenticationMechanismFactory httpServerMechanismFactory = new FilterServerMechanismFactory(providerFactory, true, mechanismName);
 
         return HttpAuthenticationFactory.builder()
                 .setSecurityDomain(securityDomain)

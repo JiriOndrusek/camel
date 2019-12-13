@@ -1,0 +1,35 @@
+== Camel AS2 Example
+
+=== Introduction
+
+This example shows how to work with Elytron and Camel.
+
+Example shows use of BEARER_TOKEN on producer endpoint. Endpoint with restricted access ids defined: elytron:http://localhost:8082/undertow?allowedRoles=user
+
+The second route uses bearer token to acces restricted endpoint with valid bearer token.
+
+=== Build
+
+You will need to compile this example first:
+
+....
+mvn compile
+....
+
+=== Run
+
+To run the example type
+
+....
+mvn spring-boot:run
+....
+
+=== Help and contributions
+
+If you hit any problem using Camel or have some feedback, then please
+https://camel.apache.org/support.html[let us know].
+
+We also love contributors, so
+https://camel.apache.org/contributing.html[get involved] :-)
+
+The Camel riders!

@@ -32,8 +32,6 @@
     <name>Camel :: Elytron</name>
 
     <properties>
-        <version.org.wildfly.security.wildfly-elytron>1.1.0.Final</version.org.wildfly.security.wildfly-elytron>
-        <version.org.wildfly.security.elytron-web.undertow-server>1.0.0.Final</version.org.wildfly.security.elytron-web.undertow-server>
         <camel.osgi.import.before.defaults>
             javax.activation.*;version="${javax-activation-version-range}"
         </camel.osgi.import.before.defaults>
@@ -42,31 +40,42 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-cloud</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
             <artifactId>camel-undertow</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.wildfly.security</groupId>
             <artifactId>wildfly-elytron</artifactId>
-            <version>${version.org.wildfly.security.wildfly-elytron}</version>
+            <version>${wildfly-elytron}</version>
         </dependency>
         <dependency>
             <groupId>org.wildfly.security.elytron-web</groupId>
             <artifactId>undertow-server</artifactId>
-            <version>${version.org.wildfly.security.elytron-web.undertow-server}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.undertow</groupId>
-            <artifactId>undertow-servlet</artifactId>
-            <version>2.0.13.Final</version>
+            <version>${elytron-web}</version>
         </dependency>
         <dependency>
             <groupId>org.wildfly.security.elytron-web</groupId>
             <artifactId>undertow-server-servlet</artifactId>
-            <version>1.7.0.CR3-SNAPSHOT</version>
+            <version>${elytron-web}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.undertow</groupId>
+            <artifactId>undertow-servlet</artifactId>
+            <version>${undertow-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.json</groupId>
+            <artifactId>javax.json-api</artifactId>
+            <version>${json-api}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>${glassfish-javax-json}</version>
         </dependency>
     </dependencies>
 

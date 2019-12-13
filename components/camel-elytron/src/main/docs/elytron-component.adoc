@@ -1,15 +1,21 @@
 [[elytron-component]]
 = Elytron Component
 
-*Since Camel 2.16*
+*Since Camel 3.1*
 
 // HEADER START
 *Both producer and consumer is supported*
 // HEADER END
 
 The Elytron component provides Elytron security over camel-undertow component.
+It extends camel-undertow component and adds several parameters.
+In componont it is securityDomainBuilder and mechanismName., in endpoint it is allowedRoles.
 
-TODO
+User has to define its SecurityDomain.Builder, which will be used for creation of security domain.
+MechanismName then allows to define mechanism, which will take care of authentication from security context.
+(MechanusmName should be selected with regard to default securityRealm. For example: to use bearer_token security, mechanism name has to be "BEARER_TOKEN"
+and realm has to be TokenSecurityRealm.)
+
 Maven users will need to add the following dependency to their `pom.xml`
 for this component:
 
@@ -29,8 +35,6 @@ for this component:
 ----
 elytron:http://hostname[:port][/resourceUri][?options]
 elytron:https://hostname[:port][/resourceUri][?options]
-elytron:ws://hostname[:port][/resourceUri][?options]
-elytron:wss://hostname[:port][/resourceUri][?options]
 ----
 
 You can append query options to the URI in the following format,
@@ -39,14 +43,15 @@ You can append query options to the URI in the following format,
 == Options
 
 // component options: START
-The Elytron component supports 9 options, which are listed below.
+The Elytron component supports 10 options, which are listed below.
 
 
 
 [width="100%",cols="2,5,^1,2",options="header"]
 |===
 | Name | Description | Default | Type
-| *securityDomainBuilder* (elytron) | TODO |  | Builder
+| *securityDomainBuilder* (elytron) | Definition of Builder, which will be used for creation of security domain. |  | Builder
+| *mechanismName* (elytron) | Name of the mechanism, which will be used for selection of authentication mechanism. | BEARER_TOKEN | String
 | *undertowHttpBinding* (advanced) | To use a custom HttpBinding to control the mapping between Camel message and HttpClient. |  | UndertowHttpBinding
 | *sslContextParameters* (security) | To configure security using SSLContextParameters |  | SSLContextParameters
 | *useGlobalSslContext Parameters* (security) | Enable usage of global SSL context parameters. | false | boolean
@@ -84,7 +89,7 @@ with the following path and query parameters:
 [width="100%",cols="2,5,^1,2",options="header"]
 |===
 | Name | Description | Default | Type
-| *allowedRoles* (allowedRoles) | TODO Comma separated lost of allowed roles. |  | List
+| *allowedRoles* (allowedRoles) | Comma separated list of allowed roles. |  | List
 | *useStreaming* (common) | For HTTP endpoint: if true, text and binary messages will be wrapped as java.io.InputStream before they are passed to an Exchange; otherwise they will be passed as byte. For WebSocket endpoint: if true, text and binary messages will be wrapped as java.io.Reader and java.io.InputStream respectively before they are passed to an Exchange; otherwise they will be passed as String and byte respectively. | false | boolean
 | *accessLog* (consumer) | Whether or not the consumer should write access log | false | Boolean
 | *bridgeErrorHandler* (consumer) | Allows for bridging the consumer to the Camel routing Error Handler, which mean any exceptions occurred while the consumer is trying to pickup incoming messages, or the likes, will now be processed as a message and handled by the routing Error Handler. By default the consumer will use the org.apache.camel.spi.ExceptionHandler to deal with exceptions, that will be logged at WARN or ERROR level and ignored. | false | boolean
@@ -131,7 +136,7 @@ When using Spring Boot make sure to use the following Maven dependency to have s
 ----
 
 
-The component supports 10 options, which are listed below.
+The component supports 11 options, which are listed below.
 
 
 
@@ -143,15 +148,11 @@ The component supports 10 options, which are listed below.
 | *camel.component.elytron.enabled* | Whether to enable auto configuration of the elytron component. This is enabled by default. |  | Boolean
 | *camel.component.elytron.host-options* | To configure common options, such as thread pools. The option is a org.apache.camel.component.undertow.UndertowHostOptions type. |  | String
 | *camel.component.elytron.lazy-start-producer* | Whether the producer should be started lazy (on the first message). By starting lazy you can use this to allow CamelContext and routes to startup in situations where a producer may otherwise fail during starting and cause the route to fail being started. By deferring this startup to be lazy then the startup failure can be handled during routing messages via Camel's routing error handlers. Beware that when the first message is processed then creating and starting the producer may take a little time and prolong the total processing time of the processing. | false | Boolean
+| *camel.component.elytron.mechanism-name* | Name of the mechanism, which will be used for selection of authentication mechanism. | BEARER_TOKEN | String
 | *camel.component.elytron.mute-exception* | If enabled and an Exchange failed processing on the consumer side the response's body won't contain the exception's stack trace. | false | Boolean
-| *camel.component.elytron.security-domain-builder* | TODO. The option is a org.wildfly.security.auth.server.SecurityDomain.Builder type. |  | String
+| *camel.component.elytron.security-domain-builder* | Definition of Builder, which will be used for creation of security domain. The option is a org.wildfly.security.auth.server.SecurityDomain.Builder type. |  | String
 | *camel.component.elytron.ssl-context-parameters* | To configure security using SSLContextParameters. The option is a org.apache.camel.support.jsse.SSLContextParameters type. |  | String
 | *camel.component.elytron.undertow-http-binding* | To use a custom HttpBinding to control the mapping between Camel message and HttpClient. The option is a org.apache.camel.component.undertow.UndertowHttpBinding type. |  | String
 | *camel.component.elytron.use-global-ssl-context-parameters* | Enable usage of global SSL context parameters. | false | Boolean
 |===
 // spring-boot-auto-configure options: END
-
-
-
-
-

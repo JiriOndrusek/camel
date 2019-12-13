@@ -32,13 +32,18 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * Endpoint
  *
  * @author JiriOndrusek
  */
-//TODO
-@UriEndpoint(firstVersion = "2.16.0", scheme = "elytron", title = "Elytron", syntax = "elytron:httpURI",
-        label = "http,websocket", lenientProperties = true)
+@UriEndpoint(firstVersion = "3.1.0", scheme = "elytron", title = "Elytron", syntax = "elytron:httpURI",
+        label = "http", lenientProperties = true)
 public class ElytronEndpoint extends UndertowEndpoint {
+
+    /**
+     * Name of the header which contains associated security identity if request is authenticated.
+     */
+    public static String SECURITY_IDENTITY_HEADER = "securityIdentity";
 
     public ElytronEndpoint(String uri, UndertowComponent component) {
         super(uri, component);
@@ -62,14 +67,13 @@ public class ElytronEndpoint extends UndertowEndpoint {
 
         SecurityIdentity securityIdentity = getElytronComponent().getSecurityDomain().getCurrentSecurityIdentity();
         //add security principal to headers
-        exchange.getIn().setHeader("securityIdentity", securityIdentity);
+        exchange.getIn().setHeader(SECURITY_IDENTITY_HEADER, securityIdentity);
 
         return exchange;
     }
 
     /**
-     * TODO Comma separated lost of allowed roles.
-     * @return
+     * Comma separated list of allowed roles.
      */
     public List<String> getAllowedRoles() {
         return allowedRoles;
