@@ -14,8 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.camel.component.elytron;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import io.undertow.server.HttpServerExchange;
 import org.apache.camel.Consumer;
@@ -26,10 +30,6 @@ import org.apache.camel.component.undertow.UndertowEndpoint;
 import org.apache.camel.spi.UriEndpoint;
 import org.apache.camel.spi.UriParam;
 import org.wildfly.security.auth.server.SecurityIdentity;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Endpoint
@@ -43,7 +43,11 @@ public class ElytronEndpoint extends UndertowEndpoint {
     /**
      * Name of the header which contains associated security identity if request is authenticated.
      */
-    public static String SECURITY_IDENTITY_HEADER = "securityIdentity";
+    public static final String SECURITY_IDENTITY_HEADER = "securityIdentity";
+
+    @UriParam(label = "allowedRoles")
+    private String allowedRoles = "";
+    private List<String> allowedRolesList = Collections.emptyList();
 
     public ElytronEndpoint(String uri, UndertowComponent component) {
         super(uri, component);
@@ -52,10 +56,6 @@ public class ElytronEndpoint extends UndertowEndpoint {
     public ElytronComponent getElytronComponent() {
         return (ElytronComponent) super.getComponent();
     }
-
-    @UriParam(label = "allowedRoles")
-    private String allowedRoles = "";
-    private List<String> allowedRolesList = Collections.emptyList();
 
     @Override
     public Consumer createConsumer(Processor processor) throws Exception {

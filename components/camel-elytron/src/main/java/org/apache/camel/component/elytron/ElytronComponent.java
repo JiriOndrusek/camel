@@ -16,6 +16,13 @@
  */
 package org.apache.camel.component.elytron;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.security.Provider;
+import java.util.Collections;
+
+import javax.net.ssl.SSLContext;
+
 import io.undertow.security.handlers.AuthenticationCallHandler;
 import io.undertow.security.handlers.AuthenticationConstraintHandler;
 import io.undertow.server.HttpHandler;
@@ -39,11 +46,7 @@ import org.wildfly.security.http.HttpServerAuthenticationMechanismFactory;
 import org.wildfly.security.http.util.FilterServerMechanismFactory;
 import org.wildfly.security.http.util.SecurityProviderServerMechanismFactory;
 
-import javax.net.ssl.SSLContext;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.security.Provider;
-import java.util.Collections;
+
 
 /**
  * Elytron component brings elytron security over came-undertow component.
@@ -62,7 +65,7 @@ import java.util.Collections;
 @Component("elytron")
 public class ElytronComponent extends UndertowComponent {
 
-    private static final WildFlyElytronProvider elytronProvider = new WildFlyElytronProvider();
+    private static final WildFlyElytronProvider ELYTRON_PROVIDER = new WildFlyElytronProvider();
 
     @Metadata(label = "elytron")
     private SecurityDomain.Builder securityDomainBuilder;
@@ -119,7 +122,7 @@ public class ElytronComponent extends UndertowComponent {
     }
 
     SecurityDomain getSecurityDomain() {
-        if(securityDomain == null) {
+        if (securityDomain == null) {
             securityDomain = securityDomainBuilder.build();
         }
 
@@ -146,7 +149,7 @@ public class ElytronComponent extends UndertowComponent {
 
 
     private HttpAuthenticationFactory createHttpAuthenticationFactory(final SecurityDomain securityDomain) {
-        HttpServerAuthenticationMechanismFactory providerFactory = new SecurityProviderServerMechanismFactory(() -> new Provider[]{elytronProvider});
+        HttpServerAuthenticationMechanismFactory providerFactory = new SecurityProviderServerMechanismFactory(() -> new Provider[]{ELYTRON_PROVIDER});
         HttpServerAuthenticationMechanismFactory httpServerMechanismFactory = new FilterServerMechanismFactory(providerFactory, true, mechanismName);
 
         return HttpAuthenticationFactory.builder()

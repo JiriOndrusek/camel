@@ -16,6 +16,10 @@
  */
 package org.apache.camel.component.elytron;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.StatusCodes;
 import org.apache.camel.Processor;
@@ -24,9 +28,7 @@ import org.apache.camel.component.undertow.UndertowEndpoint;
 import org.wildfly.security.auth.server.SecurityIdentity;
 import org.wildfly.security.authz.Roles;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
 
 /**
  * Consumer contains decides if request contains required roles (which are defined for endpoint)
@@ -50,7 +52,7 @@ public class ElytronConsumer extends UndertowConsumer {
     public void handleRequest(HttpServerExchange httpExchange) throws Exception {
         SecurityIdentity identity = getElytronEndpoint().getElytronComponent().getSecurityDomain().getCurrentSecurityIdentity();
 
-        if(identity != null) {
+        if (identity != null) {
             //already authenticated
             Set<String> roles = new HashSet<>();
             Roles identityRoles = identity.getRoles();
