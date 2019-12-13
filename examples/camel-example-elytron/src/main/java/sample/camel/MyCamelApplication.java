@@ -16,45 +16,19 @@
  */
 package sample.camel;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.crypto.RSASSASigner;
-import com.nimbusds.jwt.SignedJWT;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
-import org.wildfly.security.WildFlyElytronProvider;
-import org.wildfly.security.auth.permission.LoginPermission;
-import org.wildfly.security.auth.realm.SimpleMapBackedSecurityRealm;
-import org.wildfly.security.auth.realm.SimpleRealmEntry;
-import org.wildfly.security.auth.realm.token.TokenSecurityRealm;
-import org.wildfly.security.auth.realm.token.validator.JwtValidator;
-import org.wildfly.security.auth.server.SecurityDomain;
-import org.wildfly.security.authz.MapAttributes;
-import org.wildfly.security.authz.RoleMapper;
-import org.wildfly.security.authz.Roles;
-import org.wildfly.security.credential.PasswordCredential;
-import org.wildfly.security.password.PasswordFactory;
-import org.wildfly.security.password.spec.ClearPasswordSpec;
-import org.wildfly.security.permission.PermissionVerifier;
-
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.Provider;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.nimbusds.jwt.JWTClaimsSet;
-
-import static org.wildfly.security.password.interfaces.ClearPassword.ALGORITHM_CLEAR;
 
 //CHECKSTYLE:OFF
 /**
