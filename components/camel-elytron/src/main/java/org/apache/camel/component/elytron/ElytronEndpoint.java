@@ -54,7 +54,8 @@ public class ElytronEndpoint extends UndertowEndpoint {
     }
 
     @UriParam(label = "allowedRoles")
-    private List<String> allowedRoles = Collections.emptyList();
+    private String allowedRoles = "";
+    private List<String> allowedRolesList = Collections.emptyList();
 
     @Override
     public Consumer createConsumer(Processor processor) throws Exception {
@@ -72,18 +73,18 @@ public class ElytronEndpoint extends UndertowEndpoint {
         return exchange;
     }
 
+    public List<String> getAllowedRolesList() {
+        return allowedRolesList;
+    }
+
     /**
      * Comma separated list of allowed roles.
      */
-    public List<String> getAllowedRoles() {
+    public String getAllowedRoles() {
         return allowedRoles;
     }
 
-    public void setAllowedRoles(List<String> allowedRoles) {
-        this.allowedRoles = allowedRoles;
-    }
-
     public void setAllowedRoles(String allowedRoles) {
-        this.allowedRoles = allowedRoles == null ? null : Arrays.asList(allowedRoles.split("\\s*,\\s*"));
+        this.allowedRolesList = allowedRoles == null ? null : Arrays.asList(allowedRoles.split("\\s*,\\s*"));
     }
 }

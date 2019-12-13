@@ -80,18 +80,18 @@ public class MyCamelApplication {
 
             PasswordFactory passwordFactory = PasswordFactory.getInstance(ALGORITHM_CLEAR, elytronProvider);
 
-//            Map<String, SimpleRealmEntry> passwordMap = new HashMap<>();
-//            passwordMap.put("admin",
-//                    new SimpleRealmEntry(Collections.singletonList(new PasswordCredential(passwordFactory.generatePassword(new ClearPasswordSpec("admin".toCharArray())))),
-//                    new MapAttributes(Collections.singletonMap("Roles", Arrays.asList("user", "admin")))));
-//            passwordMap.put("user",
-//                    new SimpleRealmEntry(Collections.singletonList(new PasswordCredential(passwordFactory.generatePassword(new ClearPasswordSpec("user".toCharArray())))),
-//                    new MapAttributes(Collections.singletonMap("Roles", Collections.singletonList("user")))));
-//            passwordMap.put("guest",
-//                     new SimpleRealmEntry(Collections.singletonList(new PasswordCredential(passwordFactory.generatePassword(new ClearPasswordSpec("guest".toCharArray()))))));
-//
-//            SimpleMapBackedSecurityRealm simpleRealm = new SimpleMapBackedSecurityRealm(() -> new Provider[] { elytronProvider });
-//            simpleRealm.setPasswordMap(passwordMap);
+            Map<String, SimpleRealmEntry> passwordMap = new HashMap<>();
+            passwordMap.put("admin",
+                    new SimpleRealmEntry(Collections.singletonList(new PasswordCredential(passwordFactory.generatePassword(new ClearPasswordSpec("admin".toCharArray())))),
+                    new MapAttributes(Collections.singletonMap("Roles", Arrays.asList("user", "admin")))));
+            passwordMap.put("user",
+                    new SimpleRealmEntry(Collections.singletonList(new PasswordCredential(passwordFactory.generatePassword(new ClearPasswordSpec("user".toCharArray())))),
+                    new MapAttributes(Collections.singletonMap("Roles", Collections.singletonList("user")))));
+            passwordMap.put("guest",
+                     new SimpleRealmEntry(Collections.singletonList(new PasswordCredential(passwordFactory.generatePassword(new ClearPasswordSpec("guest".toCharArray()))))));
+
+            SimpleMapBackedSecurityRealm simpleRealm = new SimpleMapBackedSecurityRealm(() -> new Provider[] { elytronProvider });
+            simpleRealm.setPasswordMap(passwordMap);
 
             SecurityDomain.Builder builder = SecurityDomain.builder()
                     .setDefaultRealmName("bearerRealm");

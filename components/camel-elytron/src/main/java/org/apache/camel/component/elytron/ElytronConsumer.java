@@ -61,7 +61,7 @@ public class ElytronConsumer extends UndertowConsumer {
                 }
             }
 
-            if (isAllowed(roles, getElytronEndpoint().getAllowedRoles())) {
+            if (isAllowed(roles, getElytronEndpoint().getAllowedRolesList())) {
                 super.handleRequest(httpExchange);
             } else {
                 httpExchange.setStatusCode(StatusCodes.FORBIDDEN);
