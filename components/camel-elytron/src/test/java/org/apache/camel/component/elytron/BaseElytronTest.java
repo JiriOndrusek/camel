@@ -44,7 +44,6 @@ public class BaseElytronTest extends CamelTestSupport {
     private static volatile int port;
     private static volatile int port2;
     private static  KeyPair keyPair;
-    private static  KeyPair keyPair;
 
     private final AtomicInteger counter = new AtomicInteger(1);
 
