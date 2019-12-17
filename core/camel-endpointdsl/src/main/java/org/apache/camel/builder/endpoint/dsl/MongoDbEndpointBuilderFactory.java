@@ -105,7 +105,7 @@ public interface MongoDbEndpointBuilderFactory {
         /**
          * Sets the Mongo instance that represents the backing connection.
          * 
-         * The option is a: <code>com.mongodb.client.MongoClient</code> type.
+         * The option is a: <code>com.mongodb.MongoClient</code> type.
          * 
          * Group: common
          */
@@ -118,7 +118,7 @@ public interface MongoDbEndpointBuilderFactory {
          * Sets the Mongo instance that represents the backing connection.
          * 
          * The option will be converted to a
-         * <code>com.mongodb.client.MongoClient</code> type.
+         * <code>com.mongodb.MongoClient</code> type.
          * 
          * Group: common
          */
@@ -512,20 +512,6 @@ public interface MongoDbEndpointBuilderFactory {
             return this;
         }
         /**
-         * Configure how MongoDB clients route read operations to the members of
-         * a replica set. Possible values are PRIMARY, PRIMARY_PREFERRED,
-         * SECONDARY, SECONDARY_PREFERRED or NEAREST.
-         * 
-         * The option is a: <code>java.lang.String</code> type.
-         * 
-         * Group: advanced
-         */
-        default AdvancedMongoDbEndpointConsumerBuilder readPreference(
-                String readPreference) {
-            doSetProperty("readPreference", readPreference);
-            return this;
-        }
-        /**
          * Sets whether synchronous processing should be strictly used, or Camel
          * is allowed to use asynchronous processing (if supported).
          * 
@@ -549,21 +535,6 @@ public interface MongoDbEndpointBuilderFactory {
         default AdvancedMongoDbEndpointConsumerBuilder synchronous(
                 String synchronous) {
             doSetProperty("synchronous", synchronous);
-            return this;
-        }
-        /**
-         * Configure the connection bean with the level of acknowledgment
-         * requested from MongoDB for write operations to a standalone mongod,
-         * replicaset or cluster. Possible values are ACKNOWLEDGED, W1, W2, W3,
-         * UNACKNOWLEDGED, JOURNALED or MAJORITY.
-         * 
-         * The option is a: <code>java.lang.String</code> type.
-         * 
-         * Group: advanced
-         */
-        default AdvancedMongoDbEndpointConsumerBuilder writeConcern(
-                String writeConcern) {
-            doSetProperty("writeConcern", writeConcern);
             return this;
         }
         /**
@@ -669,7 +640,7 @@ public interface MongoDbEndpointBuilderFactory {
         /**
          * Sets the Mongo instance that represents the backing connection.
          * 
-         * The option is a: <code>com.mongodb.client.MongoClient</code> type.
+         * The option is a: <code>com.mongodb.MongoClient</code> type.
          * 
          * Group: common
          */
@@ -682,7 +653,7 @@ public interface MongoDbEndpointBuilderFactory {
          * Sets the Mongo instance that represents the backing connection.
          * 
          * The option will be converted to a
-         * <code>com.mongodb.client.MongoClient</code> type.
+         * <code>com.mongodb.MongoClient</code> type.
          * 
          * Group: common
          */
@@ -1012,20 +983,6 @@ public interface MongoDbEndpointBuilderFactory {
             return this;
         }
         /**
-         * Configure how MongoDB clients route read operations to the members of
-         * a replica set. Possible values are PRIMARY, PRIMARY_PREFERRED,
-         * SECONDARY, SECONDARY_PREFERRED or NEAREST.
-         * 
-         * The option is a: <code>java.lang.String</code> type.
-         * 
-         * Group: advanced
-         */
-        default AdvancedMongoDbEndpointProducerBuilder readPreference(
-                String readPreference) {
-            doSetProperty("readPreference", readPreference);
-            return this;
-        }
-        /**
          * Sets whether synchronous processing should be strictly used, or Camel
          * is allowed to use asynchronous processing (if supported).
          * 
@@ -1049,21 +1006,6 @@ public interface MongoDbEndpointBuilderFactory {
         default AdvancedMongoDbEndpointProducerBuilder synchronous(
                 String synchronous) {
             doSetProperty("synchronous", synchronous);
-            return this;
-        }
-        /**
-         * Configure the connection bean with the level of acknowledgment
-         * requested from MongoDB for write operations to a standalone mongod,
-         * replicaset or cluster. Possible values are ACKNOWLEDGED, W1, W2, W3,
-         * UNACKNOWLEDGED, JOURNALED or MAJORITY.
-         * 
-         * The option is a: <code>java.lang.String</code> type.
-         * 
-         * Group: advanced
-         */
-        default AdvancedMongoDbEndpointProducerBuilder writeConcern(
-                String writeConcern) {
-            doSetProperty("writeConcern", writeConcern);
             return this;
         }
         /**
@@ -1166,7 +1108,7 @@ public interface MongoDbEndpointBuilderFactory {
         /**
          * Sets the Mongo instance that represents the backing connection.
          * 
-         * The option is a: <code>com.mongodb.client.MongoClient</code> type.
+         * The option is a: <code>com.mongodb.MongoClient</code> type.
          * 
          * Group: common
          */
@@ -1178,7 +1120,7 @@ public interface MongoDbEndpointBuilderFactory {
          * Sets the Mongo instance that represents the backing connection.
          * 
          * The option will be converted to a
-         * <code>com.mongodb.client.MongoClient</code> type.
+         * <code>com.mongodb.MongoClient</code> type.
          * 
          * Group: common
          */
@@ -1462,20 +1404,6 @@ public interface MongoDbEndpointBuilderFactory {
             return this;
         }
         /**
-         * Configure how MongoDB clients route read operations to the members of
-         * a replica set. Possible values are PRIMARY, PRIMARY_PREFERRED,
-         * SECONDARY, SECONDARY_PREFERRED or NEAREST.
-         * 
-         * The option is a: <code>java.lang.String</code> type.
-         * 
-         * Group: advanced
-         */
-        default AdvancedMongoDbEndpointBuilder readPreference(
-                String readPreference) {
-            doSetProperty("readPreference", readPreference);
-            return this;
-        }
-        /**
          * Sets whether synchronous processing should be strictly used, or Camel
          * is allowed to use asynchronous processing (if supported).
          * 
@@ -1497,20 +1425,6 @@ public interface MongoDbEndpointBuilderFactory {
          */
         default AdvancedMongoDbEndpointBuilder synchronous(String synchronous) {
             doSetProperty("synchronous", synchronous);
-            return this;
-        }
-        /**
-         * Configure the connection bean with the level of acknowledgment
-         * requested from MongoDB for write operations to a standalone mongod,
-         * replicaset or cluster. Possible values are ACKNOWLEDGED, W1, W2, W3,
-         * UNACKNOWLEDGED, JOURNALED or MAJORITY.
-         * 
-         * The option is a: <code>java.lang.String</code> type.
-         * 
-         * Group: advanced
-         */
-        default AdvancedMongoDbEndpointBuilder writeConcern(String writeConcern) {
-            doSetProperty("writeConcern", writeConcern);
             return this;
         }
         /**
