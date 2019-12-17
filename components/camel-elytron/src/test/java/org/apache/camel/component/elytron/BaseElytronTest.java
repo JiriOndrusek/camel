@@ -27,6 +27,7 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.test.AvailablePortFinder;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.BeforeClass;
+import org.wildfly.security.WildFlyElytronBaseProvider;
 import org.wildfly.security.auth.permission.LoginPermission;
 import org.wildfly.security.auth.realm.token.TokenSecurityRealm;
 import org.wildfly.security.auth.realm.token.validator.JwtValidator;
@@ -39,20 +40,22 @@ import org.wildfly.security.permission.PermissionVerifier;
 /**
  * Base class of tests which allocates ports
  */
-public class BaseElytronTest extends CamelTestSupport {
+public abstract class BaseElytronTest extends CamelTestSupport {
 
     private static volatile int port;
-    private static volatile int port2;
     private static  KeyPair keyPair;
 
     private final AtomicInteger counter = new AtomicInteger(1);
 
+    abstract String getMechanismName();
 
+    abstract TokenSecurityRealm createBearerRealm() throws NoSuchAlgorithmException;
+
+    abstract WildFlyElytronBaseProvider getElytronProvider();
 
     @BeforeClass
     public static void initPort() throws Exception {
         port = AvailablePortFinder.getNextAvailable();
-        port2 = AvailablePortFinder.getNextAvailable();
         keyPair = null;
     }
 
@@ -60,16 +63,11 @@ public class BaseElytronTest extends CamelTestSupport {
         return port;
     }
 
-    protected static int getPort2() {
-        return port2;
-    }
-
     @BindToRegistry("prop")
     public Properties loadProperties() throws Exception {
 
         Properties prop = new Properties();
         prop.setProperty("port", "" + getPort());
-        prop.setProperty("port2", "" + getPort2());
         return prop;
     }
 
@@ -81,20 +79,17 @@ public class BaseElytronTest extends CamelTestSupport {
 
         ((ElytronComponent) context.getComponent("elytron")).setSecurityDomainBuilder(getSecurityDomainBuilder());
         ((ElytronComponent) context.getComponent("elytron")).setMechanismName(getMechanismName());
+        ((ElytronComponent) context.getComponent("elytron")).setElytronProvider(getElytronProvider());
 
         return context;
-    }
-
-    String getMechanismName() {
-        return HttpConstants.BEARER_TOKEN;
     }
 
     SecurityDomain.Builder getSecurityDomainBuilder() throws Exception {
 
         SecurityDomain.Builder builder = SecurityDomain.builder()
-                .setDefaultRealmName("bearerRealm");
+                .setDefaultRealmName("realm");
 
-        builder.addRealm("bearerRealm", createBearerRealm())
+        builder.addRealm("realm", createBearerRealm())
                 .build();
 
 
@@ -103,12 +98,6 @@ public class BaseElytronTest extends CamelTestSupport {
 
         return builder;
     }
-
-    private TokenSecurityRealm createBearerRealm() throws NoSuchAlgorithmException {
-        return TokenSecurityRealm.builder().principalClaimName("username")
-                .validator(JwtValidator.builder().publicKey(getKeyPair().getPublic()).build()).build();
-    }
-
 
     public KeyPair getKeyPair() throws NoSuchAlgorithmException {
         if (keyPair == null) {
@@ -121,12 +110,4 @@ public class BaseElytronTest extends CamelTestSupport {
         return KeyPairGenerator.getInstance("RSA").generateKeyPair();
     }
 
-
-    protected int getNextPort() {
-        return AvailablePortFinder.getNextAvailable();
-    }
-
-    protected int getNextPort(int startWithPort) {
-        return AvailablePortFinder.getNextAvailable();
-    }
 }

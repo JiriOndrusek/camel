@@ -20,10 +20,17 @@ import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.util.Date;
 
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import io.undertow.util.Headers;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.wildfly.security.authz.RoleDecoder;
 
 /**
  * @author JiriOndrusek
@@ -46,7 +53,7 @@ public class MyCamelRouter extends RouteBuilder {
                 .log("${body}");
     }
 
-    private String createToken(String userName, Date expirationDate, PrivateKey signingKey)  {
+    private String createToken(String userName, Date expirationDate, PrivateKey signingKey) {
         JWTClaimsSet.Builder claimsSet = new JWTClaimsSet.Builder();
 
         claimsSet.subject("123445667");

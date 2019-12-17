@@ -16,6 +16,7 @@
  */
 package org.apache.camel.component.elytron;
 
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.util.Date;
 
@@ -34,10 +35,31 @@ import org.apache.camel.http.common.HttpOperationFailedException;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wildfly.security.WildFlyElytronBaseProvider;
+import org.wildfly.security.auth.realm.token.TokenSecurityRealm;
+import org.wildfly.security.auth.realm.token.validator.JwtValidator;
 import org.wildfly.security.authz.RoleDecoder;
+import org.wildfly.security.http.HttpConstants;
+import org.wildfly.security.http.bearer.WildFlyElytronHttpBearerProvider;
 
 public class ElytronBearerTokenTest extends BaseElytronTest {
     private static final Logger LOG = LoggerFactory.getLogger(ElytronBearerTokenTest.class);
+
+    @Override
+    String getMechanismName() {
+        return HttpConstants.BEARER_TOKEN;
+    }
+
+    @Override
+    TokenSecurityRealm createBearerRealm() throws NoSuchAlgorithmException {
+        return TokenSecurityRealm.builder().principalClaimName("username")
+                .validator(JwtValidator.builder().publicKey(getKeyPair().getPublic()).build()).build();
+    }
+
+    @Override
+    WildFlyElytronBaseProvider getElytronProvider() {
+        return WildFlyElytronHttpBearerProvider.getInstance();
+    }
 
     @Test
     public void testBearerToken() throws Exception {

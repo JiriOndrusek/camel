@@ -34,7 +34,7 @@ import org.apache.camel.spi.Metadata;
 import org.apache.camel.spi.annotations.Component;
 import org.wildfly.elytron.web.undertow.server.ElytronContextAssociationHandler;
 import org.wildfly.elytron.web.undertow.server.ElytronRunAsHandler;
-import org.wildfly.security.WildFlyElytronProvider;
+import org.wildfly.security.WildFlyElytronBaseProvider;
 import org.wildfly.security.auth.server.MechanismConfiguration;
 import org.wildfly.security.auth.server.MechanismConfigurationSelector;
 import org.wildfly.security.auth.server.MechanismRealmConfiguration;
@@ -45,8 +45,6 @@ import org.wildfly.security.http.HttpConstants;
 import org.wildfly.security.http.HttpServerAuthenticationMechanismFactory;
 import org.wildfly.security.http.util.FilterServerMechanismFactory;
 import org.wildfly.security.http.util.SecurityProviderServerMechanismFactory;
-
-
 
 /**
  * Elytron component brings elytron security over came-undertow component.
@@ -65,12 +63,12 @@ import org.wildfly.security.http.util.SecurityProviderServerMechanismFactory;
 @Component("elytron")
 public class ElytronComponent extends UndertowComponent {
 
-    private static final WildFlyElytronProvider ELYTRON_PROVIDER = new WildFlyElytronProvider();
-
-    @Metadata(label = "elytron")
+    @Metadata(label = "elytron", required = true)
     private SecurityDomain.Builder securityDomainBuilder;
-    @Metadata(label = "elytron", defaultValue = HttpConstants.BEARER_TOKEN)
+    @Metadata(label = "elytron", required = true, defaultValue = HttpConstants.BEARER_TOKEN)
     private String mechanismName;
+    @Metadata(label = "elytron", required = true)
+    private WildFlyElytronBaseProvider elytronProvider;
 
     private SecurityDomain securityDomain;
 
@@ -109,7 +107,6 @@ public class ElytronComponent extends UndertowComponent {
         this.securityDomainBuilder = securityDomainBuilder;
     }
 
-
     /**
      * Name of the mechanism, which will be used for selection of authentication mechanism.
      */
@@ -119,6 +116,17 @@ public class ElytronComponent extends UndertowComponent {
 
     public void setMechanismName(String mechanismName) {
         this.mechanismName = mechanismName;
+    }
+
+    /**
+     * Elytron security provider, has to support mechanism from parameter mechanismName.
+     */
+    public WildFlyElytronBaseProvider getElytronProvider() {
+        return elytronProvider;
+    }
+
+    public void setElytronProvider(WildFlyElytronBaseProvider elytronProvider) {
+        this.elytronProvider = elytronProvider;
     }
 
     SecurityDomain getSecurityDomain() {
@@ -149,7 +157,7 @@ public class ElytronComponent extends UndertowComponent {
 
 
     private HttpAuthenticationFactory createHttpAuthenticationFactory(final SecurityDomain securityDomain) {
-        HttpServerAuthenticationMechanismFactory providerFactory = new SecurityProviderServerMechanismFactory(() -> new Provider[]{ELYTRON_PROVIDER});
+        HttpServerAuthenticationMechanismFactory providerFactory = new SecurityProviderServerMechanismFactory(() -> new Provider[]{getElytronProvider()});
         HttpServerAuthenticationMechanismFactory httpServerMechanismFactory = new FilterServerMechanismFactory(providerFactory, true, mechanismName);
 
         return HttpAuthenticationFactory.builder()

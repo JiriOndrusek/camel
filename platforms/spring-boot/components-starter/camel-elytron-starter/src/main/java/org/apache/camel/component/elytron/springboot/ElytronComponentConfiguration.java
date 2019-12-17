@@ -48,6 +48,12 @@ public class ElytronComponentConfiguration
      */
     private String mechanismName = "BEARER_TOKEN";
     /**
+     * Elytron security provider, has to support mechanism from parameter
+     * mechanismName. The option is a
+     * org.wildfly.security.WildFlyElytronBaseProvider type.
+     */
+    private String elytronProvider;
+    /**
      * To use a custom HttpBinding to control the mapping between Camel message
      * and HttpClient. The option is a
      * org.apache.camel.component.undertow.UndertowHttpBinding type.
@@ -112,6 +118,14 @@ public class ElytronComponentConfiguration
 
     public void setMechanismName(String mechanismName) {
         this.mechanismName = mechanismName;
+    }
+
+    public String getElytronProvider() {
+        return elytronProvider;
+    }
+
+    public void setElytronProvider(String elytronProvider) {
+        this.elytronProvider = elytronProvider;
     }
 
     public String getUndertowHttpBinding() {
