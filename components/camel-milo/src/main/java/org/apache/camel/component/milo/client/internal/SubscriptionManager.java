@@ -45,7 +45,7 @@ import org.eclipse.milo.opcua.sdk.client.api.identity.UsernameProvider;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscriptionManager.SubscriptionListener;
-import org.eclipse.milo.opcua.stack.client.UaTcpStackClient;
+import org.eclipse.milo.opcua.stack.client.DiscoveryClient;
 import org.eclipse.milo.opcua.stack.core.AttributeId;
 import org.eclipse.milo.opcua.stack.core.Identifiers;
 import org.eclipse.milo.opcua.stack.core.StatusCodes;
@@ -430,7 +430,7 @@ public class SubscriptionManager {
         final String discoveryUri = getEndpointDiscoveryUri();
         LOG.debug("Discovering endpoints from: {}", discoveryUri);
 
-        final EndpointDescription endpoint = UaTcpStackClient.getEndpoints(discoveryUri).thenApply(endpoints -> {
+        final EndpointDescription endpoint = DiscoveryClient.getEndpoints(discoveryUri).thenApply(endpoints -> {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Found enpoints:");
                 for (final EndpointDescription ep : endpoints) {
@@ -470,7 +470,7 @@ public class SubscriptionManager {
 
         // create client
 
-        final OpcUaClient client = new OpcUaClient(cfg.build());
+        final OpcUaClient client = OpcUaClient.create(cfg.build());
         client.connect().get();
 
         try {
@@ -530,7 +530,7 @@ public class SubscriptionManager {
         }
     }
 
-    private EndpointDescription findEndpoint(final EndpointDescription[] endpoints) throws URISyntaxException {
+    private EndpointDescription findEndpoint(final List<EndpointDescription> endpoints) throws URISyntaxException {
 
         final Predicate<String> allowed;
         final Set<String> uris = this.configuration.getAllowedSecurityPolicies();
