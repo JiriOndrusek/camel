@@ -140,7 +140,6 @@ public class CamelNamespace extends ManagedNamespace {
         synchronized (this) {
             CamelServerItem item = this.itemMap.get(itemId);
             if (item == null) {
-                //todo
                 item = new CamelServerItem(itemId, getNodeContext(), getNamespaceIndex(), this.itemsObject);
                 this.itemMap.put(itemId, item);
             }
