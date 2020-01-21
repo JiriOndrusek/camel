@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -54,10 +55,12 @@ import org.eclipse.milo.opcua.stack.core.security.CertificateValidator;
 import org.eclipse.milo.opcua.stack.core.security.DefaultCertificateManager;
 import org.eclipse.milo.opcua.stack.core.security.DefaultCertificateValidator;
 import org.eclipse.milo.opcua.stack.core.security.SecurityPolicy;
+import org.eclipse.milo.opcua.stack.core.security.TrustListManager;
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.UserTokenType;
 import org.eclipse.milo.opcua.stack.core.types.structured.BuildInfo;
 import org.eclipse.milo.opcua.stack.core.types.structured.UserTokenPolicy;
+import org.eclipse.milo.opcua.stack.server.EndpointConfiguration;
 
 import static java.util.Collections.singletonList;
 import static org.eclipse.milo.opcua.sdk.server.api.config.OpcUaServerConfig.USER_TOKEN_POLICY_ANONYMOUS;
@@ -337,7 +340,75 @@ public class MiloServerComponent extends DefaultComponent {
             }
         }
 
-        this.serverConfig.setSecurityPolicies(policies);
+        this.serverConfig.setEndpoints()
+    }
+
+    private Set<EndpointConfiguration> createEndpointConfigurations(X509Certificate certificate) {
+        Set<EndpointConfiguration> endpointConfigurations = new LinkedHashSet<>();
+
+        List<String> bindAddresses = newArrayList();
+        bindAddresses.add("0.0.0.0");
+
+        Set<String> hostnames = new LinkedHashSet<>();
+        hostnames.add(HostnameUtil.getHostname());
+        hostnames.addAll(HostnameUtil.getHostnames("0.0.0.0"));
+
+        for (String bindAddress : bindAddresses) {
+            for (String hostname : hostnames) {
+                EndpointConfiguration.Builder builder = EndpointConfiguration.newBuilder()
+                        .setBindAddress(bindAddress)
+                        .setHostname(hostname)
+                        .setPath("/milo")
+                        .setCertificate(certificate)
+                        .addTokenPolicies(
+                                USER_TOKEN_POLICY_ANONYMOUS,
+                                USER_TOKEN_POLICY_USERNAME,
+                                USER_TOKEN_POLICY_X509);
+
+
+                EndpointConfiguration.Builder noSecurityBuilder = builder.copy()
+                        .setSecurityPolicy(SecurityPolicy.None)
+                        .setSecurityMode(MessageSecurityMode.None);
+
+                endpointConfigurations.add(buildTcpEndpoint(noSecurityBuilder));
+                endpointConfigurations.add(buildHttpsEndpoint(noSecurityBuilder));
+
+                // TCP Basic256Sha256 / SignAndEncrypt
+                endpointConfigurations.add(buildTcpEndpoint(
+                        builder.copy()
+                                .setSecurityPolicy(SecurityPolicy.Basic256Sha256)
+                                .setSecurityMode(MessageSecurityMode.SignAndEncrypt))
+                );
+
+                // HTTPS Basic256Sha256 / Sign (SignAndEncrypt not allowed for HTTPS)
+                endpointConfigurations.add(buildHttpsEndpoint(
+                        builder.copy()
+                                .setSecurityPolicy(SecurityPolicy.Basic256Sha256)
+                                .setSecurityMode(MessageSecurityMode.Sign))
+                );
+
+                /*
+                 * It's good practice to provide a discovery-specific endpoint with no security.
+                 * It's required practice if all regular endpoints have security configured.
+                 *
+                 * Usage of the  "/discovery" suffix is defined by OPC UA Part 6:
+                 *
+                 * Each OPC UA Server Application implements the Discovery Service Set. If the OPC UA Server requires a
+                 * different address for this Endpoint it shall create the address by appending the path "/discovery" to
+                 * its base address.
+                 */
+
+                EndpointConfiguration.Builder discoveryBuilder = builder.copy()
+                        .setPath("/milo/discovery")
+                        .setSecurityPolicy(SecurityPolicy.None)
+                        .setSecurityMode(MessageSecurityMode.None);
+
+                endpointConfigurations.add(buildTcpEndpoint(discoveryBuilder));
+                endpointConfigurations.add(buildHttpsEndpoint(discoveryBuilder));
+            }
+        }
+
+        return endpointConfigurations;
     }
 
     /**
@@ -387,7 +458,7 @@ public class MiloServerComponent extends DefaultComponent {
      * Set the {@link UserTokenPolicy} used when
      */
     public void setUsernameSecurityPolicyUri(final SecurityPolicy usernameSecurityPolicy) {
-        this.usernameSecurityPolicyUri = usernameSecurityPolicy.getSecurityPolicyUri();
+        this.usernameSecurityPolicyUri = usernameSecurityPolicy.getUri();
     }
 
     /**
@@ -459,7 +530,7 @@ public class MiloServerComponent extends DefaultComponent {
     /**
      * Validator for client certificates using default file based approach
      */
-    public void setDefaultCertificateValidator(final File certificatesBaseDir) {
-        this.certificateValidator = () -> new DefaultCertificateValidator(certificatesBaseDir);
+    public void setDefaultCertificateValidator(final TrustListManager trustListManager) {
+        this.certificateValidator = () -> new DefaultCertificateValidator(trustListManager);
     }
 }

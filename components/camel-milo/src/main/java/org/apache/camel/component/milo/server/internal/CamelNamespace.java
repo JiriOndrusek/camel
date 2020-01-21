@@ -23,7 +23,12 @@ import org.eclipse.milo.opcua.sdk.server.api.DataItem;
 import org.eclipse.milo.opcua.sdk.server.api.ManagedNamespace;
 
 import org.eclipse.milo.opcua.sdk.server.api.MonitoredItem;
+import org.eclipse.milo.opcua.sdk.server.api.NodeManager;
 import org.eclipse.milo.opcua.sdk.server.nodes.UaFolderNode;
+import org.eclipse.milo.opcua.sdk.server.nodes.UaNode;
+import org.eclipse.milo.opcua.sdk.server.nodes.UaNodeContext;
+import org.eclipse.milo.opcua.sdk.server.nodes.UaObjectNode;
+import org.eclipse.milo.opcua.sdk.server.nodes.factories.NodeFactory;
 import org.eclipse.milo.opcua.sdk.server.util.SubscriptionModel;
 import org.eclipse.milo.opcua.stack.core.Identifiers;
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText;
@@ -31,7 +36,9 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CamelNamespace extends ManagedNamespace {
 
@@ -39,11 +46,35 @@ public class CamelNamespace extends ManagedNamespace {
 
     private final SubscriptionModel subscriptionModel;
 
+    private final Map<String, CamelServerItem> itemMap = new HashMap<>();
+
+    private UaNodeContext nodeContext;
+
+    private UaObjectNode itemsNode;
+
     public CamelNamespace(OpcUaServer server, String namespaceUri) {
         super(server, namespaceUri);
 
         this.subscriptionModel = new SubscriptionModel(server, this);
     }
+
+    protected UaNodeContext getNodeContext() {
+        if(nodeContext == null) {
+
+            nodeContext = new UaNodeContext() {
+                @Override
+                public OpcUaServer getServer() {
+                    return getServer();
+                }
+
+                @Override
+                public NodeManager<UaNode> getNodeManager() {
+                    return getNodeManager();
+                }
+            };
+        }
+        return nodeContext;
+    };
 
     @Override
     protected void onStartup() {
@@ -70,15 +101,15 @@ public class CamelNamespace extends ManagedNamespace {
                 false
         ));
 
-        UaFolderNode scalarTypesFolder = new UaFolderNode(
+        itemsNode = new UaObjectNode(
                 getNodeContext(),
                 newNodeId("items"),
                 newQualifiedName("items"),
                 LocalizedText.english("Items")
         );
 
-        getNodeManager().addNode(scalarTypesFolder);
-        folderNode.addOrganizes(scalarTypesFolder);
+        getNodeManager().addNode(itemsNode);
+        folderNode.addOrganizes(itemsNode);
     }
 
     @Override
@@ -105,7 +136,7 @@ public class CamelNamespace extends ManagedNamespace {
         synchronized (this) {
             CamelServerItem item = this.itemMap.get(itemId);
             if (item == null) {
-                item = new CamelServerItem(itemId, this.nodeManager, this.namespaceIndex, this.itemsObject);
+                item = new CamelServerItem(itemId, getNodeContext(), getNamespaceIndex(), this.itemsNode);
                 this.itemMap.put(itemId, item);
             }
             return item;
