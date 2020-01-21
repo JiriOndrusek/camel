@@ -22,8 +22,8 @@ import java.util.List;
 import org.eclipse.milo.opcua.sdk.server.annotations.UaInputArgument;
 import org.eclipse.milo.opcua.sdk.server.annotations.UaMethod;
 import org.eclipse.milo.opcua.sdk.server.annotations.UaOutputArgument;
-import org.eclipse.milo.opcua.sdk.server.api.ServerNodeMap;
 import org.eclipse.milo.opcua.sdk.server.nodes.UaMethodNode;
+import org.eclipse.milo.opcua.sdk.server.nodes.UaNodeContext;
 import org.eclipse.milo.opcua.sdk.server.util.AnnotationBasedInvocationHandler;
 import org.eclipse.milo.opcua.sdk.server.util.AnnotationBasedInvocationHandler.InvocationContext;
 import org.eclipse.milo.opcua.sdk.server.util.AnnotationBasedInvocationHandler.Out;
@@ -53,13 +53,13 @@ public final class MockCall {
         }
     }
 
-    public static UaMethodNode fromNode(final UShort index, final ServerNodeMap nodeMap, final String nodeId, final String name, final Object methodObject) {
+    public static UaMethodNode fromNode(final UShort index, final UaNodeContext nodeContext, final String nodeId, final String name, final Object methodObject) {
 
         try {
-            final UaMethodNode method = new UaMethodNode(nodeMap, new NodeId(index, nodeId), new QualifiedName(index, name), english(name), english(nodeId), UInteger.MIN,
+            final UaMethodNode method = new UaMethodNode(nodeContext, new NodeId(index, nodeId), new QualifiedName(index, name), english(name), english(nodeId), UInteger.MIN,
                                                          UInteger.MIN, true, true);
 
-            final AnnotationBasedInvocationHandler handler = AnnotationBasedInvocationHandler.fromAnnotatedObject(nodeMap, methodObject);
+            final AnnotationBasedInvocationHandler handler = AnnotationBasedInvocationHandler.fromAnnotatedObject(nodeContext.getServer(), methodObject);
             method.setInputArguments(handler.getInputArguments());
             method.setOutputArguments(handler.getOutputArguments());
             method.setInvocationHandler(handler);

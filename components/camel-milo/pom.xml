@@ -46,13 +46,20 @@
         <dependency>
             <groupId>org.eclipse.milo</groupId>
             <artifactId>sdk-server</artifactId>
-            <version>0.3.0</version>
+            <version>0.3.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>26.0-jre</version>
+<!--            <scope>test</scope>-->
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.milo</groupId>
             <artifactId>sdk-client</artifactId>
-            <version>0.3.0</version>
+            <version>0.3.7</version>
         </dependency>
 
         <!-- testing -->

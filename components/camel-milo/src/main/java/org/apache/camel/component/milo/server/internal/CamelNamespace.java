@@ -28,6 +28,7 @@ import org.eclipse.milo.opcua.sdk.server.api.ManagedNamespace;
 import org.eclipse.milo.opcua.sdk.server.api.MonitoredItem;
 import org.eclipse.milo.opcua.sdk.server.nodes.UaFolderNode;
 import org.eclipse.milo.opcua.sdk.server.nodes.UaObjectNode;
+import org.eclipse.milo.opcua.sdk.server.nodes.UaObjectTypeNode;
 import org.eclipse.milo.opcua.sdk.server.util.SubscriptionModel;
 import org.eclipse.milo.opcua.stack.core.Identifiers;
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText;
@@ -73,10 +74,28 @@ public class CamelNamespace extends ManagedNamespace {
         final QualifiedName name2 = newQualifiedName("items");
 //            final QualifiedName name = new QualifiedName(namespaceIndex, "items");
         final LocalizedText displayName2 = LocalizedText.english("Items");
+
+
+//            getServer().getObjectTypeManager().registerObjectType(
+//                    objectTypeNode.getNodeId(),
+//                    UaObjectNode.class,
+//                    UaObjectNode::new
+//            );
+////
+
+        // Define a new ObjectType called "MyObjectType".
+        UaObjectTypeNode objectTypeNode = UaObjectTypeNode.builder(getNodeContext())
+                .setNodeId(newNodeId("ObjectTypes/MyObjectType"))
+                .setBrowseName(newQualifiedName("MyObjectType"))
+                .setDisplayName(LocalizedText.english("MyObjectType"))
+                .setIsAbstract(false)
+                .build();
+
         this.itemsObject = UaObjectNode.builder(getNodeContext())
-                .setNodeId(nodeId)
-                .setBrowseName(name)
-                .setDisplayName(displayName)
+                .setNodeId(nodeId2)
+                .setBrowseName(name2)
+                .setDisplayName(displayName2)
+                .setTypeDefinition(Identifiers.FolderType)
                 .build();
         this.folder.addComponent(this.itemsObject);
 
@@ -87,6 +106,13 @@ public class CamelNamespace extends ManagedNamespace {
                 Identifiers.Organizes,
                 Identifiers.ObjectsFolder.expanded(),
                 false
+        ));
+
+        itemsObject.addReference(new Reference(
+                nodeId,
+                Identifiers.HasComponent,
+                Identifiers.ObjectNode.expanded(),
+                Reference.Direction.INVERSE
         ));
     }
 
@@ -114,6 +140,7 @@ public class CamelNamespace extends ManagedNamespace {
         synchronized (this) {
             CamelServerItem item = this.itemMap.get(itemId);
             if (item == null) {
+                //todo
                 item = new CamelServerItem(itemId, getNodeContext(), getNamespaceIndex(), this.itemsObject);
                 this.itemMap.put(itemId, item);
             }

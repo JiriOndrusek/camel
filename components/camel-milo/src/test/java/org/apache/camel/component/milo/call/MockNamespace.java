@@ -24,16 +24,18 @@ import java.util.concurrent.CompletableFuture;
 import org.eclipse.milo.opcua.sdk.core.Reference;
 import org.eclipse.milo.opcua.sdk.server.OpcUaServer;
 import org.eclipse.milo.opcua.sdk.server.api.AccessContext;
+import org.eclipse.milo.opcua.sdk.server.api.AddressSpaceFilter;
 import org.eclipse.milo.opcua.sdk.server.api.DataItem;
-import org.eclipse.milo.opcua.sdk.server.api.MethodInvocationHandler;
 import org.eclipse.milo.opcua.sdk.server.api.MonitoredItem;
 import org.eclipse.milo.opcua.sdk.server.api.Namespace;
-import org.eclipse.milo.opcua.sdk.server.api.ServerNodeMap;
+import org.eclipse.milo.opcua.sdk.server.api.NodeManager;
 import org.eclipse.milo.opcua.sdk.server.model.nodes.objects.FolderNode;
+import org.eclipse.milo.opcua.sdk.server.model.nodes.objects.ServerNode;
 import org.eclipse.milo.opcua.sdk.server.nodes.AttributeContext;
-import org.eclipse.milo.opcua.sdk.server.nodes.ServerNode;
 import org.eclipse.milo.opcua.sdk.server.nodes.UaFolderNode;
 import org.eclipse.milo.opcua.sdk.server.nodes.UaMethodNode;
+import org.eclipse.milo.opcua.sdk.server.nodes.UaNode;
+import org.eclipse.milo.opcua.sdk.server.nodes.UaNodeContext;
 import org.eclipse.milo.opcua.sdk.server.util.SubscriptionModel;
 import org.eclipse.milo.opcua.stack.core.Identifiers;
 import org.eclipse.milo.opcua.stack.core.StatusCodes;
@@ -46,6 +48,7 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UShort;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn;
 import org.eclipse.milo.opcua.stack.core.types.structured.ReadValueId;
+import org.eclipse.milo.opcua.stack.core.types.structured.ViewDescription;
 import org.eclipse.milo.opcua.stack.core.types.structured.WriteValue;
 
 import static java.util.stream.Collectors.toList;
@@ -58,13 +61,24 @@ public class MockNamespace implements Namespace {
 
     private final UShort index;
 
-    private final ServerNodeMap nodeMap;
+    private final UaNodeContext nodeContext;
     private final SubscriptionModel subscriptionModel;
 
     public MockNamespace(final UShort index, final OpcUaServer server, List<UaMethodNode> methods) {
         this.index = index;
-        this.nodeMap = server.getNodeMap();
         this.subscriptionModel = new SubscriptionModel(server, this);
+        this.nodeContext = new UaNodeContext() {
+            @Override
+            public OpcUaServer getServer() {
+                return server;
+            }
+
+            @Override
+            public NodeManager<UaNode> getNodeManager() {
+                return getNodeManager();
+            }
+        };
+
 
         registerItems(methods);
     }
@@ -73,12 +87,12 @@ public class MockNamespace implements Namespace {
 
         // create a folder
 
-        final UaFolderNode folder = new UaFolderNode(this.nodeMap, new NodeId(this.index, FOLDER_ID), new QualifiedName(this.index, "FooBarFolder"),
+        final UaFolderNode folder = new UaFolderNode(this.nodeContext, new NodeId(this.index, FOLDER_ID), new QualifiedName(this.index, "FooBarFolder"),
                                                      LocalizedText.english("Foo Bar Folder"));
 
         // add our folder to the objects folder
 
-        this.nodeMap.getNode(Identifiers.ObjectsFolder).ifPresent(node -> {
+        this.nodeContext.getNodeManager().getNode(Identifiers.ObjectsFolder).ifPresent(node -> {
             ((FolderNode)node).addComponent(folder);
         });
 
@@ -95,7 +109,7 @@ public class MockNamespace implements Namespace {
         final List<DataValue> results = new ArrayList<>(readValueIds.size());
 
         for (final ReadValueId id : readValueIds) {
-            final ServerNode node = this.nodeMap.get(id.getNodeId());
+            final UaNode node = this.nodeContext.getNodeManager().get(id.getNodeId());
 
             final DataValue value = node != null ? node.readAttribute(new AttributeContext(context), id.getAttributeId()) : new DataValue(StatusCodes.Bad_NodeIdUnknown);
 
@@ -104,14 +118,15 @@ public class MockNamespace implements Namespace {
 
         // report back with result
 
-        context.complete(results);
+        //todo
+//        context.complete(results);
     }
 
     @Override
     public void write(final WriteContext context, final List<WriteValue> writeValues) {
 
         final List<StatusCode> results = writeValues.stream().map(value -> {
-            if (this.nodeMap.containsKey(value.getNodeId())) {
+            if (this.nodeContext.getNodeManager().containsNode(value.getNodeId())) {
                 return new StatusCode(StatusCodes.Bad_NotWritable);
             } else {
                 return new StatusCode(StatusCodes.Bad_NodeIdUnknown);
@@ -120,29 +135,42 @@ public class MockNamespace implements Namespace {
 
         // report back with result
 
-        context.complete(results);
+        //todo
+//        context.complete(results);
     }
 
     @Override
-    public CompletableFuture<List<Reference>> browse(final AccessContext context, final NodeId nodeId) {
-        final ServerNode node = this.nodeMap.get(nodeId);
-
-        if (node != null) {
-            return CompletableFuture.completedFuture(node.getReferences());
-        } else {
-            final CompletableFuture<List<Reference>> f = new CompletableFuture<>();
-            f.completeExceptionally(new UaException(StatusCodes.Bad_NodeIdUnknown));
-            return f;
-        }
+    public void browse(BrowseContext context, NodeId nodeId) {
+        //todo
+//        final ServerNode node = this.nodeMap.get(nodeId);
+//
+//        if (node != null) {
+//            return CompletableFuture.completedFuture(node.getReferences());
+//        } else {
+//            final CompletableFuture<List<Reference>> f = new CompletableFuture<>();
+//            f.completeExceptionally(new UaException(StatusCodes.Bad_NodeIdUnknown));
+//            return f;
+//        }
     }
 
     @Override
-    public Optional<MethodInvocationHandler> getInvocationHandler(final NodeId methodId) {
-        return Optional.ofNullable(this.nodeMap.get(methodId)).filter(n -> n instanceof UaMethodNode).flatMap(n -> {
-            final UaMethodNode m = (UaMethodNode)n;
-            return m.getInvocationHandler();
-        });
+    public void browse(BrowseContext browseContext, ViewDescription viewDescription, NodeId nodeId) {
+
     }
+
+    @Override
+    public void getReferences(BrowseContext browseContext, ViewDescription viewDescription, NodeId nodeId) {
+
+    }
+
+    // todo
+//    @Override
+//    public Optional<MethodInvocationHandler> getInvocationHandler(final NodeId methodId) {
+//        return Optional.ofNullable(this.nodeMap.get(methodId)).filter(n -> n instanceof UaMethodNode).flatMap(n -> {
+//            final UaMethodNode m = (UaMethodNode)n;
+//            return m.getInvocationHandler();
+//        });
+//    }
 
     @Override
     public void onDataItemsCreated(final List<DataItem> dataItems) {
@@ -172,5 +200,10 @@ public class MockNamespace implements Namespace {
     @Override
     public String getNamespaceUri() {
         return URI;
+    }
+
+    @Override
+    public AddressSpaceFilter getFilter() {
+        return null;
     }
 }
