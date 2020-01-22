@@ -98,7 +98,8 @@ public abstract class AbstractMiloServerTest extends CamelTestSupport {
     protected void configureMiloServer(final MiloServerComponent server) throws Exception {
         server.setBindAddresses("localhost");
         server.setBindPort(this.serverPort);
-        server.setUserAuthenticationCredentials("foo:bar,foo2:bar2");
+//        server.setUserAuthenticationCredentials("foo:bar,foo2:bar2");
+        server.setEnableAnonymousAuthentication(true);
         server.setUsernameSecurityPolicyUri(SecurityPolicy.None);
         server.setSecurityPoliciesById("None");
     }

@@ -129,7 +129,7 @@ public class MiloServerComponent extends DefaultComponent {
                         .setBindAddress(bindAddress)
                         .setHostname(hostname)
                         //todo ??
-                        .setPath("/milo")
+//                        .setPath("/milo")
 //                        .setCertificate(certificate)
                         .addTokenPolicies(tokenPolicies);
 
@@ -262,7 +262,7 @@ public class MiloServerComponent extends DefaultComponent {
         this.namespace.startup();
 
         super.doStart();
-//        this.server.startup();
+        this.server.startup();
     }
 
     /**

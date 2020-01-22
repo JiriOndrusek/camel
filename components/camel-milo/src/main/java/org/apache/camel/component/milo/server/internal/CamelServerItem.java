@@ -79,6 +79,8 @@ public class CamelServerItem {
         this.item.setUserAccessLevel(ubyte(AccessLevel.getMask(AccessLevel.READ_WRITE)));
 
         baseNode.addComponent(this.item);
+        //todo jondruse why is it needed?
+        nodeContext.getNodeManager().addNode(this.item);
     }
 
     public void dispose() {

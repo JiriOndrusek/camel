@@ -83,13 +83,13 @@ public class CamelNamespace extends ManagedNamespace {
 //            );
 ////
 
-        // Define a new ObjectType called "MyObjectType".
-        UaObjectTypeNode objectTypeNode = UaObjectTypeNode.builder(getNodeContext())
-                .setNodeId(newNodeId("ObjectTypes/MyObjectType"))
-                .setBrowseName(newQualifiedName("MyObjectType"))
-                .setDisplayName(LocalizedText.english("MyObjectType"))
-                .setIsAbstract(false)
-                .build();
+//        // Define a new ObjectType called "MyObjectType".
+//        UaObjectTypeNode objectTypeNode = UaObjectTypeNode.builder(getNodeContext())
+//                .setNodeId(newNodeId("ObjectTypes/MyObjectType"))
+//                .setBrowseName(newQualifiedName("MyObjectType"))
+//                .setDisplayName(LocalizedText.english("MyObjectType"))
+//                .setIsAbstract(false)
+//                .build();
 
         this.itemsObject = UaObjectNode.builder(getNodeContext())
                 .setNodeId(nodeId2)
@@ -98,6 +98,10 @@ public class CamelNamespace extends ManagedNamespace {
                 .setTypeDefinition(Identifiers.FolderType)
                 .build();
         this.folder.addComponent(this.itemsObject);
+        this.itemsObject.addComponent(this.folder);
+        //todo jondruse why is it needed?
+        this.getNodeManager().addNode(this.itemsObject);
+
 
         // register reference to structure
 
