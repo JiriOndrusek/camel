@@ -25,10 +25,14 @@ import org.apache.camel.support.DefaultConsumer;
 import org.apache.camel.support.DefaultMessage;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 import org.eclipse.milo.opcua.stack.core.types.builtin.ExpandedNodeId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.util.Objects.requireNonNull;
 
 public class MiloClientConsumer extends DefaultConsumer {
+
+    private static final Logger log = LoggerFactory.getLogger(MiloClientConsumer.class);
 
     private final MiloClientConnection connection;
 

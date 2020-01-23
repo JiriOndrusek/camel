@@ -24,9 +24,13 @@ import com.google.common.collect.Multimap;
 import org.apache.camel.Endpoint;
 import org.apache.camel.spi.annotations.Component;
 import org.apache.camel.support.DefaultComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component("milo-client")
 public class MiloClientComponent extends DefaultComponent {
+
+    private static final Logger log = LoggerFactory.getLogger(MiloClientComponent.class);
 
     private final Map<String, MiloClientConnection> cache = new HashMap<>();
     private final Multimap<String, MiloClientEndpoint> connectionMap = HashMultimap.create();

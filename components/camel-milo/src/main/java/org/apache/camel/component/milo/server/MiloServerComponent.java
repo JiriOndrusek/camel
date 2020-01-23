@@ -39,6 +39,7 @@ import java.util.function.Supplier;
 
 import org.apache.camel.Endpoint;
 import org.apache.camel.component.milo.KeyStoreLoader;
+import org.apache.camel.component.milo.client.MiloClientComponent;
 import org.apache.camel.component.milo.server.internal.CamelNamespace;
 import org.apache.camel.spi.annotations.Component;
 import org.apache.camel.support.DefaultComponent;
@@ -64,6 +65,7 @@ import org.eclipse.milo.opcua.stack.core.types.enumerated.UserTokenType;
 import org.eclipse.milo.opcua.stack.core.types.structured.BuildInfo;
 import org.eclipse.milo.opcua.stack.core.types.structured.UserTokenPolicy;
 import org.eclipse.milo.opcua.stack.server.EndpointConfiguration;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.Collections.singletonList;
@@ -77,6 +79,8 @@ import static org.eclipse.milo.opcua.sdk.server.api.config.OpcUaServerConfig.USE
 @Component("milo-server")
 public class MiloServerComponent extends DefaultComponent {
     public static final String DEFAULT_NAMESPACE_URI = "urn:org:apache:camel";
+
+    private static final Logger log = LoggerFactory.getLogger(MiloServerComponent.class);
 
     private static final String URL_CHARSET = "UTF-8";
 //    private static final OpcUaServerConfig DEFAULT_SERVER_CONFIG;
