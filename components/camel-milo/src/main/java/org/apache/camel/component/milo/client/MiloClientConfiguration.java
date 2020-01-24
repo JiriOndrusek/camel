@@ -18,6 +18,12 @@ package org.apache.camel.component.milo.client;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.security.Key;
+import java.security.KeyPair;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.cert.X509Certificate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -30,6 +36,8 @@ import org.apache.camel.component.milo.KeyStoreLoader.Result;
 import org.apache.camel.spi.UriParam;
 import org.apache.camel.spi.UriParams;
 import org.eclipse.milo.opcua.sdk.client.api.config.OpcUaClientConfigBuilder;
+import org.eclipse.milo.opcua.stack.core.security.CertificateManager;
+import org.eclipse.milo.opcua.stack.core.security.CertificateValidator;
 import org.eclipse.milo.opcua.stack.core.security.SecurityPolicy;
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger;
@@ -439,31 +447,97 @@ public class MiloClientConfiguration implements Cloneable {
         return builder;
     }
 
+//    private static void setKey(final MiloClientConfiguration configuration, final OpcUaClientConfigBuilder builder) {
+//        final KeyStoreLoader loader = new KeyStoreLoader();
+//
+//        final Result result;
+//        try {
+//            // key store properties
+//            loader.setType(configuration.getKeyStoreType());
+//            loader.setUrl(configuration.getKeyStoreUrl());
+//            loader.setKeyStorePassword(configuration.getKeyStorePassword());
+//
+//            // key properties
+//            loader.setKeyAlias(configuration.getKeyAlias());
+//            loader.setKeyPassword(configuration.getKeyPassword());
+//
+//            result = loader.load();
+//        } catch (GeneralSecurityException | IOException e) {
+//            throw new IllegalStateException("Failed to load key", e);
+//        }
+//
+//        if (result == null) {
+//            throw new IllegalStateException("Key not found in keystore");
+//        }
+//
+////        builder.setCertificate(result.getCertificate());
+////        builder.setKeyPair(result.getKeyPair());
+//    }
+
+    private static final String CLIENT_ALIAS = "client-test-certificate";
+    private static final String SERVER_ALIAS = "server-test-certificate";
+    private static final char[] PASSWORD = "test".toCharArray();
+
+    private static X509Certificate clientCertificate = null;
+    private static byte[] clientCertificateBytes;
+    private static KeyPair clientKeyPair = null;
+
+    private static X509Certificate serverCertificate = null;
+    private static byte[] serverCertificateBytes;
+    private static KeyPair serverKeyPair = null;
+
+    CertificateManager serverCertificateManager;
+    CertificateValidator serverCertificateValidator;
+
+    /**
+     * Create a default key store for testing
+     *
+     * @return always returns a key store
+     */
     private static void setKey(final MiloClientConfiguration configuration, final OpcUaClientConfigBuilder builder) {
-        final KeyStoreLoader loader = new KeyStoreLoader();
 
-        final Result result;
         try {
-            // key store properties
-            loader.setType(configuration.getKeyStoreType());
-            loader.setUrl(configuration.getKeyStoreUrl());
-            loader.setKeyStorePassword(configuration.getKeyStorePassword());
+            KeyStore keyStore = KeyStore.getInstance("PKCS12");
 
-            // key properties
-            loader.setKeyAlias(configuration.getKeyAlias());
-            loader.setKeyPassword(configuration.getKeyPassword());
+            keyStore.load(MiloClientConfiguration.class.getClassLoader().getResourceAsStream("test-keystore.pfx"), PASSWORD);
 
-            result = loader.load();
-        } catch (GeneralSecurityException | IOException e) {
-            throw new IllegalStateException("Failed to load key", e);
+            Key clientPrivateKey = keyStore.getKey("client-test-certificate", "test".toCharArray());
+            int i = keyStore.size();
+
+            if (clientPrivateKey instanceof PrivateKey) {
+                clientCertificate = (X509Certificate) keyStore.getCertificate("client-test-certificate");
+                clientCertificateBytes = clientCertificate.getEncoded();
+
+                PublicKey clientPublicKey = clientCertificate.getPublicKey();
+                clientKeyPair = new KeyPair(clientPublicKey, (PrivateKey) clientPrivateKey);
+            }
+
+            Key serverPrivateKey = keyStore.getKey(SERVER_ALIAS, PASSWORD);
+            if (serverPrivateKey instanceof PrivateKey) {
+                serverCertificate = (X509Certificate) keyStore.getCertificate(SERVER_ALIAS);
+                serverCertificateBytes = serverCertificate.getEncoded();
+
+                PublicKey serverPublicKey = serverCertificate.getPublicKey();
+                serverKeyPair = new KeyPair(serverPublicKey, (PrivateKey) serverPrivateKey);
+            }
+
+            builder.setCertificate(clientCertificate);
+            builder.setKeyPair(clientKeyPair);
+//
+//            final KeyStoreLoader loader = new KeyStoreLoader();
+//            loader.setUrl("file:src/test/resources/cert/test.keystore");
+//            loader.setType("JKS");
+////            loader.setUrl("file:src/test/resources/cert/validation-certs.pfx");
+////            loader.setKeyStorePassword("pwd1");
+//           loader.setKeyStorePassword("password");
+////            loader.setKeyPassword("pwd1");
+//            loader.setKeyPassword("password");
+//            loader.setKeyAlias("test");
+//            return loader.load();
+        } catch (final GeneralSecurityException | IOException e) {
+            throw new RuntimeException(e);
         }
 
-        if (result == null) {
-            throw new IllegalStateException("Key not found in keystore");
-        }
-
-        builder.setCertificate(result.getCertificate());
-        builder.setKeyPair(result.getKeyPair());
     }
 
     private static void whenHasText(final Supplier<String> valueSupplier, final Consumer<String> valueConsumer) {

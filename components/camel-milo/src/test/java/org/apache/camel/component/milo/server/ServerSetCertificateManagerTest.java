@@ -40,7 +40,7 @@ public class ServerSetCertificateManagerTest extends AbstractMiloServerTest {
         Files.createDirectories(trusted);
         Files.copy(Paths.get("src/test/resources/cert/certificate.der"), trusted.resolve("certificate.der"), REPLACE_EXISTING);
 
-        server.setServerCertificate(loadDefaultTestKey());
+//        server.setServerCertificate(loadDefaultTestKey());
         server.setDefaultCertificateValidator(baseDir.toFile());
     }
 

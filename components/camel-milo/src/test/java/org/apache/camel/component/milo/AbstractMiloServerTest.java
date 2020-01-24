@@ -18,6 +18,12 @@ package org.apache.camel.component.milo;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.security.Key;
+import java.security.KeyPair;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.cert.X509Certificate;
 import java.util.function.Consumer;
 
 import org.apache.camel.CamelContext;
@@ -25,6 +31,8 @@ import org.apache.camel.component.milo.server.MiloServerComponent;
 import org.apache.camel.component.mock.AssertionClause;
 import org.apache.camel.test.AvailablePortFinder;
 import org.apache.camel.test.junit4.CamelTestSupport;
+import org.eclipse.milo.opcua.stack.core.security.CertificateManager;
+import org.eclipse.milo.opcua.stack.core.security.CertificateValidator;
 import org.eclipse.milo.opcua.stack.core.security.SecurityPolicy;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 
@@ -99,28 +107,98 @@ public abstract class AbstractMiloServerTest extends CamelTestSupport {
         server.setBindAddresses("localhost");
         server.setBindPort(this.serverPort);
         server.setUserAuthenticationCredentials("foo:bar,foo2:bar2");
-        server.setEnableAnonymousAuthentication(true);
+//        server.setEnableAnonymousAuthentication(true);
         server.setUsernameSecurityPolicyUri(SecurityPolicy.None);
         server.setSecurityPoliciesById("None");
     }
+    private static final String CLIENT_ALIAS = "client-test-certificate";
+    private static final String SERVER_ALIAS = "server-test-certificate";
+    private static final char[] PASSWORD = "test".toCharArray();
+
+    X509Certificate clientCertificate = null;
+    byte[] clientCertificateBytes;
+    KeyPair clientKeyPair = null;
+
+    X509Certificate serverCertificate = null;
+    byte[] serverCertificateBytes;
+    KeyPair serverKeyPair = null;
+
+    CertificateManager serverCertificateManager;
+    CertificateValidator serverCertificateValidator;
 
     /**
      * Create a default key store for testing
      *
      * @return always returns a key store
      */
-    protected KeyStoreLoader.Result loadDefaultTestKey() {
-        try {
+    protected void loadKeys() {
 
-            final KeyStoreLoader loader = new KeyStoreLoader();
-            loader.setUrl("file:src/test/resources/cert/cert.p12");
-            loader.setKeyStorePassword("pwd1");
-            loader.setKeyPassword("pwd1");
-            return loader.load();
+        try {
+            KeyStore keyStore = KeyStore.getInstance("PKCS12");
+
+            keyStore.load(getClass().getClassLoader().getResourceAsStream("test-keystore.pfx"), PASSWORD);
+
+            Key clientPrivateKey = keyStore.getKey("client-test-certificate", "test".toCharArray());
+            int i = keyStore.size();
+
+            if (clientPrivateKey instanceof PrivateKey) {
+                clientCertificate = (X509Certificate) keyStore.getCertificate("client-test-certificate");
+                clientCertificateBytes = clientCertificate.getEncoded();
+
+                PublicKey clientPublicKey = clientCertificate.getPublicKey();
+                clientKeyPair = new KeyPair(clientPublicKey, (PrivateKey) clientPrivateKey);
+            }
+
+            Key serverPrivateKey = keyStore.getKey(SERVER_ALIAS, PASSWORD);
+            if (serverPrivateKey instanceof PrivateKey) {
+                serverCertificate = (X509Certificate) keyStore.getCertificate(SERVER_ALIAS);
+                serverCertificateBytes = serverCertificate.getEncoded();
+
+                PublicKey serverPublicKey = serverCertificate.getPublicKey();
+                serverKeyPair = new KeyPair(serverPublicKey, (PrivateKey) serverPrivateKey);
+            }
+            serverCertificateManager = new TestCertificateManager(
+                    serverKeyPair,
+                    serverCertificate
+            );
+
+            serverCertificateValidator = new TestCertificateValidator(clientCertificate);
+
+//
+//            final KeyStoreLoader loader = new KeyStoreLoader();
+//            loader.setUrl("file:src/test/resources/cert/test.keystore");
+//            loader.setType("JKS");
+////            loader.setUrl("file:src/test/resources/cert/validation-certs.pfx");
+////            loader.setKeyStorePassword("pwd1");
+//           loader.setKeyStorePassword("password");
+////            loader.setKeyPassword("pwd1");
+//            loader.setKeyPassword("password");
+//            loader.setKeyAlias("test");
+//            return loader.load();
         } catch (final GeneralSecurityException | IOException e) {
             throw new RuntimeException(e);
         }
 
     }
 
+    public CertificateManager getServerCertificateManager() {
+        if(serverCertificateManager == null) {
+            loadKeys();
+        }
+        return serverCertificateManager;
+    }
+
+    public CertificateValidator getServerCertificateValidator() {
+        if (serverCertificateValidator == null) {
+            loadKeys();
+        }
+        return serverCertificateValidator;
+    }
+
+    public X509Certificate getServerCertificate() {
+        if (serverCertificate == null) {
+            loadKeys();
+        }
+        return serverCertificate;
+    }
 }

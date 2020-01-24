@@ -96,6 +96,7 @@ public class MiloServerComponent extends DefaultComponent {
         cfg.setApplicationName(LocalizedText.english("Apache Camel Milo Server"));
         cfg.setApplicationUri("urn:org:apache:camel:milo:server");
         cfg.setProductUri("urn:org:apache:camel:milo");
+        cfg.setCertificateManager(certificateManager);
 
         if ((enableAnonymousAuthentication != null && this.enableAnonymousAuthentication) || Boolean.getBoolean("org.apache.camel.milo.server.default.enableAnonymous")) {
             cfg.setIdentityValidator(AnonymousIdentityValidator.INSTANCE);
@@ -105,7 +106,7 @@ public class MiloServerComponent extends DefaultComponent {
     }
 
     private Set<EndpointConfiguration> createEndpointConfigurations(List<UserTokenPolicy> userTokenPolicies) {
-        return createEndpointConfigurations(userTokenPolicies, null);
+        return createEndpointConfigurations(userTokenPolicies, this.securityPolicies);
     }
 
     private Set<EndpointConfiguration> createEndpointConfigurations(List<UserTokenPolicy> userTokenPolicies, Set<SecurityPolicy> securityPolicies) {
@@ -134,7 +135,7 @@ public class MiloServerComponent extends DefaultComponent {
                         .setHostname(hostname)
                         //todo ??
 //                        .setPath("/milo")
-//                        .setCertificate(certificate)
+                        .setCertificate(certificate)
                         .addTokenPolicies(tokenPolicies);
 
 
@@ -147,25 +148,24 @@ public class MiloServerComponent extends DefaultComponent {
                     endpointConfigurations.add(buildHttpsEndpoint(noSecurityBuilder));
                 }
 
-                //todo
-//                if(securityPolicies == null || securityPolicies.contains(SecurityPolicy.Basic256Sha256)) {
-//
-//                    // TCP Basic256Sha256 / SignAndEncrypt
-//                    endpointConfigurations.add(buildTcpEndpoint(
-//                            builder.copy()
-//                                    .setSecurityPolicy(SecurityPolicy.Basic256Sha256)
-//                                    .setSecurityMode(MessageSecurityMode.SignAndEncrypt))
-//                    );
-//                }
-//
-//                if(securityPolicies == null || securityPolicies.contains(SecurityPolicy.Basic256Sha256)) {
-//                    // HTTPS Basic256Sha256 / Sign (SignAndEncrypt not allowed for HTTPS)
-//                    endpointConfigurations.add(buildHttpsEndpoint(
-//                            builder.copy()
-//                                    .setSecurityPolicy(SecurityPolicy.Basic256Sha256)
-//                                    .setSecurityMode(MessageSecurityMode.Sign))
-//                    );
-//                }
+                if(securityPolicies == null || securityPolicies.contains(SecurityPolicy.Basic256Sha256)) {
+
+                    // TCP Basic256Sha256 / SignAndEncrypt
+                    endpointConfigurations.add(buildTcpEndpoint(
+                            builder.copy()
+                                    .setSecurityPolicy(SecurityPolicy.Basic256Sha256)
+                                    .setSecurityMode(MessageSecurityMode.SignAndEncrypt))
+                    );
+                }
+
+                if(securityPolicies == null || securityPolicies.contains(SecurityPolicy.Basic256Sha256)) {
+                    // HTTPS Basic256Sha256 / Sign (SignAndEncrypt not allowed for HTTPS)
+                    endpointConfigurations.add(buildHttpsEndpoint(
+                            builder.copy()
+                                    .setSecurityPolicy(SecurityPolicy.Basic256Sha256)
+                                    .setSecurityMode(MessageSecurityMode.Sign))
+                    );
+                }
 
                 /*
                  * It's good practice to provide a discovery-specific endpoint with no security.
@@ -236,6 +236,8 @@ public class MiloServerComponent extends DefaultComponent {
     private String serverName;
 
     private String hostName;
+
+    private CertificateManager certificateManager;
 
     private Set<SecurityPolicy> securityPolicies = null;
 
@@ -564,24 +566,24 @@ public class MiloServerComponent extends DefaultComponent {
          */
         Objects.requireNonNull(result, "Setting a null is not supported. call setCertificateManager(null) instead.)");
         setServerCertificate(result.getKeyPair(), result.getCertificate());
-    }
 
+    }
+private X509Certificate certificate;
     /**
      * Server certificate
      */
     public void setServerCertificate(final KeyPair keyPair, final X509Certificate certificate) {
-        setCertificateManager(new DefaultCertificateManager(keyPair, certificate));
+        this.certificate = certificate;
+        if(keyPair != null) {
+            setCertificateManager(new DefaultCertificateManager(keyPair, certificate));
+        }
     }
 
     /**
      * Server certificate manager
      */
     public void setCertificateManager(final CertificateManager certificateManager) {
-        if (certificateManager != null) {
-            this.serverConfig.setCertificateManager(certificateManager);
-        } else {
-            this.serverConfig.setCertificateManager(new DefaultCertificateManager());
-        }
+        this.certificateManager = certificateManager != null ? certificateManager: new DefaultCertificateManager();
     }
 
     /**
@@ -596,13 +598,13 @@ public class MiloServerComponent extends DefaultComponent {
      */
     public void setDefaultCertificateValidator(final File certificatesBaseDir) {
 //todo solve exception correctly
-        DefaultTrustListManager trustListManager = null;
         try {
-            trustListManager = new DefaultTrustListManager(certificatesBaseDir);
+            DefaultTrustListManager trustListManager = new DefaultTrustListManager(certificatesBaseDir);
+            this.certificateValidator = () -> new DefaultCertificateValidator(trustListManager);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        DefaultCertificateValidator certificateValidator = new DefaultCertificateValidator(trustListManager);
+
     }
 }
