@@ -53,7 +53,7 @@ public class MonitorItemMultiConnectionsCertTest extends AbstractMiloServerTest 
 //                                                        + "&keyStoreUrl=file:src/test/resources/cert/firefly.keystore&keyStorePassword=Elytron&keyPassword=Elytron&keyAlias=firefly&keyStoreType=JKS"
                                                         + "&keyStoreUrl=file:src/test/resources/cert/test-keystore.pfx&keyStorePassword=test&keyPassword=test&keyAlias=client-test-certificate"
 //                                                        + "&keyStoreUrl=file:src/test/resources/cert/validation-certs.pfx&keyStorePassword=password&keyPassword=passord&keyAlias=leaf-intermediate-signed"
-                                                        + "&discoveryEndpointSuffix=/discovery&overrideHost=true";
+                                                        + "&discoveryEndpointSuffix=/milo/discovery&overrideHost=true";
 
     // with wrong password
     private static final String MILO_CLIENT_ITEM_C2_1 = "milo-client:opc.tcp://foo:bar2@localhost:@@port@@?node="

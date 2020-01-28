@@ -427,8 +427,17 @@ public class SubscriptionManager {
 
         // eval enpoint
 
-        final String discoveryUri = getEndpointDiscoveryUri();
+        String discoveryUri = getEndpointDiscoveryUri();
         LOG.debug("Discovering endpoints from: {}", discoveryUri);
+
+        final URI uri = URI.create(getEndpointDiscoveryUri());
+
+        //milo library doesn't allow user info as a part of uri, it has to be removed
+        final String user = uri.getUserInfo();
+        if (user != null && !user.isEmpty()) {
+            discoveryUri = discoveryUri.replaceFirst(user + "@", "");
+        }
+
 
         final EndpointDescription endpoint = DiscoveryClient.getEndpoints(discoveryUri).thenApply(endpoints -> {
             if (LOG.isDebugEnabled()) {
@@ -447,13 +456,9 @@ public class SubscriptionManager {
 
         LOG.debug("Selected endpoint: {}", endpoint);
 
-        final URI uri = URI.create(getEndpointDiscoveryUri());
-
         // set identity providers
-
         final List<IdentityProvider> providers = new LinkedList<>();
 
-        final String user = uri.getUserInfo();
         if (user != null && !user.isEmpty()) {
             final String[] creds = user.split(":", 2);
             if (creds != null && creds.length == 2) {
