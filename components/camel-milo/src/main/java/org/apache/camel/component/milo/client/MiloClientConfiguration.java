@@ -489,55 +489,31 @@ public class MiloClientConfiguration implements Cloneable {
     CertificateManager serverCertificateManager;
     CertificateValidator serverCertificateValidator;
 
-    /**
-     * Create a default key store for testing
-     *
-     * @return always returns a key store
-     */
     private static void setKey(final MiloClientConfiguration configuration, final OpcUaClientConfigBuilder builder) {
+        final KeyStoreLoader loader = new KeyStoreLoader();
 
+        final Result result;
         try {
-            KeyStore keyStore = KeyStore.getInstance("PKCS12");
+            // key store properties
+            loader.setType(configuration.getKeyStoreType());
+            loader.setUrl(configuration.getKeyStoreUrl());
+            loader.setKeyStorePassword(configuration.getKeyStorePassword());
 
-            keyStore.load(MiloClientConfiguration.class.getClassLoader().getResourceAsStream("test-keystore.pfx"), PASSWORD);
+            // key properties
+            loader.setKeyAlias(configuration.getKeyAlias());
+            loader.setKeyPassword(configuration.getKeyPassword());
 
-            Key clientPrivateKey = keyStore.getKey("client-test-certificate", "test".toCharArray());
-            int i = keyStore.size();
-
-            if (clientPrivateKey instanceof PrivateKey) {
-                clientCertificate = (X509Certificate) keyStore.getCertificate("client-test-certificate");
-                clientCertificateBytes = clientCertificate.getEncoded();
-
-                PublicKey clientPublicKey = clientCertificate.getPublicKey();
-                clientKeyPair = new KeyPair(clientPublicKey, (PrivateKey) clientPrivateKey);
-            }
-
-            Key serverPrivateKey = keyStore.getKey(SERVER_ALIAS, PASSWORD);
-            if (serverPrivateKey instanceof PrivateKey) {
-                serverCertificate = (X509Certificate) keyStore.getCertificate(SERVER_ALIAS);
-                serverCertificateBytes = serverCertificate.getEncoded();
-
-                PublicKey serverPublicKey = serverCertificate.getPublicKey();
-                serverKeyPair = new KeyPair(serverPublicKey, (PrivateKey) serverPrivateKey);
-            }
-
-            builder.setCertificate(clientCertificate);
-            builder.setKeyPair(clientKeyPair);
-//
-//            final KeyStoreLoader loader = new KeyStoreLoader();
-//            loader.setUrl("file:src/test/resources/cert/test.keystore");
-//            loader.setType("JKS");
-////            loader.setUrl("file:src/test/resources/cert/validation-certs.pfx");
-////            loader.setKeyStorePassword("pwd1");
-//           loader.setKeyStorePassword("password");
-////            loader.setKeyPassword("pwd1");
-//            loader.setKeyPassword("password");
-//            loader.setKeyAlias("test");
-//            return loader.load();
-        } catch (final GeneralSecurityException | IOException e) {
-            throw new RuntimeException(e);
+            result = loader.load();
+        } catch (GeneralSecurityException | IOException e) {
+            throw new IllegalStateException("Failed to load key", e);
         }
 
+        if (result == null) {
+            throw new IllegalStateException("Key not found in keystore");
+        }
+
+        builder.setCertificate(result.getCertificate());
+        builder.setKeyPair(result.getKeyPair());
     }
 
     private static void whenHasText(final Supplier<String> valueSupplier, final Consumer<String> valueConsumer) {

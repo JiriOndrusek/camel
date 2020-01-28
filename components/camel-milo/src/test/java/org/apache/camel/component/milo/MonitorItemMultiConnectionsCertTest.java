@@ -49,21 +49,18 @@ public class MonitorItemMultiConnectionsCertTest extends AbstractMiloServerTest 
     // with key
     private static final String MILO_CLIENT_ITEM_C1_1 = "milo-client:opc.tcp://foo:bar@localhost:@@port@@?node="
                                                         + NodeIds.nodeValue(MiloServerComponent.DEFAULT_NAMESPACE_URI, "items-myitem1")
-//                                                        + "&keyStoreUrl=file:src/test/resources/cert/cert.p12&keyStorePassword=pwd1&keyPassword=pwd1"
-//                                                        + "&keyStoreUrl=file:src/test/resources/cert/firefly.keystore&keyStorePassword=Elytron&keyPassword=Elytron&keyAlias=firefly&keyStoreType=JKS"
-                                                        + "&keyStoreUrl=file:src/test/resources/cert/test-keystore.pfx&keyStorePassword=test&keyPassword=test&keyAlias=client-test-certificate"
-//                                                        + "&keyStoreUrl=file:src/test/resources/cert/validation-certs.pfx&keyStorePassword=password&keyPassword=passord&keyAlias=leaf-intermediate-signed"
+                                                        + "&keyStoreUrl=file:src/test/resources/keystore&keyStorePassword=testtest&keyPassword=test&keyAlias=test"
                                                         + "&discoveryEndpointSuffix=/milo/discovery&overrideHost=true";
 
     // with wrong password
     private static final String MILO_CLIENT_ITEM_C2_1 = "milo-client:opc.tcp://foo:bar2@localhost:@@port@@?node="
                                                         + NodeIds.nodeValue(MiloServerComponent.DEFAULT_NAMESPACE_URI, "items-myitem1")
-                                                        + "&discoveryEndpointSuffix=/discovery&overrideHost=true";
+                                                        + "&discoveryEndpointSuffix=/milo/discovery&overrideHost=true";
 
     // without key, clientId=1
     private static final String MILO_CLIENT_ITEM_C3_1 = "milo-client:opc.tcp://foo:bar@localhost:@@port@@?clientId=1&node="
                                                         + NodeIds.nodeValue(MiloServerComponent.DEFAULT_NAMESPACE_URI, "items-myitem1")
-                                                        + "&discoveryEndpointSuffix=/discovery&overrideHost=true";
+                                                        + "&discoveryEndpointSuffix=/milo/discovery&overrideHost=true";
 
     private static final String MOCK_TEST_1 = "mock:test1";
     private static final String MOCK_TEST_2 = "mock:test2";
@@ -89,23 +86,10 @@ public class MonitorItemMultiConnectionsCertTest extends AbstractMiloServerTest 
         final Path trusted = baseDir.resolve("trusted/certs");
 
         Files.createDirectories(trusted);
-//        Files.copy(Paths.get("src/test/resources/cert/milo/ca.der"), trusted.resolve("ca.der"), REPLACE_EXISTING);
-//        Files.copy(Paths.get("src/test/resources/cert/milo/int.der"), trusted.resolve("in.der"), REPLACE_EXISTING);
-//        Files.copy(Paths.get("src/test/resources/cert/ca.der"), trusted.resolve("ca.der"), REPLACE_EXISTING);
+        Files.copy(Paths.get("src/test/resources/cert/ca/cacert.pem"), trusted.resolve("cacert.pem"), REPLACE_EXISTING);
 
-        KeyPair httpsKeyPair = SelfSignedCertificateGenerator.generateRsaKeyPair(2048);
-
-        X509Certificate httpsCertificate = new SelfSignedHttpsCertificateBuilder(httpsKeyPair)
-                .setCommonName("localhost")
-                .build();
-
-
-
-
-
-        server.setCertificateManager(getServerCertificateManager());
-        server.setCertificateValidator(() -> getServerCertificateValidator());
-        server.setServerCertificate(null, getServerCertificate());
+        server.setServerCertificate(loadDefaultTestKey());
+        server.setDefaultCertificateValidator(baseDir.toFile());
 
         server.setSecurityPolicies(EnumSet.of(SecurityPolicy.Basic256Sha256));
         server.setUsernameSecurityPolicyUri(SecurityPolicy.Basic256Sha256);
@@ -135,13 +119,13 @@ public class MonitorItemMultiConnectionsCertTest extends AbstractMiloServerTest 
         this.test1Endpoint.setExpectedCount(1);
         this.test1Endpoint.setSleepForEmptyTest(5_000);
 
-//        // item 2
-//        this.test2Endpoint.setExpectedCount(0);
-//        this.test2Endpoint.setSleepForEmptyTest(5_000);
-//
-//        // item 3
-//        this.test3Endpoint.setExpectedCount(0);
-//        this.test3Endpoint.setSleepForEmptyTest(5_000);
+        // item 2
+        this.test2Endpoint.setExpectedCount(0);
+        this.test2Endpoint.setSleepForEmptyTest(5_000);
+
+        // item 3
+        this.test3Endpoint.setExpectedCount(0);
+        this.test3Endpoint.setSleepForEmptyTest(5_000);
 
         // set server value
         this.producer1.sendBody("Foo");
