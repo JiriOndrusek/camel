@@ -56,8 +56,8 @@ public class CallClientTest extends AbstractMiloServerTest {
 
     private static final String MILO_CLIENT_BASE_C1 = "milo-client:opc.tcp://localhost:@@port@@";
 
-    private static final String MILO_CLIENT_ITEM_C1_1 = MILO_CLIENT_BASE_C1 + "?node=" + NodeIds.nodeValue(MockCamelNamespace.URI, MockCamelNamespace.FOLDER_ID) + "&method="
-                                                        + nodeValue(MockCamelNamespace.URI, MockCamelNamespace.CALL_ID) + "&overrideHost=true";
+    private static final String MILO_CLIENT_ITEM_C1_1 = MILO_CLIENT_BASE_C1 + "?node=" + NodeIds.nodeValue(MockCamelNamespace.URI, MockCamelNamespace.FOLDER_ID)
+                                                        + "&method=" + nodeValue(MockCamelNamespace.URI, MockCamelNamespace.CALL_ID) + "&overrideHost=true";
 
     private OpcUaServer server;
     private MockCamelNamespace namespace;

@@ -20,31 +20,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.camel.component.milo.client.MiloClientConsumer;
 import org.eclipse.milo.opcua.sdk.core.Reference;
 import org.eclipse.milo.opcua.sdk.server.OpcUaServer;
 import org.eclipse.milo.opcua.sdk.server.api.DataItem;
 import org.eclipse.milo.opcua.sdk.server.api.ManagedNamespace;
 import org.eclipse.milo.opcua.sdk.server.api.MonitoredItem;
 import org.eclipse.milo.opcua.sdk.server.nodes.UaFolderNode;
-import org.eclipse.milo.opcua.sdk.server.nodes.UaMethodNode;
 import org.eclipse.milo.opcua.sdk.server.nodes.UaObjectNode;
-import org.eclipse.milo.opcua.sdk.server.nodes.UaObjectTypeNode;
 import org.eclipse.milo.opcua.sdk.server.util.SubscriptionModel;
 import org.eclipse.milo.opcua.stack.core.Identifiers;
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText;
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
 import org.eclipse.milo.opcua.stack.core.types.builtin.QualifiedName;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CamelNamespace extends ManagedNamespace {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MiloClientConsumer.class);
-
-    public static final int CALL_ID = 2;
-
-//    private final ServerNodeMap nodeManager;
     private final SubscriptionModel subscriptionModel;
 
     protected UaFolderNode folder;
@@ -64,35 +54,15 @@ public class CamelNamespace extends ManagedNamespace {
         // create structure
 
         final NodeId nodeId = newNodeId("camel");
-//            final NodeId nodeId = new NodeId(namespaceIndex, "camel");
         final QualifiedName name = newQualifiedName("camel");
-//            final QualifiedName name = new QualifiedName(namespaceIndex, "camel");
         final LocalizedText displayName = LocalizedText.english("Camel");
 
         this.folder = new UaFolderNode(getNodeContext(), nodeId, name, displayName);
         getNodeManager().addNode(this.folder);
 
         final NodeId nodeId2 = newNodeId("items");
-//            final NodeId nodeId = new NodeId(namespaceIndex, "items");
         final QualifiedName name2 = newQualifiedName("items");
-//            final QualifiedName name = new QualifiedName(namespaceIndex, "items");
         final LocalizedText displayName2 = LocalizedText.english("Items");
-
-
-//            getServer().getObjectTypeManager().registerObjectType(
-//                    objectTypeNode.getNodeId(),
-//                    UaObjectNode.class,
-//                    UaObjectNode::new
-//            );
-////
-
-//        // Define a new ObjectType called "MyObjectType".
-//        UaObjectTypeNode objectTypeNode = UaObjectTypeNode.builder(getNodeContext())
-//                .setNodeId(newNodeId("ObjectTypes/MyObjectType"))
-//                .setBrowseName(newQualifiedName("MyObjectType"))
-//                .setDisplayName(LocalizedText.english("MyObjectType"))
-//                .setIsAbstract(false)
-//                .build();
 
         this.itemsObject = UaObjectNode.builder(getNodeContext())
                 .setNodeId(nodeId2)

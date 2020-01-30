@@ -23,7 +23,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -39,7 +38,6 @@ import java.util.function.Supplier;
 
 import org.apache.camel.Endpoint;
 import org.apache.camel.component.milo.KeyStoreLoader;
-import org.apache.camel.component.milo.client.MiloClientComponent;
 import org.apache.camel.component.milo.server.internal.CamelNamespace;
 import org.apache.camel.spi.annotations.Component;
 import org.apache.camel.support.DefaultComponent;
@@ -68,7 +66,6 @@ import org.eclipse.milo.opcua.stack.server.EndpointConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static java.util.Collections.singletonList;
 import static org.eclipse.milo.opcua.sdk.server.api.config.OpcUaServerConfig.USER_TOKEN_POLICY_ANONYMOUS;
 import static org.eclipse.milo.opcua.sdk.server.api.config.OpcUaServerConfig.USER_TOKEN_POLICY_USERNAME;
 import static org.eclipse.milo.opcua.sdk.server.api.config.OpcUaServerConfig.USER_TOKEN_POLICY_X509;
@@ -86,18 +83,139 @@ public class MiloServerComponent extends DefaultComponent {
 
     private int port;
 
+    private String namespaceUri = DEFAULT_NAMESPACE_URI;
+
+    private OpcUaServerConfigBuilder opcServerConfig = null;
+
+    private OpcUaServer server;
+
+    private CamelNamespace namespace;
+
+    private final Map<String, MiloServerEndpoint> endpoints = new HashMap<>();
+
+    private Boolean enableAnonymousAuthentication;
+
+    private CertificateManager certificateManager;
+
+    private Set<SecurityPolicy> securityPolicies = null;
+
+    private Map<String, String> userMap;
+
+    private String usernameSecurityPolicyUri = OpcUaServerConfig.USER_TOKEN_POLICY_USERNAME.getSecurityPolicyUri();
+
+    private List<String> bindAddresses;
+
+    private Supplier<CertificateValidator> certificateValidator;
+
+    private final List<Runnable> runOnStop = new LinkedList<>();
+
+    private X509Certificate certificate;
+
+    private String productUri;
+
+    private String applicationUri;
+
+    private String applicationName;
+
+    private BuildInfo buildInfo;
+
+    public MiloServerComponent() {
+        this.opcServerConfig = null;
+    }
+
+    public MiloServerComponent(final OpcUaServerConfig serverConfig) {
+        this.opcServerConfig = OpcUaServerConfig.copy(serverConfig);
+
+    }
+
+    @Override
+    protected void doStart() throws Exception {
+        this.server = new OpcUaServer(buildServerConfig());
+
+        this.namespace = new CamelNamespace(this.namespaceUri, this.server);
+        this.namespace.startup();
+
+        super.doStart();
+        this.server.startup();
+    }
+
+    /**
+     * Build the final server configuration, apply all complex configuration
+     *
+     * @return the new server configuration, never returns {@code null}
+     */
+    private OpcUaServerConfig buildServerConfig() {
+        OpcUaServerConfigBuilder serverConfig = this.opcServerConfig  != null ? this.opcServerConfig : createDefaultConfiguration();
+
+        if (this.userMap != null || this.enableAnonymousAuthentication != null) {
+            // set identity validator
+
+            final Map<String, String> userMap = this.userMap != null ? new HashMap<>(this.userMap) : Collections.emptyMap();
+            final boolean allowAnonymous = Boolean.TRUE.equals(this.enableAnonymousAuthentication);
+            final IdentityValidator identityValidator = new UsernameIdentityValidator(allowAnonymous, challenge -> {
+                final String pwd = userMap.get(challenge.getUsername());
+                if (pwd == null) {
+                    return false;
+                }
+                return pwd.equals(challenge.getPassword());
+            });
+            serverConfig.setIdentityValidator(identityValidator);
+
+            // add token policies
+
+            final List<UserTokenPolicy> tokenPolicies = new LinkedList<>();
+            if (allowAnonymous) {
+                tokenPolicies.add(OpcUaServerConfig.USER_TOKEN_POLICY_ANONYMOUS);
+            }
+            if (userMap != null) {
+                tokenPolicies.add(getUsernamePolicy());
+            }
+            serverConfig.setEndpoints(createEndpointConfigurations(tokenPolicies));
+        } else {
+            serverConfig.setEndpoints(createEndpointConfigurations(null, securityPolicies));
+        }
+
+        if (this.certificateValidator != null) {
+            final CertificateValidator validator = this.certificateValidator.get();
+            LOG.debug("Using validator: {}", validator);
+            if (validator instanceof Closeable) {
+                runOnStop(() -> {
+                    try {
+                        LOG.debug("Closing: {}", validator);
+                        ((Closeable)validator).close();
+                    } catch (final IOException e) {
+                        LOG.warn("Failed to close", e);
+                    }
+                });
+            }
+            serverConfig.setCertificateValidator(validator);
+        }
+
+        // build final configuration
+        return serverConfig.build();
+    }
+
     private OpcUaServerConfigBuilder createDefaultConfiguration() {
         final OpcUaServerConfigBuilder cfg = OpcUaServerConfig.builder();
 
         cfg.setCertificateManager(new DefaultCertificateManager());
         cfg.setCertificateValidator(DenyAllCertificateValidator.INSTANCE);
         cfg.setEndpoints(createEndpointConfigurations(null));
-        cfg.setApplicationName(LocalizedText.english("Apache Camel Milo Server"));
+        cfg.setApplicationName(LocalizedText.english(applicationName == null ? "Apache Camel Milo Server" : applicationName));
         cfg.setApplicationUri("urn:org:apache:camel:milo:server");
         cfg.setProductUri("urn:org:apache:camel:milo");
         cfg.setCertificateManager(certificateManager);
+        if(productUri != null) {
+            cfg.setProductUri(productUri);
+        }
+        if(applicationUri != null) {
+            cfg.setApplicationUri(applicationUri);
+        }
+        if(buildInfo != null) {
+            cfg.setBuildInfo(buildInfo);
+        }
 
-        if ((enableAnonymousAuthentication != null && this.enableAnonymousAuthentication) || Boolean.getBoolean("org.apache.camel.milo.server.default.enableAnonymous")) {
+        if (Boolean.getBoolean("org.apache.camel.milo.server.default.enableAnonymous")) {
             cfg.setIdentityValidator(AnonymousIdentityValidator.INSTANCE);
         }
 
@@ -111,8 +229,10 @@ public class MiloServerComponent extends DefaultComponent {
     private Set<EndpointConfiguration> createEndpointConfigurations(List<UserTokenPolicy> userTokenPolicies, Set<SecurityPolicy> securityPolicies) {
         Set<EndpointConfiguration> endpointConfigurations = new LinkedHashSet<>();
 
-       //if address is not defined, it is general one
-        if(bindAddresses == null) bindAddresses = Collections.singletonList("0.0.0.0");
+        //if address is not defined, return empty set
+        if(bindAddresses == null) {
+            return Collections.emptySet();
+        }
 
         for (String bindAddress : bindAddresses) {
             Set<String> hostnames = new LinkedHashSet<>();
@@ -125,8 +245,8 @@ public class MiloServerComponent extends DefaultComponent {
             UserTokenPolicy[] tokenPolicies =
                     userTokenPolicies != null ? userTokenPolicies.toArray(new UserTokenPolicy[userTokenPolicies.size()]) :
                             anonymous ?
-                               new UserTokenPolicy[] {USER_TOKEN_POLICY_ANONYMOUS, USER_TOKEN_POLICY_USERNAME, USER_TOKEN_POLICY_X509} :
-                               new UserTokenPolicy[] {USER_TOKEN_POLICY_USERNAME, USER_TOKEN_POLICY_X509};
+                                    new UserTokenPolicy[] {USER_TOKEN_POLICY_ANONYMOUS, USER_TOKEN_POLICY_USERNAME, USER_TOKEN_POLICY_X509} :
+                                    new UserTokenPolicy[] {USER_TOKEN_POLICY_USERNAME, USER_TOKEN_POLICY_X509};
 
             for (String hostname : hostnames) {
                 EndpointConfiguration.Builder builder = EndpointConfiguration.newBuilder()
@@ -214,114 +334,6 @@ public class MiloServerComponent extends DefaultComponent {
         }
     }
 
-    private String namespaceUri = DEFAULT_NAMESPACE_URI;
-
-    private OpcUaServerConfigBuilder serverConfig = null;
-
-    private OpcUaServer server;
-    private CamelNamespace namespace;
-
-    private final Map<String, MiloServerEndpoint> endpoints = new HashMap<>();
-
-    private Boolean enableAnonymousAuthentication;
-
-    private String serverName;
-
-    private String hostName;
-
-    private CertificateManager certificateManager;
-
-    private Set<SecurityPolicy> securityPolicies = null;
-
-    private Map<String, String> userMap;
-
-    private String usernameSecurityPolicyUri = OpcUaServerConfig.USER_TOKEN_POLICY_USERNAME.getSecurityPolicyUri();
-
-    private List<String> bindAddresses;
-
-    private Supplier<CertificateValidator> certificateValidator;
-
-    private final List<Runnable> runOnStop = new LinkedList<>();
-
-    public MiloServerComponent() {
-        this.serverConfig = null;
-    }
-
-    public MiloServerComponent(final OpcUaServerConfig serverConfig) {
-        this.serverConfig = OpcUaServerConfig.copy(serverConfig);
-
-    }
-
-    @Override
-    protected void doStart() throws Exception {
-        this.server = new OpcUaServer(buildServerConfig());
-
-        this.namespace = new CamelNamespace(this.namespaceUri, this.server);
-        this.namespace.startup();
-
-        super.doStart();
-        this.server.startup();
-    }
-
-    /**
-     * Build the final server configuration, apply all complex configuration
-     *
-     * @return the new server configuration, never returns {@code null}
-     */
-    private OpcUaServerConfig buildServerConfig() {
-        OpcUaServerConfigBuilder serverConfig = this.serverConfig != null ? this.serverConfig : createDefaultConfiguration();
-
-        if (this.userMap != null || this.enableAnonymousAuthentication != null) {
-            // set identity validator
-
-            final Map<String, String> userMap = this.userMap != null ? new HashMap<>(this.userMap) : Collections.emptyMap();
-            final boolean allowAnonymous = Boolean.TRUE.equals(this.enableAnonymousAuthentication);
-            final IdentityValidator identityValidator = new UsernameIdentityValidator(allowAnonymous, challenge -> {
-                final String pwd = userMap.get(challenge.getUsername());
-                if (pwd == null) {
-                    return false;
-                }
-                return pwd.equals(challenge.getPassword());
-            });
-            serverConfig.setIdentityValidator(identityValidator);
-
-            // add token policies
-
-            final List<UserTokenPolicy> tokenPolicies = new LinkedList<>();
-            if (allowAnonymous) {
-                tokenPolicies.add(OpcUaServerConfig.USER_TOKEN_POLICY_ANONYMOUS);
-            }
-            if (userMap != null) {
-                tokenPolicies.add(getUsernamePolicy());
-            }
-            serverConfig.setEndpoints(createEndpointConfigurations(tokenPolicies));
-        } else {
-            serverConfig.setEndpoints(createEndpointConfigurations(null, securityPolicies));
-        }
-
-//        if (this.bindAddresses != null) {
-//            this.serverConfig.setBindAddresses(new ArrayList<>(this.bindAddresses));
-//        }
-
-        if (this.certificateValidator != null) {
-            final CertificateValidator validator = this.certificateValidator.get();
-            LOG.debug("Using validator: {}", validator);
-            if (validator instanceof Closeable) {
-                runOnStop(() -> {
-                    try {
-                        LOG.debug("Closing: {}", validator);
-                        ((Closeable)validator).close();
-                    } catch (final IOException e) {
-                        LOG.warn("Failed to close", e);
-                    }
-                });
-            }
-            serverConfig.setCertificateValidator(validator);
-        }
-        // build final configuration
-        return serverConfig.build();
-    }
-
     /**
      * Get the user token policy for using with username authentication
      * 
@@ -384,7 +396,7 @@ public class MiloServerComponent extends DefaultComponent {
      */
     public void setApplicationName(final String applicationName) {
         Objects.requireNonNull(applicationName);
-        this.serverConfig.setApplicationName(LocalizedText.english(applicationName));
+        this.applicationName = applicationName;
     }
 
     /**
@@ -392,7 +404,7 @@ public class MiloServerComponent extends DefaultComponent {
      */
     public void setApplicationUri(final String applicationUri) {
         Objects.requireNonNull(applicationUri);
-        this.serverConfig.setApplicationUri(applicationUri);
+        this.applicationUri = applicationUri;
     }
 
     /**
@@ -400,7 +412,7 @@ public class MiloServerComponent extends DefaultComponent {
      */
     public void setProductUri(final String productUri) {
         Objects.requireNonNull(productUri);
-        this.serverConfig.setProductUri(productUri);
+        this.productUri = productUri;
     }
 
     /**
@@ -408,31 +420,6 @@ public class MiloServerComponent extends DefaultComponent {
      */
     public void setBindPort(final int port) {
         this.port = port;
-    }
-
-    /**
-     * Set whether strict endpoint URLs are enforced
-     */
-    public void setStrictEndpointUrlsEnabled(final boolean strictEndpointUrlsEnforced) {
-        //todo
-//        this.serverConfig.setStrictEndpointUrlsEnabled(strictEndpointUrlsEnforced);
-    }
-
-    /**
-     * Server name
-     */
-    public void setServerName(final String serverName) {
-//        this.serverConfig.setServerName(serverName);
-        this.serverName = serverName;
-    }
-
-
-    /**
-     * Server hostname
-     */
-    public void setHostname(final String hostname) {
-//        this.serverConfig.setServerName(hostname);
-        this.hostName = hostname;
     }
 
     /**
@@ -534,7 +521,7 @@ public class MiloServerComponent extends DefaultComponent {
      * Server build info
      */
     public void setBuildInfo(final BuildInfo buildInfo) {
-        this.serverConfig.setBuildInfo(buildInfo);
+        this.buildInfo = buildInfo;
     }
 
     /**
@@ -553,15 +540,13 @@ public class MiloServerComponent extends DefaultComponent {
         setServerCertificate(result.getKeyPair(), result.getCertificate());
 
     }
-private X509Certificate certificate;
+
     /**
      * Server certificate
      */
     public void setServerCertificate(final KeyPair keyPair, final X509Certificate certificate) {
         this.certificate = certificate;
-        if(keyPair != null) {
-            setCertificateManager(new DefaultCertificateManager(keyPair, certificate));
-        }
+        setCertificateManager(new DefaultCertificateManager(keyPair, certificate));
     }
 
     /**
@@ -582,12 +567,11 @@ private X509Certificate certificate;
      * Validator for client certificates using default file based approach
      */
     public void setDefaultCertificateValidator(final File certificatesBaseDir) {
-//todo solve exception correctly
         try {
             DefaultTrustListManager trustListManager = new DefaultTrustListManager(certificatesBaseDir);
             this.certificateValidator = () -> new DefaultCertificateValidator(trustListManager);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("Failed to construct certificateValidator.", e);
         }
 
 

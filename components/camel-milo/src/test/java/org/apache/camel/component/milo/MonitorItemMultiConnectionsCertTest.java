@@ -19,8 +19,6 @@ package org.apache.camel.component.milo;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.KeyPair;
-import java.security.cert.X509Certificate;
 import java.util.EnumSet;
 
 import org.apache.camel.EndpointInject;
@@ -31,8 +29,6 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.milo.server.MiloServerComponent;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.eclipse.milo.opcua.stack.core.security.SecurityPolicy;
-import org.eclipse.milo.opcua.stack.core.util.SelfSignedCertificateGenerator;
-import org.eclipse.milo.opcua.stack.core.util.SelfSignedHttpsCertificateBuilder;
 import org.junit.Test;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
