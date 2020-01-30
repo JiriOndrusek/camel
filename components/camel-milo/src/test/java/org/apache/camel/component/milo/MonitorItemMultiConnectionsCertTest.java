@@ -50,17 +50,17 @@ public class MonitorItemMultiConnectionsCertTest extends AbstractMiloServerTest 
     private static final String MILO_CLIENT_ITEM_C1_1 = "milo-client:opc.tcp://foo:bar@localhost:@@port@@?node="
                                                         + NodeIds.nodeValue(MiloServerComponent.DEFAULT_NAMESPACE_URI, "items-myitem1")
                                                         + "&keyStoreUrl=file:src/test/resources/keystore&keyStorePassword=testtest&keyPassword=test&keyAlias=test"
-                                                        + "&discoveryEndpointSuffix=/milo/discovery&overrideHost=true";
+                                                        + "&discoveryEndpointSuffix=/discovery&overrideHost=true";
 
     // with wrong password
     private static final String MILO_CLIENT_ITEM_C2_1 = "milo-client:opc.tcp://foo:bar2@localhost:@@port@@?node="
                                                         + NodeIds.nodeValue(MiloServerComponent.DEFAULT_NAMESPACE_URI, "items-myitem1")
-                                                        + "&discoveryEndpointSuffix=/milo/discovery&overrideHost=true";
+                                                        + "&discoveryEndpointSuffix=/discovery&overrideHost=true";
 
     // without key, clientId=1
     private static final String MILO_CLIENT_ITEM_C3_1 = "milo-client:opc.tcp://foo:bar@localhost:@@port@@?clientId=1&node="
                                                         + NodeIds.nodeValue(MiloServerComponent.DEFAULT_NAMESPACE_URI, "items-myitem1")
-                                                        + "&discoveryEndpointSuffix=/milo/discovery&overrideHost=true";
+                                                        + "&discoveryEndpointSuffix=/discovery&overrideHost=true";
 
     private static final String MOCK_TEST_1 = "mock:test1";
     private static final String MOCK_TEST_2 = "mock:test2";
@@ -86,7 +86,7 @@ public class MonitorItemMultiConnectionsCertTest extends AbstractMiloServerTest 
         final Path trusted = baseDir.resolve("trusted/certs");
 
         Files.createDirectories(trusted);
-        Files.copy(Paths.get("src/test/resources/cert/ca/cacert.pem"), trusted.resolve("cacert.pem"), REPLACE_EXISTING);
+        Files.copy(Paths.get("src/test/resources/ca/cacert.pem"), trusted.resolve("cacert.pem"), REPLACE_EXISTING);
 
         server.setServerCertificate(loadDefaultTestKey());
         server.setDefaultCertificateValidator(baseDir.toFile());

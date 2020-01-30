@@ -83,7 +83,6 @@ public class MiloServerComponent extends DefaultComponent {
     private static final Logger log = LoggerFactory.getLogger(MiloServerComponent.class);
 
     private static final String URL_CHARSET = "UTF-8";
-//    private static final OpcUaServerConfig DEFAULT_SERVER_CONFIG;
 
     private int port;
 
@@ -112,8 +111,8 @@ public class MiloServerComponent extends DefaultComponent {
     private Set<EndpointConfiguration> createEndpointConfigurations(List<UserTokenPolicy> userTokenPolicies, Set<SecurityPolicy> securityPolicies) {
         Set<EndpointConfiguration> endpointConfigurations = new LinkedHashSet<>();
 
-        //todo hack
-    if(bindAddresses == null) bindAddresses = Collections.singletonList("0.0.0.0");
+       //if address is not defined, it is general one
+        if(bindAddresses == null) bindAddresses = Collections.singletonList("0.0.0.0");
 
         for (String bindAddress : bindAddresses) {
             Set<String> hostnames = new LinkedHashSet<>();
@@ -133,8 +132,6 @@ public class MiloServerComponent extends DefaultComponent {
                 EndpointConfiguration.Builder builder = EndpointConfiguration.newBuilder()
                         .setBindAddress(bindAddress)
                         .setHostname(hostname)
-                        //todo ??
-//                        .setPath("/milo")
                         .setCertificate(certificate)
                         .addTokenPolicies(tokenPolicies);
 
@@ -146,9 +143,7 @@ public class MiloServerComponent extends DefaultComponent {
 
                     endpointConfigurations.add(buildTcpEndpoint(noSecurityBuilder));
                     endpointConfigurations.add(buildHttpsEndpoint(noSecurityBuilder));
-                }
-
-                if(securityPolicies == null || securityPolicies.contains(SecurityPolicy.Basic256Sha256)) {
+                } else if(securityPolicies.contains(SecurityPolicy.Basic256Sha256)) {
 
                     // TCP Basic256Sha256 / SignAndEncrypt
                     endpointConfigurations.add(buildTcpEndpoint(
@@ -156,9 +151,7 @@ public class MiloServerComponent extends DefaultComponent {
                                     .setSecurityPolicy(SecurityPolicy.Basic256Sha256)
                                     .setSecurityMode(MessageSecurityMode.SignAndEncrypt))
                     );
-                }
-
-                if(securityPolicies == null || securityPolicies.contains(SecurityPolicy.Basic256Sha256)) {
+                } else if(securityPolicies.contains(SecurityPolicy.Basic256Sha256)) {
                     // HTTPS Basic256Sha256 / Sign (SignAndEncrypt not allowed for HTTPS)
                     endpointConfigurations.add(buildHttpsEndpoint(
                             builder.copy()
@@ -177,9 +170,8 @@ public class MiloServerComponent extends DefaultComponent {
                  * different address for this Endpoint it shall create the address by appending the path "/discovery" to
                  * its base address.
                  */
-
                 EndpointConfiguration.Builder discoveryBuilder = builder.copy()
-                        .setPath("/milo/discovery")
+                        .setPath("/discovery")
                         .setSecurityPolicy(SecurityPolicy.None)
                         .setSecurityMode(MessageSecurityMode.None);
 
@@ -326,14 +318,7 @@ public class MiloServerComponent extends DefaultComponent {
             }
             serverConfig.setCertificateValidator(validator);
         }
-
-//        todo
-//        serverConfig.setStrictEndpointUrlsEnabled(strictEndpointUrlsEnforced)
-//        serverConfig.setServerName()
-//        serverConfig.setHostName()
-
         // build final configuration
-
         return serverConfig.build();
     }
 
