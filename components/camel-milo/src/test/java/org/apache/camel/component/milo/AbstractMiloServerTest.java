@@ -18,6 +18,12 @@ package org.apache.camel.component.milo;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.security.Key;
+import java.security.KeyPair;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.cert.X509Certificate;
 import java.util.function.Consumer;
 
 import org.apache.camel.CamelContext;
@@ -25,6 +31,8 @@ import org.apache.camel.component.milo.server.MiloServerComponent;
 import org.apache.camel.component.mock.AssertionClause;
 import org.apache.camel.test.AvailablePortFinder;
 import org.apache.camel.test.junit4.CamelTestSupport;
+import org.eclipse.milo.opcua.stack.core.security.CertificateManager;
+import org.eclipse.milo.opcua.stack.core.security.CertificateValidator;
 import org.eclipse.milo.opcua.stack.core.security.SecurityPolicy;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 
@@ -112,9 +120,10 @@ public abstract class AbstractMiloServerTest extends CamelTestSupport {
         try {
 
             final KeyStoreLoader loader = new KeyStoreLoader();
-            loader.setUrl("file:src/test/resources/cert/cert.p12");
-            loader.setKeyStorePassword("pwd1");
-            loader.setKeyPassword("pwd1");
+            loader.setUrl("file:src/test/resources/keystore");
+                        loader.setKeyStorePassword("testtest");
+
+            loader.setKeyPassword("test");
             return loader.load();
         } catch (final GeneralSecurityException | IOException e) {
             throw new RuntimeException(e);

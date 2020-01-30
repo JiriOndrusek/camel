@@ -14,22 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.camel.component.milo.server.internal;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+package org.apache.camel.component.milo.call;
 
 import org.apache.camel.component.milo.client.MiloClientConsumer;
+import org.apache.camel.component.milo.server.internal.CamelServerItem;
 import org.eclipse.milo.opcua.sdk.core.Reference;
 import org.eclipse.milo.opcua.sdk.server.OpcUaServer;
 import org.eclipse.milo.opcua.sdk.server.api.DataItem;
 import org.eclipse.milo.opcua.sdk.server.api.ManagedNamespace;
 import org.eclipse.milo.opcua.sdk.server.api.MonitoredItem;
+import org.eclipse.milo.opcua.sdk.server.api.methods.AbstractMethodInvocationHandler;
 import org.eclipse.milo.opcua.sdk.server.nodes.UaFolderNode;
 import org.eclipse.milo.opcua.sdk.server.nodes.UaMethodNode;
 import org.eclipse.milo.opcua.sdk.server.nodes.UaObjectNode;
-import org.eclipse.milo.opcua.sdk.server.nodes.UaObjectTypeNode;
 import org.eclipse.milo.opcua.sdk.server.util.SubscriptionModel;
 import org.eclipse.milo.opcua.stack.core.Identifiers;
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText;
@@ -38,24 +35,32 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.QualifiedName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CamelNamespace extends ManagedNamespace {
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
+public class MockCamelNamespace extends ManagedNamespace {
+
+    public static final String URI = "urn:org:apache:camel:mock";
+    public static final int FOLDER_ID = 1;
+    public static final int CALL_ID = 2;
 
     private static final Logger LOG = LoggerFactory.getLogger(MiloClientConsumer.class);
 
-    public static final int CALL_ID = 2;
-
-//    private final ServerNodeMap nodeManager;
     private final SubscriptionModel subscriptionModel;
 
+    private final Function<UaMethodNode, AbstractMethodInvocationHandler> callMethodCreator;
+
     protected UaFolderNode folder;
-    private UaObjectNode itemsObject;
 
     private final Map<String, CamelServerItem> itemMap = new HashMap<>();
 
-    public CamelNamespace(final String namespaceUri, final OpcUaServer server) {
-        super(server, namespaceUri);
+    public MockCamelNamespace(final OpcUaServer server, Function<UaMethodNode, AbstractMethodInvocationHandler>  callMethodCreator) {
+        super(server, URI);
 
         this.subscriptionModel = new SubscriptionModel(server, this);
+        this.callMethodCreator = callMethodCreator;
     }
 
     @Override
@@ -63,47 +68,12 @@ public class CamelNamespace extends ManagedNamespace {
         super.onStartup();
         // create structure
 
-        final NodeId nodeId = newNodeId("camel");
-//            final NodeId nodeId = new NodeId(namespaceIndex, "camel");
+        final NodeId nodeId = newNodeId(FOLDER_ID);
         final QualifiedName name = newQualifiedName("camel");
-//            final QualifiedName name = new QualifiedName(namespaceIndex, "camel");
         final LocalizedText displayName = LocalizedText.english("Camel");
 
         this.folder = new UaFolderNode(getNodeContext(), nodeId, name, displayName);
         getNodeManager().addNode(this.folder);
-
-        final NodeId nodeId2 = newNodeId("items");
-//            final NodeId nodeId = new NodeId(namespaceIndex, "items");
-        final QualifiedName name2 = newQualifiedName("items");
-//            final QualifiedName name = new QualifiedName(namespaceIndex, "items");
-        final LocalizedText displayName2 = LocalizedText.english("Items");
-
-
-//            getServer().getObjectTypeManager().registerObjectType(
-//                    objectTypeNode.getNodeId(),
-//                    UaObjectNode.class,
-//                    UaObjectNode::new
-//            );
-////
-
-//        // Define a new ObjectType called "MyObjectType".
-//        UaObjectTypeNode objectTypeNode = UaObjectTypeNode.builder(getNodeContext())
-//                .setNodeId(newNodeId("ObjectTypes/MyObjectType"))
-//                .setBrowseName(newQualifiedName("MyObjectType"))
-//                .setDisplayName(LocalizedText.english("MyObjectType"))
-//                .setIsAbstract(false)
-//                .build();
-
-        this.itemsObject = UaObjectNode.builder(getNodeContext())
-                .setNodeId(nodeId2)
-                .setBrowseName(name2)
-                .setDisplayName(displayName2)
-                .setTypeDefinition(Identifiers.FolderType)
-                .build();
-        this.folder.addComponent(this.itemsObject);
-        this.itemsObject.addComponent(this.folder);
-        this.getNodeManager().addNode(this.itemsObject);
-
 
         // register reference to structure
 
@@ -114,13 +84,41 @@ public class CamelNamespace extends ManagedNamespace {
                 false
         ));
 
-        itemsObject.addReference(new Reference(
-                nodeId,
+        addCallMethod(folder);
+    }
+
+    private void addCallMethod(UaFolderNode folderNode) {
+        UaMethodNode methodNode = UaMethodNode.builder(getNodeContext())
+                .setNodeId(new NodeId(getNamespaceIndex(), CALL_ID))
+                .setBrowseName(newQualifiedName("call"))
+                .setDisplayName(new LocalizedText(null, "call"))
+                .setDescription(
+                        LocalizedText.english("Returns the \"out-\"+entry parameter"))
+                .build();
+
+        AbstractMethodInvocationHandler callMethod = callMethodCreator.apply(methodNode);
+        methodNode.setProperty(UaMethodNode.InputArguments, callMethod.getInputArguments());
+        methodNode.setProperty(UaMethodNode.OutputArguments, callMethod.getOutputArguments());
+        methodNode.setInvocationHandler(callMethod);
+
+        getNodeManager().addNode(methodNode);
+
+        methodNode.addReference(new Reference(
+                methodNode.getNodeId(),
                 Identifiers.HasComponent,
-                Identifiers.ObjectNode.expanded(),
-                Reference.Direction.INVERSE
+                folderNode.getNodeId().expanded(),
+                false
+        ));
+
+        methodNode.addReference(new Reference(
+                methodNode.getNodeId(),
+                Identifiers.HasComponent,
+                folderNode.getNodeId().expanded(),
+                folderNode.getNodeClass(),
+                false
         ));
     }
+
 
     @Override
     public void onDataItemsCreated(final List<DataItem> dataItems) {
@@ -141,16 +139,4 @@ public class CamelNamespace extends ManagedNamespace {
     public void onMonitoringModeChanged(final List<MonitoredItem> monitoredItems) {
         this.subscriptionModel.onMonitoringModeChanged(monitoredItems);
     }
-
-    public CamelServerItem getOrAddItem(final String itemId) {
-        synchronized (this) {
-            CamelServerItem item = this.itemMap.get(itemId);
-            if (item == null) {
-                item = new CamelServerItem(itemId, getNodeContext(), getNamespaceIndex(), this.itemsObject);
-                this.itemMap.put(itemId, item);
-            }
-            return item;
-        }
-    }
-
 }

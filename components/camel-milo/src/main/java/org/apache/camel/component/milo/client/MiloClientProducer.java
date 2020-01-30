@@ -23,11 +23,14 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.support.DefaultAsyncProducer;
 import org.eclipse.milo.opcua.stack.core.types.builtin.ExpandedNodeId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.lang.Boolean.TRUE;
 
 public class MiloClientProducer extends DefaultAsyncProducer {
 
+    private static final Logger log = LoggerFactory.getLogger(MiloClientProducer.class);
     private final MiloClientConnection connection;
 
     private final ExpandedNodeId nodeId;
