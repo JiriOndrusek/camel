@@ -30,7 +30,7 @@ Value write requests from OPC UA Client will trigger messages which are sent int
 
 
 // component options: START
-The OPC UA Server component supports 19 options, which are listed below.
+The OPC UA Server component supports 20 options, which are listed below.
 
 
 
@@ -39,6 +39,7 @@ The OPC UA Server component supports 19 options, which are listed below.
 | Name | Description | Default | Type
 | *namespaceUri* (common) | The URI of the namespace, defaults to urn:org:apache:camel |  | String
 | *applicationName* (common) | The application name |  | String
+| *path* (common) | The path to be append to the end of the endpoint url. (doesn't need to start with '/') |  | String
 | *applicationUri* (common) | The application URI |  | String
 | *productUri* (common) | The product URI |  | String
 | *bindPort* (common) | The TCP port the server binds to |  | int

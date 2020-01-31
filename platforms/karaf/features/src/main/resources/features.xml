@@ -1763,6 +1763,7 @@
     <bundle dependency='true'>mvn:org.eclipse.milo/sdk-client/${milo-version}</bundle>
     <bundle dependency='true'>mvn:org.eclipse.milo/bsd-parser-core/${milo-version}</bundle>
     <bundle dependency='true'>mvn:org.eclipse.milo/bsd-parser-gson/${milo-version}</bundle>
+    <bundle dependency='true'>mvn:com.google.guava/guava/${milo-guava-version}</bundle>
     <bundle>mvn:org.apache.camel/camel-milo/${project.version}</bundle>
   </feature>
   <feature name='camel-mina' version='${project.version}' start-level='50'>

@@ -41,6 +41,24 @@ The `camel-irc` component has changed its endpoint syntax and removed option #ro
 irc:nick@host[:port]?[options]
 ----
 
+=== camel-milo
+
+The `camel-milo` client component has changed its endpoint syntax from `milo-client:tcp` to `milo-client:opc.tcp`.
+For example before
+
+[source,text]
+----
+milo-client:tcp://foo:bar@localhost:1234
+----
+
+Should be changed to
+----
+milo-client:opc.tcp://foo:bar@localhost:1234
+----
+
+The `camel-milo` server component properties `hostname` and `strictEndpointUrlsEnabled` are no longer supported.
+Property `hostname` is replaced by `path`.
+
 === camel-nats
 
 The `camel-nats` component has changed its endpoint syntax from `nats:servers` to `nats:topic`.

@@ -117,6 +117,8 @@ public class MiloServerComponent extends DefaultComponent {
 
     private String applicationName;
 
+    private String path;
+
     private BuildInfo buildInfo;
 
     public MiloServerComponent() {
@@ -253,6 +255,7 @@ public class MiloServerComponent extends DefaultComponent {
                         .setBindAddress(bindAddress)
                         .setHostname(hostname)
                         .setCertificate(certificate)
+                        .setPath(this.path == null ? "" : this.path)
                         .addTokenPolicies(tokenPolicies);
 
 
@@ -398,6 +401,16 @@ public class MiloServerComponent extends DefaultComponent {
         Objects.requireNonNull(applicationName);
         this.applicationName = applicationName;
     }
+
+    /**
+     * The path to be append to the end of the endpoint url. (doesn't need to start with '/')
+     */
+    public void setPath(final String applicationName) {
+        Objects.requireNonNull(path);
+        this.path = path;
+    }
+
+
 
     /**
      * The application URI
