@@ -112,9 +112,10 @@ public abstract class AbstractMiloServerTest extends CamelTestSupport {
         try {
 
             final KeyStoreLoader loader = new KeyStoreLoader();
-            loader.setUrl("file:src/test/resources/cert/cert.p12");
-            loader.setKeyStorePassword("pwd1");
-            loader.setKeyPassword("pwd1");
+            loader.setUrl("file:src/test/resources/keystore");
+                        loader.setKeyStorePassword("testtest");
+
+            loader.setKeyPassword("test");
             return loader.load();
         } catch (final GeneralSecurityException | IOException e) {
             throw new RuntimeException(e);
