@@ -16,6 +16,11 @@
  */
 package org.apache.camel.component.milo.call;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
 import org.apache.camel.component.milo.client.MiloClientConsumer;
 import org.apache.camel.component.milo.server.internal.CamelServerItem;
 import org.eclipse.milo.opcua.sdk.core.Reference;
@@ -26,7 +31,6 @@ import org.eclipse.milo.opcua.sdk.server.api.MonitoredItem;
 import org.eclipse.milo.opcua.sdk.server.api.methods.AbstractMethodInvocationHandler;
 import org.eclipse.milo.opcua.sdk.server.nodes.UaFolderNode;
 import org.eclipse.milo.opcua.sdk.server.nodes.UaMethodNode;
-import org.eclipse.milo.opcua.sdk.server.nodes.UaObjectNode;
 import org.eclipse.milo.opcua.sdk.server.util.SubscriptionModel;
 import org.eclipse.milo.opcua.stack.core.Identifiers;
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText;
@@ -34,11 +38,6 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
 import org.eclipse.milo.opcua.stack.core.types.builtin.QualifiedName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 
 public class MockCamelNamespace extends ManagedNamespace {
 
@@ -52,7 +51,7 @@ public class MockCamelNamespace extends ManagedNamespace {
 
     private final Function<UaMethodNode, AbstractMethodInvocationHandler> callMethodCreator;
 
-    protected UaFolderNode folder;
+    private UaFolderNode folder;
 
     private final Map<String, CamelServerItem> itemMap = new HashMap<>();
 

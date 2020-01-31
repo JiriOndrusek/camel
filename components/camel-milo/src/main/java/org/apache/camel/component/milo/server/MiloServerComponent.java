@@ -85,7 +85,7 @@ public class MiloServerComponent extends DefaultComponent {
 
     private String namespaceUri = DEFAULT_NAMESPACE_URI;
 
-    private OpcUaServerConfigBuilder opcServerConfig = null;
+    private OpcUaServerConfigBuilder opcServerConfig;
 
     private OpcUaServer server;
 
@@ -97,7 +97,7 @@ public class MiloServerComponent extends DefaultComponent {
 
     private CertificateManager certificateManager;
 
-    private Set<SecurityPolicy> securityPolicies = null;
+    private Set<SecurityPolicy> securityPolicies;
 
     private Map<String, String> userMap;
 
@@ -205,13 +205,13 @@ public class MiloServerComponent extends DefaultComponent {
         cfg.setApplicationUri("urn:org:apache:camel:milo:server");
         cfg.setProductUri("urn:org:apache:camel:milo");
         cfg.setCertificateManager(certificateManager);
-        if(productUri != null) {
+        if (productUri != null) {
             cfg.setProductUri(productUri);
         }
-        if(applicationUri != null) {
+        if (applicationUri != null) {
             cfg.setApplicationUri(applicationUri);
         }
-        if(buildInfo != null) {
+        if (buildInfo != null) {
             cfg.setBuildInfo(buildInfo);
         }
 
@@ -230,7 +230,7 @@ public class MiloServerComponent extends DefaultComponent {
         Set<EndpointConfiguration> endpointConfigurations = new LinkedHashSet<>();
 
         //if address is not defined, return empty set
-        if(bindAddresses == null) {
+        if (bindAddresses == null) {
             return Collections.emptySet();
         }
 
@@ -239,14 +239,14 @@ public class MiloServerComponent extends DefaultComponent {
             hostnames.add(HostnameUtil.getHostname());
             hostnames.addAll(HostnameUtil.getHostnames(bindAddress));
 
-            boolean anonymous = (this.enableAnonymousAuthentication != null && this.enableAnonymousAuthentication) ||
-                    Boolean.getBoolean("org.apache.camel.milo.server.default.enableAnonymous");
+            boolean anonymous = (this.enableAnonymousAuthentication != null && this.enableAnonymousAuthentication)
+                    || Boolean.getBoolean("org.apache.camel.milo.server.default.enableAnonymous");
 
             UserTokenPolicy[] tokenPolicies =
-                    userTokenPolicies != null ? userTokenPolicies.toArray(new UserTokenPolicy[userTokenPolicies.size()]) :
-                            anonymous ?
-                                    new UserTokenPolicy[] {USER_TOKEN_POLICY_ANONYMOUS, USER_TOKEN_POLICY_USERNAME, USER_TOKEN_POLICY_X509} :
-                                    new UserTokenPolicy[] {USER_TOKEN_POLICY_USERNAME, USER_TOKEN_POLICY_X509};
+                    userTokenPolicies != null ? userTokenPolicies.toArray(new UserTokenPolicy[userTokenPolicies.size()])
+                            : anonymous
+                                ? new UserTokenPolicy[] {USER_TOKEN_POLICY_ANONYMOUS, USER_TOKEN_POLICY_USERNAME, USER_TOKEN_POLICY_X509}
+                                : new UserTokenPolicy[] {USER_TOKEN_POLICY_USERNAME, USER_TOKEN_POLICY_X509};
 
             for (String hostname : hostnames) {
                 EndpointConfiguration.Builder builder = EndpointConfiguration.newBuilder()
@@ -256,14 +256,14 @@ public class MiloServerComponent extends DefaultComponent {
                         .addTokenPolicies(tokenPolicies);
 
 
-                if(securityPolicies == null || securityPolicies.contains(SecurityPolicy.None)) {
+                if (securityPolicies == null || securityPolicies.contains(SecurityPolicy.None)) {
                     EndpointConfiguration.Builder noSecurityBuilder = builder.copy()
                             .setSecurityPolicy(SecurityPolicy.None)
                             .setSecurityMode(MessageSecurityMode.None);
 
                     endpointConfigurations.add(buildTcpEndpoint(noSecurityBuilder));
                     endpointConfigurations.add(buildHttpsEndpoint(noSecurityBuilder));
-                } else if(securityPolicies.contains(SecurityPolicy.Basic256Sha256)) {
+                } else if (securityPolicies.contains(SecurityPolicy.Basic256Sha256)) {
 
                     // TCP Basic256Sha256 / SignAndEncrypt
                     endpointConfigurations.add(buildTcpEndpoint(
@@ -271,7 +271,7 @@ public class MiloServerComponent extends DefaultComponent {
                                     .setSecurityPolicy(SecurityPolicy.Basic256Sha256)
                                     .setSecurityMode(MessageSecurityMode.SignAndEncrypt))
                     );
-                } else if(securityPolicies.contains(SecurityPolicy.Basic256Sha256)) {
+                } else if (securityPolicies.contains(SecurityPolicy.Basic256Sha256)) {
                     // HTTPS Basic256Sha256 / Sign (SignAndEncrypt not allowed for HTTPS)
                     endpointConfigurations.add(buildHttpsEndpoint(
                             builder.copy()
@@ -553,7 +553,7 @@ public class MiloServerComponent extends DefaultComponent {
      * Server certificate manager
      */
     public void setCertificateManager(final CertificateManager certificateManager) {
-        this.certificateManager = certificateManager != null ? certificateManager: new DefaultCertificateManager();
+        this.certificateManager = certificateManager != null ? certificateManager : new DefaultCertificateManager();
     }
 
     /**

@@ -16,6 +16,12 @@
  */
 package org.apache.camel.component.milo.call;
 
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.RoutesBuilder;
@@ -38,12 +44,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
 import static org.apache.camel.component.milo.NodeIds.nodeValue;
 import static org.eclipse.milo.opcua.sdk.server.api.config.OpcUaServerConfig.USER_TOKEN_POLICY_ANONYMOUS;
 
@@ -64,7 +64,7 @@ public class CallClientTest extends AbstractMiloServerTest {
     private MockCallMethod callMethod;
 
     @Produce(DIRECT_START_1)
-    protected ProducerTemplate producer1;
+    private ProducerTemplate producer1;
 
     @Override
     protected RoutesBuilder createRouteBuilder() throws Exception {
@@ -118,7 +118,7 @@ public class CallClientTest extends AbstractMiloServerTest {
                     .addTokenPolicies(tokenPolicies);
 
 
-            if(securityPolicies == null || securityPolicies.contains(SecurityPolicy.None)) {
+            if (securityPolicies == null || securityPolicies.contains(SecurityPolicy.None)) {
                 EndpointConfiguration.Builder noSecurityBuilder = builder.copy()
                         .setSecurityPolicy(SecurityPolicy.None)
                         .setSecurityMode(MessageSecurityMode.None);

@@ -113,7 +113,7 @@ public abstract class AbstractMiloServerTest extends CamelTestSupport {
 
             final KeyStoreLoader loader = new KeyStoreLoader();
             loader.setUrl("file:src/test/resources/keystore");
-                        loader.setKeyStorePassword("testtest");
+            loader.setKeyStorePassword("testtest");
 
             loader.setKeyPassword("test");
             return loader.load();

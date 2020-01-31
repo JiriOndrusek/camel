@@ -37,8 +37,9 @@ public class CamelNamespace extends ManagedNamespace {
 
     private final SubscriptionModel subscriptionModel;
 
-    protected UaFolderNode folder;
     private UaObjectNode itemsObject;
+    private UaFolderNode folder;
+
 
     private final Map<String, CamelServerItem> itemMap = new HashMap<>();
 

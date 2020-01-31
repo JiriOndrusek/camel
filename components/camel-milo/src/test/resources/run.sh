@@ -1,3 +1,7 @@
+# script which prepares all needed certificates and keystore
+# properties of certificates has to be confirmed
+# password to be filled in the last step has to be 'test'
+
 mkdir cert
 mkdir ca
 
