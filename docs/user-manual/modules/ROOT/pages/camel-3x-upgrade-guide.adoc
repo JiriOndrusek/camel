@@ -57,7 +57,9 @@ milo-client:opc.tcp://foo:bar@localhost:1234
 ----
 
 The `camel-milo` server component properties `hostname` and `strictEndpointUrlsEnabled` are no longer supported.
-Property `hostname` is replaced by `path`.
+Property `hostName` and `serverName` are replaced by `path`.
+To successfully use certificates for secured communication, JCE Jurisdiction Policy File Default
+has to be *Unlimited* (which is by default since jdk 9+).
 
 === camel-nats
 
