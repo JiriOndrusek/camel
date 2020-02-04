@@ -12,6 +12,7 @@ http://eclipse.org/milo[Eclipse Milo™] implementation.
 
 *Important*: To successfully use certificates for secured communication,
 JCE Jurisdiction Policy File Default has to be *Unlimited* (which is by default since jdk 9+).
+*OSGi needs Java 9+*
 
 Maven users will need to add the following dependency to their `pom.xml`
 for this component:
