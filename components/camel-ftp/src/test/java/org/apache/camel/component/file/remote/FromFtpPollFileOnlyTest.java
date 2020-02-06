@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 public class FromFtpPollFileOnlyTest extends FtpServerTestSupport {
 
     private String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/fileonly/?password=admin";
+        return "ftp://admin@localhost:" + getPort() + "/fileonly/?password=admin&stepwise=false";
     }
 
     @Override

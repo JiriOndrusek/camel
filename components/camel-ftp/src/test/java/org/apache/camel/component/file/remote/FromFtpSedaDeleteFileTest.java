@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class FromFtpSedaDeleteFileTest extends FtpServerTestSupport {
 
     protected String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/deletefile?password=admin&binary=false&delete=true";
+        return "ftp://admin@localhost:" + getPort() + "/deletefile?password=admin&binary=false&delete=true&stepwise=false";
     }
 
     @Override

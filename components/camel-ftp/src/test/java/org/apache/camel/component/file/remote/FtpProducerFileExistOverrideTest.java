@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 public class FtpProducerFileExistOverrideTest extends FtpServerTestSupport {
 
     private String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/exist?password=admin&delay=2000&noop=true&fileExist=Override";
+        return "ftp://admin@localhost:" + getPort() + "/exist?password=admin&delay=2000&noop=true&fileExist=Override&stepwise=false";
     }
 
     @Override

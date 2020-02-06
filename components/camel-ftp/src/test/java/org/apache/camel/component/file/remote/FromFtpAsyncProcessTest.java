@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 public class FromFtpAsyncProcessTest extends FtpServerTestSupport {
 
     private String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/async/?password=admin&delete=true";
+        return "ftp://admin@localhost:" + getPort() + "/async/?password=admin&delete=true&stepwise=false";
     }
 
     @Test

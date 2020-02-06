@@ -30,7 +30,7 @@ public class FtpConsumerAsyncStressTest extends FtpServerTestSupport {
     private int files = 100;
 
     private String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/filestress/?password=admin&maxMessagesPerPoll=25";
+        return "ftp://admin@localhost:" + getPort() + "/filestress/?password=admin&maxMessagesPerPoll=25&stepwise=false";
     }
 
     @Override

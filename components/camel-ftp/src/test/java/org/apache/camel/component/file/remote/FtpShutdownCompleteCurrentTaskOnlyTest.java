@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class FtpShutdownCompleteCurrentTaskOnlyTest extends FtpServerTestSupport {
 
     private String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/pending?password=admin&initialDelay=5000";
+        return "ftp://admin@localhost:" + getPort() + "/pending?password=admin&initialDelay=5000&stepwise=false";
     }
 
     @Override

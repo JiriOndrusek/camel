@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class FtpConsumerTemplateTest extends FtpServerTestSupport {
 
     protected String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/template?password=admin";
+        return "ftp://admin@localhost:" + getPort() + "/template?password=admin&stepwise=false";
     }
 
     @Override

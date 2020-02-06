@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class FtpConsumerDeleteNoWritePermissionTest extends FtpServerTestSupport {
 
     private String getFtpUrl() {
-        return "ftp://dummy@localhost:" + getPort() + "/deletenoperm?password=foo" + "&delete=true&delay=5000";
+        return "ftp://dummy@localhost:" + getPort() + "/deletenoperm?password=foo" + "&delete=true&delay=5000&stepwise=false";
     }
 
     @Override

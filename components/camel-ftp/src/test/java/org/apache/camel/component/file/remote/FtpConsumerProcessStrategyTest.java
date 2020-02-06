@@ -34,7 +34,7 @@ public class FtpConsumerProcessStrategyTest extends FtpServerTestSupport {
     private MyStrategy myStrategy = new MyStrategy();
 
     private String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/" + FTP_ROOT_DIR + "?password=admin&processStrategy=#myStrategy";
+        return "ftp://admin@localhost:" + getPort() + "/" + FTP_ROOT_DIR + "?password=admin&processStrategy=#myStrategy&stepwise=false";
     }
 
     @Test

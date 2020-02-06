@@ -42,7 +42,7 @@ public class FromFtpExclusiveReadNoneStrategyTest extends FtpServerTestSupport {
     private static final Logger LOG = LoggerFactory.getLogger(FromFtpExclusiveReadNoneStrategyTest.class);
 
     private String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/slowfile?password=admin" + "&readLock=none&delay=500";
+        return "ftp://admin@localhost:" + getPort() + "/slowfile?password=admin" + "&readLock=none&delay=500&stepwise=false";
     }
 
     // Cannot test on windows due file system works differently with file locks

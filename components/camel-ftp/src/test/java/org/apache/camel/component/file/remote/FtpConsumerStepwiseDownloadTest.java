@@ -16,44 +16,23 @@
  */
 package org.apache.camel.component.file.remote;
 
-import org.apache.camel.Endpoint;
-import org.apache.camel.Exchange;
-import org.apache.camel.Producer;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class FromFtpPassiveModeTest extends FtpServerTestSupport {
+public class FtpConsumerStepwiseDownloadTest extends FtpServerTestSupport {
 
-    private String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/passive/?password=admin&passiveMode=true&stepwise=false";
-    }
-
-    @Override
-    @BeforeEach
-    public void setUp() throws Exception {
-        super.setUp();
-        prepareFtpServer();
+    protected String getFtpUrl() {
+        return "ftp://admin@localhost:" + getPort() + "/tmp2/camel?password=admin&initialDelay=3000";
     }
 
     @Test
-    public void testFtpPassiveMode() throws Exception {
+    public void testFromFileToFtp() throws Exception {
         MockEndpoint mock = getMockEndpoint("mock:result");
-        mock.expectedBodiesReceived("Hello World");
-        mock.assertIsSatisfied();
-    }
+        //stepwise and stream download are not supported
+        mock.expectedMessageCount(0);
 
-    private void prepareFtpServer() throws Exception {
-        // prepares the FTP Server by creating a file on the server
-        Endpoint endpoint = context.getEndpoint(getFtpUrl());
-        Exchange exchange = endpoint.createExchange();
-        exchange.getIn().setBody("Hello World");
-        exchange.getIn().setHeader(Exchange.FILE_NAME, "hello.txt");
-        Producer producer = endpoint.createProducer();
-        producer.start();
-        producer.process(exchange);
-        producer.stop();
+        assertMockEndpointsSatisfied();
     }
 
     @Override
@@ -61,6 +40,7 @@ public class FromFtpPassiveModeTest extends FtpServerTestSupport {
         return new RouteBuilder() {
             public void configure() throws Exception {
                 from(getFtpUrl()).to("mock:result");
+                from("file:src/main/data?noop=true&delay=3000").to(getFtpUrl());
             }
         };
     }

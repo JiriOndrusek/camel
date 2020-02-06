@@ -35,7 +35,7 @@ public class FromFtpRemoteFileFilterTest extends FtpServerTestSupport {
     private MyFileFilter filter = new MyFileFilter<>();
 
     private String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/filefilter?password=admin&filter=#myFilter";
+        return "ftp://admin@localhost:" + getPort() + "/filefilter?password=admin&filter=#myFilter&stepwise=false";
     }
 
     @Override

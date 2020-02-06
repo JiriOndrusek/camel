@@ -34,7 +34,7 @@ public class FtpConsumerIdempotentMemoryRefTest extends FtpServerTestSupport {
 
     private String getFtpUrl() {
         return "ftp://admin@localhost:" + getPort()
-               + "/idempotent?password=admin&binary=false&idempotent=true&idempotentRepository=#myRepo&idempotentKey=${file:onlyname}&delete=true";
+               + "/idempotent?password=admin&binary=false&idempotent=true&idempotentRepository=#myRepo&idempotentKey=${file:onlyname}&delete=true&stepwise=false";
     }
 
     @BindToRegistry("myRepo")

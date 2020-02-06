@@ -35,7 +35,7 @@ public class FromFtpThirdPoolOkTest extends FtpServerTestSupport {
     private String body = "Hello World this file will be deleted";
 
     private String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/thirdpool?password=admin&delete=true";
+        return "ftp://admin@localhost:" + getPort() + "/thirdpool?password=admin&delete=true&stepwise=false";
     }
 
     @Override

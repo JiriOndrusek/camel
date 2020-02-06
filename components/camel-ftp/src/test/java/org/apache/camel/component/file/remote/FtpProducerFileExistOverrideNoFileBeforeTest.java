@@ -27,7 +27,7 @@ import static org.apache.camel.test.junit5.TestSupport.deleteDirectory;
 public class FtpProducerFileExistOverrideNoFileBeforeTest extends FtpServerTestSupport {
 
     private String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/exist?password=admin&delay=2000&noop=true&fileExist=Override";
+        return "ftp://admin@localhost:" + getPort() + "/exist?password=admin&delay=2000&noop=true&fileExist=Override&stepwise=false";
     }
 
     @Override

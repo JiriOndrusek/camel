@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class FromFtpNoopTest extends FtpServerTestSupport {
 
     protected String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/noop?password=admin&binary=false&noop=true";
+        return "ftp://admin@localhost:" + getPort() + "/noop?password=admin&binary=false&noop=true&stepwise=false";
     }
 
     @Override

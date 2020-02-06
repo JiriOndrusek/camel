@@ -35,7 +35,7 @@ public class FileToFtpsWithFtpClientConfigRefTest extends FtpsServerExplicitSSLW
 
     private String getFtpUrl(boolean in) {
         return "ftps://admin@localhost:" + getPort() + "/tmp2/camel?password=admin&initialDelay=2000&ftpClient=#ftpsClient" + (in ? "In" : "")
-               + "&disableSecureDataChannelDefaults=true&delete=true";
+               + "&disableSecureDataChannelDefaults=true&delete=true&stepwise=false";
     }
 
     @Test

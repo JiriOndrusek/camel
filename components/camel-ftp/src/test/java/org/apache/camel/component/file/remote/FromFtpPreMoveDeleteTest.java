@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class FromFtpPreMoveDeleteTest extends FtpServerTestSupport {
 
     protected String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/movefile?password=admin&preMove=work&delete=true";
+        return "ftp://admin@localhost:" + getPort() + "/movefile?password=admin&preMove=work&delete=true&stepwise=false";
     }
 
     @Override

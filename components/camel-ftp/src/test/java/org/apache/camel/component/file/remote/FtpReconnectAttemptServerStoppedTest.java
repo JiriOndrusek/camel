@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 public class FtpReconnectAttemptServerStoppedTest extends FtpServerTestSupport {
 
     private String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/reconnect?password=admin&maximumReconnectAttempts=2&reconnectDelay=500&delete=true";
+        return "ftp://admin@localhost:" + getPort() + "/reconnect?password=admin&maximumReconnectAttempts=2&reconnectDelay=500&delete=true&stepwise=false";
     }
 
     @Test

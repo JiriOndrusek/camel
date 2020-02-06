@@ -34,7 +34,7 @@ public class ConsumerTemplateFtpShutdownTest extends FtpServerTestSupport {
     public void testConsumerTemplateFtp() throws Exception {
         template.sendBodyAndHeader(getFtpUrl(), "Hello World", Exchange.FILE_NAME, "hello.txt");
 
-        Exchange exchange = consumer.receive(getFtpUrl() + "&fileName=hello.txt", 5000);
+        Exchange exchange = consumer.receive(getFtpUrl() + "&fileName=hello.txt&stepwise=false", 5000);
         assertNotNull(exchange);
 
         consumer.doneUoW(exchange);

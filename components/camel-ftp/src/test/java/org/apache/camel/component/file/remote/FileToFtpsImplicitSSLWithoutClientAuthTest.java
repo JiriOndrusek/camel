@@ -27,7 +27,7 @@ public class FileToFtpsImplicitSSLWithoutClientAuthTest extends FtpsServerImplic
 
     protected String getFtpUrl() {
         return "ftps://admin@localhost:" + getPort() + "/tmp2/camel?password=admin&initialDelay=2000&disableSecureDataChannelDefaults=true"
-               + "&securityProtocol=SSLv3&implicit=true&delete=true";
+                + "&securityProtocol=SSLv3&implicit=true&delete=true&stepwise=false";
     }
 
     @Test

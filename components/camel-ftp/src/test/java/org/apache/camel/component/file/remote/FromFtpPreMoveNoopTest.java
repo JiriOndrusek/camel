@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class FromFtpPreMoveNoopTest extends FtpServerTestSupport {
 
     protected String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/movefile?password=admin&preMove=work&noop=true";
+        return "ftp://admin@localhost:" + getPort() + "/movefile?password=admin&preMove=work&noop=true&stepwise=false";
     }
 
     @Override

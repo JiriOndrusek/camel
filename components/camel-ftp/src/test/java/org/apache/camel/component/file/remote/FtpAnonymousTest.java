@@ -30,7 +30,7 @@ public class FtpAnonymousTest extends FtpServerTestSupport {
         StringBuilder url = new StringBuilder("ftp://");
         url.append(user == null ? "" : user + "@");
         url.append("localhost:" + getPort() + "/");
-        url.append(password == null ? "" : "?password=" + password);
+        url.append(password == null ? "?stepwise=false" : "?password=" + password + "&stepwise=false");
         return url.toString();
     }
 

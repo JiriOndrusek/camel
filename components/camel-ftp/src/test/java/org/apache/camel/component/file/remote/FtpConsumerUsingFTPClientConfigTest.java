@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 public class FtpConsumerUsingFTPClientConfigTest extends FtpServerTestSupport {
 
     private String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/clientconfig?password=admin&ftpClientConfig=#myConfig";
+        return "ftp://admin@localhost:" + getPort() + "/clientconfig?password=admin&ftpClientConfig=#myConfig&stepwise=false";
     }
 
     @Override

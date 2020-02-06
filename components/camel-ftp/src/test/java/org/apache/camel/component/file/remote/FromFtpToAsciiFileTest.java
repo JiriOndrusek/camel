@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class FromFtpToAsciiFileTest extends FtpServerTestSupport {
 
     private String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/tmp3/camel?password=admin&binary=false&fileExist=Override";
+        return "ftp://admin@localhost:" + getPort() + "/tmp3/camel?password=admin&binary=false&fileExist=Override&stepwise=false";
     }
 
     @Override

@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class FromFtpSetNamesWithMultiDirectoriesTest extends FtpServerTestSupport {
 
     private String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/incoming?password=admin&binary=true&recursive=true&initialDelay=0&delay=100";
+        return "ftp://admin@localhost:" + getPort() + "/incoming?password=admin&binary=true&recursive=true&initialDelay=0&delay=100&stepwise=false";
     }
 
     @Override

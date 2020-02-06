@@ -32,7 +32,7 @@ public class FromFtpFilterTest extends FtpServerTestSupport {
     private MyFileFilter filter = new MyFileFilter<>();
 
     protected String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/filter?password=admin&binary=false&filter=#myFilter";
+        return "ftp://admin@localhost:" + getPort() + "/filter?password=admin&binary=false&filter=#myFilter&stepwise=false";
     }
 
     @Test

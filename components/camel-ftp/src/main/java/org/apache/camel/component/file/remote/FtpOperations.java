@@ -431,21 +431,9 @@ public class FtpOperations implements RemoteFileOperations<FTPFile> {
             org.apache.camel.util.ObjectHelper.notNull(target, "Exchange should have the " + FileComponent.FILE_EXCHANGE_FILE + " set");
 
             String remoteName = name;
-            String currentDir = null;
             if (endpoint.getConfiguration().isStepwise()) {
-                // remember current directory
-                currentDir = getCurrentDirectory();
-
-                // change directory to path where the file is to be retrieved
-                // (must do this as some FTP servers cannot retrieve using
-                // absolute path)
-                String path = FileUtil.onlyPath(name);
-                if (path != null) {
-                    changeCurrentDirectory(path);
-                }
-                // remote name is now only the file name as we just changed
-                // directory
-                remoteName = FileUtil.stripPath(name);
+                //stepwise and streamDownload are not supported together
+                throw new IllegalArgumentException("The option stepwise is not supported for stream downloading");
             }
 
             log.trace("Client retrieveFile: {}", remoteName);
@@ -467,11 +455,6 @@ public class FtpOperations implements RemoteFileOperations<FTPFile> {
             // store client reply information after the operation
             exchange.getIn().setHeader(FtpConstants.FTP_REPLY_CODE, client.getReplyCode());
             exchange.getIn().setHeader(FtpConstants.FTP_REPLY_STRING, client.getReplyString());
-
-            // change back to current directory
-            if (endpoint.getConfiguration().isStepwise()) {
-                changeCurrentDirectory(currentDir);
-            }
 
         } catch (IOException e) {
             throw new GenericFileOperationFailedException(client.getReplyCode(), client.getReplyString(), e.getMessage(), e);

@@ -30,7 +30,7 @@ public class FileToFtpsWithCustomKeyAndTrustStorePropertiesTest extends FtpsServ
                + "&securityProtocol=SSLv3&implicit=false&ftpClient.keyStore.file=./src/test/resources/server.jks&ftpClient.keyStore.type=JKS"
                + "&ftpClient.keyStore.algorithm=SunX509&ftpClient.keyStore.password=password&ftpClient.keyStore.keyPassword=password"
                + "&ftpClient.trustStore.file=./src/test/resources/server.jks&ftpClient.trustStore.type=JKS"
-               + "&ftpClient.trustStore.algorithm=SunX509&ftpClient.trustStore.password=password&delete=true";
+               + "&ftpClient.trustStore.algorithm=SunX509&ftpClient.trustStore.password=password&delete=true&stepwise=false";
     }
 
     @Test

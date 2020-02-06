@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class FtpConsumerBodyAsStringTest extends FtpServerTestSupport {
 
     private String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/tmp4/camel?password=admin&delay=5000";
+        return "ftp://admin@localhost:" + getPort() + "/tmp4/camel?password=admin&delay=5000&stepwise=false";
     }
 
     @Override

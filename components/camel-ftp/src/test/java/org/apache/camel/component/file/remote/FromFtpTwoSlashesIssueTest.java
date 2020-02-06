@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class FromFtpTwoSlashesIssueTest extends FtpServerTestSupport {
 
     protected String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "//?password=admin";
+        return "ftp://admin@localhost:" + getPort() + "//?password=admin&stepwise=false";
     }
 
     @Override

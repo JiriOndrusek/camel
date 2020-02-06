@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 public class FtpConsumerDirectoriesNotMatchedTest extends FtpServerTestSupport {
 
     private String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/dirnotmatched/?password=admin" + "&recursive=true&include=^.*txt$";
+        return "ftp://admin@localhost:" + getPort() + "/dirnotmatched/?password=admin&stepwise=false&recursive=true&include=^.*txt$";
     }
 
     @Override

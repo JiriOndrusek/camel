@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class FromFtpDoNotDeleteFileIfProcessFailsTest extends FtpServerTestSupport {
 
     private String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/deletefile/?password=admin&delete=true";
+        return "ftp://admin@localhost:" + getPort() + "/deletefile/?password=admin&delete=true&stepwise=false";
     }
 
     @Override

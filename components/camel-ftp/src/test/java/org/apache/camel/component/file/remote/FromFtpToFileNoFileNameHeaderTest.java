@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 public class FromFtpToFileNoFileNameHeaderTest extends FtpServerTestSupport {
 
     private String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/tmp3/camel?password=admin&binary=false";
+        return "ftp://admin@localhost:" + getPort() + "/tmp3/camel?password=admin&binary=false&stepwise=false";
     }
 
     @Override

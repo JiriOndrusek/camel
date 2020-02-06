@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class FtpProducerFileExistFailTest extends FtpServerTestSupport {
 
     protected String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/exist?password=admin&delay=2000&noop=true&fileExist=Fail";
+        return "ftp://admin@localhost:" + getPort() + "/exist?password=admin&delay=2000&noop=true&fileExist=Fail&stepwise=false";
     }
 
     @Override

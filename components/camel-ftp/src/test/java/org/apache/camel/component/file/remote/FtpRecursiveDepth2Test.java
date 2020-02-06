@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 public class FtpRecursiveDepth2Test extends FtpServerTestSupport {
 
     protected String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/depth2?password=admin&recursive=true";
+        return "ftp://admin@localhost:" + getPort() + "/depth2?password=admin&recursive=true&stepwise=false";
     }
 
     @Test

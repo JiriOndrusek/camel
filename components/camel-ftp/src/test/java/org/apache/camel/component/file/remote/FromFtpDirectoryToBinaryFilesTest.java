@@ -34,7 +34,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class FromFtpDirectoryToBinaryFilesTest extends FtpServerTestSupport {
 
     private String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/incoming/?password=admin" + "&binary=true&useFixedDelay=false&recursive=false&delay=5000";
+        return "ftp://admin@localhost:" + getPort() + "/incoming/?password=admin"
+                + "&binary=true&useFixedDelay=false&recursive=false&delay=5000&stepwise=false";
     }
 
     @Override

@@ -28,7 +28,7 @@ public class FtpProducerFileExistAppendTest extends FtpServerTestSupport {
     private static final boolean ON_WINDOWS = System.getProperty("os.name").startsWith("Windows");
 
     private String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/exist?password=admin&delay=2000&noop=true&fileExist=Append";
+        return "ftp://admin@localhost:" + getPort() + "/exist?password=admin&delay=2000&noop=true&fileExist=Append&stepwise=false";
     }
 
     @Override

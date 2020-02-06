@@ -20,7 +20,7 @@ public class FtpProducerFileFastExistFailTest extends FtpProducerFileExistFailTe
 
     @Override
     protected String getFtpUrl() {
-        return "ftp://admin@localhost:" + getPort() + "/exist?fastExistsCheck=true&password=admin&delay=2000&noop=true&fileExist=Fail";
+        return "ftp://admin@localhost:" + getPort() + "/exist?fastExistsCheck=true&password=admin&delay=2000&noop=true&fileExist=Fail&stepwise=false";
     }
 
 }
