@@ -27,11 +27,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
 
-import org.apache.camel.AsyncCallback;
-import org.apache.camel.Exchange;
-import org.apache.camel.FailedToCreateProducerException;
-import org.apache.camel.RuntimeCamelException;
-import org.apache.camel.RuntimeExchangeException;
+import org.apache.camel.*;
 import org.apache.camel.component.jms.JmsConfiguration.CamelJmsTemplate;
 import org.apache.camel.component.jms.reply.QueueReplyManager;
 import org.apache.camel.component.jms.reply.ReplyManager;
@@ -63,10 +59,12 @@ public class JmsProducer extends DefaultAsyncProducer {
     private JmsOperations inOutTemplate;
     private UuidGenerator uuidGenerator;
     private ReplyManager replyManager;
+    private Processor asyncAPIProcessor;
 
-    public JmsProducer(JmsEndpoint endpoint) {
+    public JmsProducer(JmsEndpoint endpoint, Processor asyncAPIProcessor) {
         super(endpoint);
         this.endpoint = endpoint;
+        this.asyncAPIProcessor = asyncAPIProcessor;
     }
 
     @Override
@@ -136,6 +134,19 @@ public class JmsProducer extends DefaultAsyncProducer {
 
     @Override
     public boolean process(Exchange exchange, AsyncCallback callback) {
+        //detect if exchange is meant for asyncAPI
+        if(asyncAPIProcessor != null) {
+            try {
+                asyncAPIProcessor.process(exchange);
+                if(exchange.getIn().getBody() != null) {
+                    return true;
+                }
+            } catch (Exception e) {
+                exchange.setException(e);
+                return true;
+            }
+        }
+
         // deny processing if we are not started
         if (!isRunAllowed()) {
             if (exchange.getException() == null) {

@@ -51,6 +51,13 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
 
+
+        <!-- todo -->
+        <dependency>
+            <groupId>io.apicurio</groupId>
+            <artifactId>apicurio-data-models</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

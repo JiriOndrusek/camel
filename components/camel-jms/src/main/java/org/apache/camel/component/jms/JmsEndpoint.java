@@ -16,6 +16,7 @@
  */
 package org.apache.camel.component.jms;
 
+import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -42,12 +43,7 @@ import org.apache.camel.Producer;
 import org.apache.camel.Service;
 import org.apache.camel.api.management.ManagedAttribute;
 import org.apache.camel.api.management.ManagedResource;
-import org.apache.camel.spi.HeaderFilterStrategy;
-import org.apache.camel.spi.HeaderFilterStrategyAware;
-import org.apache.camel.spi.Metadata;
-import org.apache.camel.spi.UriEndpoint;
-import org.apache.camel.spi.UriParam;
-import org.apache.camel.spi.UriPath;
+import org.apache.camel.spi.*;
 import org.apache.camel.support.DefaultEndpoint;
 import org.apache.camel.support.SynchronousDelegateProducer;
 import org.apache.camel.util.StringHelper;
@@ -170,7 +166,18 @@ public class JmsEndpoint extends DefaultEndpoint implements AsyncEndpoint, Heade
 
     @Override
     public Producer createProducer() throws Exception {
-        Producer answer = new JmsProducer(this);
+        AsyncApiProcessorFactory factory = null;
+        // lookup in registry
+        Set<AsyncApiProcessorFactory> factories = getCamelContext().getRegistry().findByType(AsyncApiProcessorFactory.class);
+        Processor processor = null;
+        if (factories != null && factories.size() == 1) {
+            factory = factories.iterator().next();
+
+            //todo
+            processor = factory.createApiProcessor(getCamelContext(), "apidoc", "", false, new AsyncAPIConfiguration());
+        }
+
+        Producer answer = new JmsProducer(this, processor);
         if (isSynchronous()) {
             return new SynchronousDelegateProducer(answer);
         } else {

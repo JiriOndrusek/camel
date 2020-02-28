@@ -100,6 +100,7 @@
         <module>camel-as2</module>
         <module>camel-asn1</module>
         <module>camel-asterisk</module>
+		<module>camel-asyncapi-java</module>
         <module>camel-atmos</module>
         <module>camel-atmosphere-websocket</module>
         <module>camel-atom</module>
