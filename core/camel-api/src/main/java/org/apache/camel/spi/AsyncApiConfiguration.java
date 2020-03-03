@@ -3,7 +3,7 @@ package org.apache.camel.spi;
 import io.apicurio.datamodels.asyncapi.v2.models.Aai20Document;
 
 
-public class AsyncAPIConfiguration {
+public class AsyncApiConfiguration extends ApiConfiguration {
 
 
     private Aai20Document asyncapiDoc;

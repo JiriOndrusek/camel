@@ -32,15 +32,7 @@ import javax.jms.TemporaryQueue;
 import javax.jms.TemporaryTopic;
 import javax.jms.Topic;
 
-import org.apache.camel.AsyncEndpoint;
-import org.apache.camel.Exchange;
-import org.apache.camel.ExchangePattern;
-import org.apache.camel.LoggingLevel;
-import org.apache.camel.MultipleConsumersSupport;
-import org.apache.camel.PollingConsumer;
-import org.apache.camel.Processor;
-import org.apache.camel.Producer;
-import org.apache.camel.Service;
+import org.apache.camel.*;
 import org.apache.camel.api.management.ManagedAttribute;
 import org.apache.camel.api.management.ManagedResource;
 import org.apache.camel.spi.*;
@@ -167,14 +159,26 @@ public class JmsEndpoint extends DefaultEndpoint implements AsyncEndpoint, Heade
     @Override
     public Producer createProducer() throws Exception {
         AsyncApiProcessorFactory factory = null;
+
+        if(factory == null) {
+            FactoryFinder finder = getCamelContext().adapt(ExtendedCamelContext.class).getFactoryFinder("META-INF/services/org/apache/camel/asyncapi/");
+            factory = finder.newInstance("AsyncApiProcessorFactoryImpl", AsyncApiProcessorFactory.class).orElse(null);
+        }
+
+
+
         // lookup in registry
         Set<AsyncApiProcessorFactory> factories = getCamelContext().getRegistry().findByType(AsyncApiProcessorFactory.class);
         Processor processor = null;
         if (factories != null && factories.size() == 1) {
             factory = factories.iterator().next();
 
+
+        }
+
+        if(factory != null) {
             //todo
-            processor = factory.createApiProcessor(getCamelContext(), "apidoc", "", false, new AsyncAPIConfiguration());
+            processor = factory.createApiProcessor(getCamelContext(), "apidoc", "", false, new AsyncApiConfiguration());
         }
 
         Producer answer = new JmsProducer(this, processor);

@@ -19,8 +19,6 @@ package org.apache.camel.spi;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Processor;
 
-import java.util.Map;
-
 /**
  * todo
  *
@@ -45,6 +43,6 @@ public interface AsyncApiProcessorFactory {
      * @return a newly created REST API provider
      * @throws Exception can be thrown
      */
-    Processor createApiProcessor(CamelContext camelContext, String contextPath, String contextIdPattern, boolean contextIdListing, AsyncAPIConfiguration asyncAPIConfiguration) throws Exception;
+    Processor createApiProcessor(CamelContext camelContext, String contextPath, String contextIdPattern, boolean contextIdListing, AsyncApiConfiguration asyncAPIConfiguration) throws Exception;
 
 }

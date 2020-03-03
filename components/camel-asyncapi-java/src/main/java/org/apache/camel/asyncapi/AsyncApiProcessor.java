@@ -17,20 +17,12 @@
 package org.apache.camel.asyncapi;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import io.apicurio.datamodels.asyncapi.models.AaiDocument;
-import io.apicurio.datamodels.openapi.models.OasDocument;
-import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.apache.camel.model.rest.RestDefinition;
-import org.apache.camel.spi.AsyncAPIConfiguration;
-import org.apache.camel.spi.ClassResolver;
-import org.apache.camel.spi.RestConfiguration;
-import org.apache.camel.support.PatternHelper;
-import org.apache.camel.util.ObjectHelper;
+import org.apache.camel.spi.AsyncApiConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,10 +34,10 @@ public class AsyncApiProcessor implements Processor {
     private static final Logger LOG = LoggerFactory.getLogger(AsyncApiProcessor.class);
     private final String contextIdPattern;
     private final boolean contextIdListing;
-    private final AsyncAPIConfiguration configuration;
+    private final AsyncApiConfiguration configuration;
 
     @SuppressWarnings("unchecked")
-    public AsyncApiProcessor(String contextIdPattern, boolean contextIdListing, Map<String, Object> parameters, AsyncAPIConfiguration configuration) {
+    public AsyncApiProcessor(String contextIdPattern, boolean contextIdListing, Map<String, Object> parameters, AsyncApiConfiguration configuration) {
         this.contextIdPattern = contextIdPattern;
         this.contextIdListing = contextIdListing;
         this.configuration = configuration;
@@ -59,7 +51,7 @@ public class AsyncApiProcessor implements Processor {
         renderResourceListing(configuration, adapter);
     }
 
-    public void renderResourceListing(AsyncAPIConfiguration asyncAPIConfiguration, AsyncApiResponseAdapter response)
+    public void renderResourceListing(AsyncApiConfiguration asyncAPIConfiguration, AsyncApiResponseAdapter response)
             throws Exception {
         LOG.trace("renderResourceListing");
 

@@ -22,7 +22,7 @@ import java.util.Map;
  * Configuration use by {@link org.apache.camel.spi.RestConsumerFactory} and {@link org.apache.camel.spi.RestApiConsumerFactory}
  * for Camel components to support the Camel {@link org.apache.camel.model.rest.RestDefinition rest} DSL.
  */
-public class RestConfiguration {
+public class RestConfiguration extends ApiConfiguration{
 
     public static final String CORS_ACCESS_CONTROL_ALLOW_ORIGIN = "*";
     public static final String CORS_ACCESS_CONTROL_ALLOW_METHODS = "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, CONNECT, PATCH";
@@ -41,12 +41,8 @@ public class RestConfiguration {
     private String apiComponent;
     private String producerComponent;
     private String producerApiDoc;
-    private String scheme;
-    private String host;
     private boolean useXForwardHeaders = true;
     private String apiHost;
-    private int port;
-    private String contextPath;
     private String apiContextPath;
     private String apiContextRouteId;
     private String apiContextIdPattern;
@@ -142,24 +138,6 @@ public class RestConfiguration {
     }
 
     /**
-     * Gets the hostname to use by the REST consumer
-     *
-     * @return the hostname, or <tt>null</tt> to use default hostname
-     */
-    public String getHost() {
-        return host;
-    }
-
-    /**
-     * Sets the hostname to use by the REST consumer
-     *
-     * @param host the hostname
-     */
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    /**
      * WWhether to use X-Forward headers to set host etc. for Swagger.
      * <p/>
      * This option is default <tt>true</tt>.
@@ -190,64 +168,6 @@ public class RestConfiguration {
      */
     public void setApiHost(String apiHost) {
         this.apiHost = apiHost;
-    }
-
-    /**
-     * Gets the scheme to use by the REST consumer
-     *
-     * @return the scheme, or <tt>null</tt> to use default scheme
-     */
-    public String getScheme() {
-        return scheme;
-    }
-
-    /**
-     * Sets the scheme to use by the REST consumer
-     *
-     * @param scheme the scheme
-     */
-    public void setScheme(String scheme) {
-        this.scheme = scheme;
-    }
-
-    /**
-     * Gets the port to use by the REST consumer
-     *
-     * @return the port, or <tt>0</tt> or <tt>-1</tt> to use default port
-     */
-    public int getPort() {
-        return port;
-    }
-
-    /**
-     * Sets the port to use by the REST consumer
-     *
-     * @param port the port number
-     */
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    /**
-     * Gets the configured context-path
-     *
-     * @return the context path, or <tt>null</tt> if none configured.
-     */
-    public String getContextPath() {
-        return contextPath;
-    }
-
-    /**
-     * Sets a leading context-path the REST services will be using.
-     * <p/>
-     * This can be used when using components such as <tt>camel-servlet</tt> where the deployed web application
-     * is deployed using a context-path. Or for components such as <tt>camel-jetty</tt> or <tt>camel-netty-http</tt>
-     * that includes a HTTP server.
-     *
-     * @param contextPath the context path
-     */
-    public void setContextPath(String contextPath) {
-        this.contextPath = contextPath;
     }
 
     public String getApiContextPath() {
