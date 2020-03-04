@@ -60,6 +60,7 @@
         <include>org.apache.camel:camel-as2-api</include>
         <include>org.apache.camel:camel-asn1</include>
         <include>org.apache.camel:camel-asterisk</include>
+        <include>org.apache.camel:camel-asyncapi-java</include>
         <include>org.apache.camel:camel-atmos</include>
         <include>org.apache.camel:camel-atmosphere-websocket</include>
         <include>org.apache.camel:camel-atom</include>

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.camel.spi.ApiConfiguration;
 import org.apache.camel.spi.RestConfiguration;
 import org.apache.camel.util.HostUtils;
 import org.apache.camel.util.URISupport;
@@ -58,7 +59,7 @@ public final class RestComponentHelper {
      * @param config the RestConfiguration
      * @return the map of Endpoint Properties set in the RestConfiguration
      */
-    public static Map<String, Object> initRestEndpointProperties(String componentName, RestConfiguration config) {
+    public static Map<String, Object> initRestEndpointProperties(String componentName, ApiConfiguration config) {
         Map<String, Object> map = new HashMap<>();
         // build query string, and append any endpoint configuration properties
         if (config.getComponent() == null || config.getComponent().equals(componentName)) {
@@ -79,7 +80,7 @@ public final class RestComponentHelper {
      * @return the host based on RestConfiguration
      * @throws UnknownHostException thrown when local host or local ip can't be resolved via network interfaces.
      */
-    public static String resolveRestHostName(String host, RestConfiguration config) throws UnknownHostException {
+    public static String resolveRestHostName(String host, ApiConfiguration config) throws UnknownHostException {
         if (config.getHostNameResolver() == RestConfiguration.RestHostNameResolver.allLocalIp) {
             host = "0.0.0.0";
         } else if (config.getHostNameResolver() == RestConfiguration.RestHostNameResolver.localHostName) {

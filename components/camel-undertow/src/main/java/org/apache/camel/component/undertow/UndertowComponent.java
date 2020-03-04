@@ -35,6 +35,9 @@ import org.apache.camel.Processor;
 import org.apache.camel.Producer;
 import org.apache.camel.SSLContextParametersAware;
 import org.apache.camel.component.extension.ComponentVerifierExtension;
+import org.apache.camel.spi.ApiConfiguration;
+import org.apache.camel.spi.AsyncApiConfiguration;
+import org.apache.camel.spi.AsyncApiConsumerFactory;
 import org.apache.camel.spi.Metadata;
 import org.apache.camel.spi.RestApiConsumerFactory;
 import org.apache.camel.spi.RestConfiguration;
@@ -57,7 +60,7 @@ import org.apache.camel.util.UnsafeUriCharactersEncoder;
  */
 @Metadata(label = "verifiers", enums = "parameters,connectivity")
 @Component("undertow")
-public class UndertowComponent extends DefaultComponent implements RestConsumerFactory, RestApiConsumerFactory, RestProducerFactory, SSLContextParametersAware {
+public class UndertowComponent extends DefaultComponent implements RestConsumerFactory, RestApiConsumerFactory, RestProducerFactory, SSLContextParametersAware, AsyncApiConsumerFactory {
 
     private final Map<UndertowHostKey, UndertowHost> undertowRegistry = new ConcurrentHashMap<>();
     private final Set<HttpHandlerRegistrationInfo> handlers = new LinkedHashSet<>();
@@ -142,6 +145,12 @@ public class UndertowComponent extends DefaultComponent implements RestConsumerF
     }
 
     @Override
+    public Consumer createConsumer(CamelContext camelContext, Processor processor, String verb, String basePath, String uriTemplate,
+                                   String consumes, String produces, AsyncApiConfiguration configuration, Map<String, Object> parameters) throws Exception {
+        return doCreateConsumer(camelContext, processor, verb, basePath, uriTemplate, consumes, produces, configuration, parameters, true);
+    }
+
+    @Override
     public Consumer createApiConsumer(CamelContext camelContext, Processor processor, String contextPath,
                                       RestConfiguration configuration, Map<String, Object> parameters) throws Exception {
         // reuse the createConsumer method we already have. The api need to use GET and match on uri prefix
@@ -149,7 +158,7 @@ public class UndertowComponent extends DefaultComponent implements RestConsumerF
     }
 
     Consumer doCreateConsumer(CamelContext camelContext, Processor processor, String verb, String basePath, String uriTemplate,
-                              String consumes, String produces, RestConfiguration configuration, Map<String, Object> parameters, boolean api) throws Exception {
+                              String consumes, String produces, ApiConfiguration configuration, Map<String, Object> parameters, boolean api) throws Exception {
         String path = basePath;
         if (uriTemplate != null) {
             // make sure to avoid double slashes
@@ -164,7 +173,7 @@ public class UndertowComponent extends DefaultComponent implements RestConsumerF
         String host = "";
         int port = 0;
 
-        RestConfiguration config = configuration;
+        ApiConfiguration config = configuration;
         if (config == null) {
             config = camelContext.getRestConfiguration(getComponentName(), true);
         }

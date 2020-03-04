@@ -161,6 +161,26 @@
     "artifactId": "camel-asterisk",
     "version": "3.1.0-SNAPSHOT"
   },
+  "AsyncApiComponentBuilderFactory": {
+    "kind": "component",
+    "scheme": "async-api",
+    "extendsScheme": "",
+    "syntax": "async-api:path",
+    "title": "async-api",
+    "description": "todo from restEndpoint",
+    "label": "todo",
+    "deprecated": false,
+    "deprecationNote": "todo",
+    "async": false,
+    "consumerOnly": false,
+    "producerOnly": false,
+    "lenientProperties": false,
+    "javaType": "org.apache.camel.asyncapi.AsyncApiComponent",
+    "firstVersion": "3.1",
+    "groupId": "org.apache.camel",
+    "artifactId": "camel-asyncapi-java",
+    "version": "3.1.0-SNAPSHOT"
+  },
   "AtmosComponentBuilderFactory": {
     "kind": "component",
     "scheme": "atmos",

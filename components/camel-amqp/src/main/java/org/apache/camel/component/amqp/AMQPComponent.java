@@ -26,15 +26,18 @@ import org.apache.camel.Endpoint;
 import org.apache.camel.component.jms.JmsComponent;
 import org.apache.camel.component.jms.JmsConfiguration;
 import org.apache.camel.component.jms.JmsEndpoint;
+import org.apache.camel.spi.AsyncApiConfiguration;
+import org.apache.camel.spi.AsyncApiConfigurationOwner;
 import org.apache.camel.spi.annotations.Component;
 import org.apache.camel.support.component.PropertyConfigurerSupport;
 import org.apache.qpid.jms.JmsConnectionFactory;
+import org.springframework.scheduling.annotation.Async;
 
 /**
  * Messaging with AMQP protocol using Apache QPid Client.
  */
 @Component("amqp")
-public class AMQPComponent extends JmsComponent {
+public class AMQPComponent extends JmsComponent implements AsyncApiConfigurationOwner {
 
     // Constructors
 
@@ -126,4 +129,11 @@ public class AMQPComponent extends JmsComponent {
         super.setProperties(bean, parameters);
     }
 
+    @Override
+    public AsyncApiConfiguration getAsyncApiConfiguration() {
+        AsyncApiConfiguration conf =  new AsyncApiConfiguration();
+        conf.setPort(8081);
+        conf.setData(getClass().getName());
+        return conf;
+    }
 }

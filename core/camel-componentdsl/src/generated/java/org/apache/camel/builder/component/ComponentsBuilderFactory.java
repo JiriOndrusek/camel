@@ -118,6 +118,17 @@ public interface ComponentsBuilderFactory {
         return org.apache.camel.builder.component.dsl.AsteriskComponentBuilderFactory.asterisk();
     }
     /**
+     * async-api (camel-asyncapi-java)
+     * todo from restEndpoint
+     * 
+     * Category: todo
+     * Since: 3.1
+     * Maven coordinates: org.apache.camel:camel-asyncapi-java
+     */
+    static org.apache.camel.builder.component.dsl.AsyncApiComponentBuilderFactory.AsyncApiComponentBuilder asyncApi() {
+        return org.apache.camel.builder.component.dsl.AsyncApiComponentBuilderFactory.asyncApi();
+    }
+    /**
      * Atmos (camel-atmos)
      * The atmos component is used for integrating with EMC's Atomos Storage.
      * 

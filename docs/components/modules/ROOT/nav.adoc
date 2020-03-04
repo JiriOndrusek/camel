@@ -10,6 +10,7 @@
 * xref:as2-component.adoc[AS2 Component]
 * xref:asn1-dataformat.adoc[ASN.1 File DataFormat]
 * xref:asterisk-component.adoc[Asterisk Component]
+* xref:asyncapi-java.adoc[OpenApi Java Component]
 * xref:atmos-component.adoc[Atmos Component]
 * xref:atmosphere-websocket-component.adoc[Atmosphere Websocket Component]
 * xref:atom-component.adoc[Atom Component]
