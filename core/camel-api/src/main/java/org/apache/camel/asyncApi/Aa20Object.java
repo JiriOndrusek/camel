@@ -17,6 +17,8 @@
 package org.apache.camel.asyncApi;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,8 +36,8 @@ public class Aa20Object {
     Map<String, Aa20Server> servers = new LinkedHashMap();
     Map<String, Aa20ChannelItem> channels = new LinkedHashMap();
     //todo components
-    //todo tags
-    //todo externaldocc
+    List<Aa20Tag> tags = new LinkedList<>();
+    Aa20ExternalDocumentation externalDocs;
 
     public Aa20Object(String asyncapi) {
         this.asyncapi = asyncapi;
@@ -95,9 +97,10 @@ public class Aa20Object {
         return this;
     }
 
-    public Aa20Object addServer(String name, Aa20Server server) {
+    public Aa20Server createServer(String name, String url, String protocol) {
+        Aa20Server server = new Aa20Server(url, protocol);
         this.servers.put(name, server);
-        return this;
+        return server;
     }
 
     public Map<String, Aa20ChannelItem> getChannels() {
@@ -113,8 +116,41 @@ public class Aa20Object {
         return this;
     }
 
-    public Aa20Object addChannels(String name, Aa20ChannelItem channelItem) {
+    public Aa20ChannelItem createChannels(String name) {
+        Aa20ChannelItem channelItem = new Aa20ChannelItem();
         this.channels.put(name, channelItem);
+        return channelItem;
+    }
+
+    /**
+     * A list of tags for API documentation control. Tags can be used for logical grouping of messages.
+     */
+    public Aa20Object setTags(List<Aa20Tag> tags) {
+        this.tags = tags;
         return this;
+    }
+
+    public Aa20Tag createTag(String name) {
+        Aa20Tag tag = new Aa20Tag(name);
+        this.tags.add(tag);
+        return tag;
+    }
+
+    public Aa20ExternalDocumentation getExternalDocs() {
+        return externalDocs;
+    }
+
+    /**
+     * @param externalDocs Additional external documentation for this tag.
+     */
+    public Aa20Object setExternalDocs(Aa20ExternalDocumentation externalDocs) {
+        this.externalDocs = externalDocs;
+        return this;
+    }
+
+    public Aa20ExternalDocumentation createExternalDocs(String url) {
+        Aa20ExternalDocumentation externalDocs = new Aa20ExternalDocumentation(url);
+        this.externalDocs = externalDocs;
+        return externalDocs;
     }
 }

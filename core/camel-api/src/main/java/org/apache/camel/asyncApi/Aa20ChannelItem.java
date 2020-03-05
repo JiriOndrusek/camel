@@ -16,14 +16,26 @@
  */
 package org.apache.camel.asyncApi;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+/**
+ * Describes the operations available on a single channel.
+ * todo This object can be extended with Specification Extensions.
+ */
 public class Aa20ChannelItem {
 
+    //todo The referenced
+    //     * structure MUST be in the format of a Channel Item Object. If there are
+    //     * conflicts between the referenced definition and this Channel Item’s
+    //     * definition, the behavior is undefined.
     String $ref;
+    // todo CommonMark syntax can be used for rich text representation.
     String description;
-    Aa20OperationObject subscribe;
-    //todo publish
-    //todo parameters
-    //todo bindings
+    Aa20Operation subscribe;
+    Aa20Operation publish;
+    Map<String, Aa20Partameter> parameters = new LinkedHashMap<>();
+    Aa20ChannelBindings bindings = new Aa20ChannelBindings();
 
 
     public String get$ref() {
@@ -54,15 +66,50 @@ public class Aa20ChannelItem {
         return this;
     }
 
-    public Aa20OperationObject getSubscribe() {
+    public Aa20Operation getSubscribe() {
         return subscribe;
     }
 
     /**
      * A definition of the SUBSCRIBE operation.
      */
-    public Aa20ChannelItem setSubscribe(Aa20OperationObject subscribe) {
+    public Aa20Operation createSubscribe() {
+        Aa20Operation subscribe = new Aa20Operation();
         this.subscribe = subscribe;
-        return this;
+        return subscribe;
+    }
+
+    public Aa20Operation getPublish() {
+        return publish;
+    }
+
+    /**
+     * A definition of the PUBLISH operation.
+     */
+    public Aa20Operation createPublish() {
+        Aa20Operation publish = new Aa20Operation();
+        this.publish = publish;
+        return publish;
+    }
+
+    public Map<String, Aa20Partameter> getParameters() {
+        return parameters;
+    }
+
+    /**
+     */
+    public Aa20Partameter createParameter(String name) {
+        Aa20Partameter parameter = new Aa20Partameter();
+        parameters.put(name, parameter);
+        return parameter;
+    }
+
+    public Aa20ChannelBindings getBindings() {
+        return bindings;
+    }
+
+    //todo
+    public void setBindings(Aa20ChannelBindings bindings) {
+        this.bindings = bindings;
     }
 }

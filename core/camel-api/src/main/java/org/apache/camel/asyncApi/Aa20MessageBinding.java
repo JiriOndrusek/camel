@@ -16,39 +16,28 @@
  */
 package org.apache.camel.asyncApi;
 
-public class Aa20OperationObject {
+import java.util.HashMap;
+import java.util.Map;
 
-    String operationId;
-    String summary;
-    String description;
-    //todo tags
-    //todo externalDocs
-    //todo bindings
-    //todo traits
-    //todo message
+/**
+ * Map describing protocol-specific definitions for a message.
+ * todo
+ */
+public class Aa20MessageBinding extends HashMap {
 
-
-    public String getOperationId() {
-        return operationId;
-    }
-
-    public void setOperationId(String operationId) {
-        this.operationId = operationId;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public enum field{
+        http,
+        ws,
+        kafka,
+        amqp,
+        amqp1,
+        mqtt,
+        mqtt5,
+        nats,
+        jms,
+        sns,
+        sqs,
+        stomp,
+        redis
     }
 }

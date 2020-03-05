@@ -147,6 +147,13 @@ public class AMQPComponent extends JmsComponent implements AsyncApiConfiguration
                     .setUrl("https://www.test.com/testurl")
                     .setEmail("test@test.com");
 
+        object.createChannels("hello")
+                .createPublish()
+                    .createMessage()
+                        .addPayload("type", "string")
+                        .addPayload("pattern", "^hello .+$");
+
+
         return object;
     }
 }
