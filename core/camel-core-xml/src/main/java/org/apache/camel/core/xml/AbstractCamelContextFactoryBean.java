@@ -974,6 +974,9 @@ public abstract class AbstractCamelContextFactoryBean<T extends ModelCamelContex
         if (getRestConfiguration() != null) {
             context.setRestConfiguration(getRestConfiguration().asRestConfiguration(context));
         }
+        if (getAsynApiConfiguration() != null) {
+
+        }
         if (getDefaultServiceCallConfiguration() != null) {
             context.setServiceCallConfiguration(getDefaultServiceCallConfiguration());
         }

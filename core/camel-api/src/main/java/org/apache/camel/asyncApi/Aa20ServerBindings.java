@@ -14,11 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.camel.spi;
+package org.apache.camel.asyncApi;
 
-/**
- * todo from restconfiguration
- */
-public class AsyncApiConfiguration extends ApiConfiguration {
+public class Aa20ServerBindings {
 
+    //TODO
 }

@@ -16,10 +16,15 @@
  */
 package org.apache.camel.spi;
 
+import org.apache.camel.asyncApi.Aa20Object;
+
 /**
- * todo from restconfiguration
+ * todo
  */
 public interface AsyncApiConfigurationOwner  {
 
-    public AsyncApiConfiguration getAsyncApiConfiguration();
+    AsyncApiConfiguration getAsyncApiConfiguration();
+
+//    Aai20Document createAsyncAPIDefinition();
+    Aa20Object createAsyncAPIDefinition();
 }

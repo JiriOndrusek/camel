@@ -23,6 +23,7 @@ import javax.jms.ConnectionFactory;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
+import org.apache.camel.asyncApi.Aa20Object;
 import org.apache.camel.component.jms.JmsComponent;
 import org.apache.camel.component.jms.JmsConfiguration;
 import org.apache.camel.component.jms.JmsEndpoint;
@@ -31,7 +32,6 @@ import org.apache.camel.spi.AsyncApiConfigurationOwner;
 import org.apache.camel.spi.annotations.Component;
 import org.apache.camel.support.component.PropertyConfigurerSupport;
 import org.apache.qpid.jms.JmsConnectionFactory;
-import org.springframework.scheduling.annotation.Async;
 
 /**
  * Messaging with AMQP protocol using Apache QPid Client.
@@ -133,7 +133,20 @@ public class AMQPComponent extends JmsComponent implements AsyncApiConfiguration
     public AsyncApiConfiguration getAsyncApiConfiguration() {
         AsyncApiConfiguration conf =  new AsyncApiConfiguration();
         conf.setPort(8081);
-        conf.setData(getClass().getName());
         return conf;
+    }
+
+    @Override
+    public Aa20Object createAsyncAPIDefinition() {
+
+        Aa20Object object = new Aa20Object("2.0.0");
+        object.createInfo("test title", "1.2.3")
+                .setTermsOfService("https://www.test.org/tos")
+                .createContact()
+                    .setName("Test Name")
+                    .setUrl("https://www.test.com/testurl")
+                    .setEmail("test@test.com");
+
+        return object;
     }
 }

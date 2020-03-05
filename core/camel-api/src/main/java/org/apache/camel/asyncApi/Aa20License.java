@@ -14,11 +14,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.camel.spi;
+package org.apache.camel.asyncApi;
 
 /**
- * todo from restconfiguration
+ * License information for the exposed API.
  */
-public class AsyncApiConfiguration extends ApiConfiguration {
+public class Aa20License {
 
+    String name;
+    String url;
+
+    public Aa20License(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Required. The license name used for the API.
+     */
+    public Aa20License setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * A URL to the license used for the API. MUST be in the format of a URL.
+     */
+    public Aa20License setUrl(String url) {
+        this.url = url;
+        return this;
+    }
 }

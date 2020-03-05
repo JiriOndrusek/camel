@@ -151,7 +151,7 @@ public class AsyncApiEndpoint extends DefaultEndpoint {
         //todo
             boolean contextIdListing = false;
 
-            Processor processor = new AsyncApiProcessor(config);
+            Processor processor = new AsyncApiProcessor((AsyncApiConfigurationOwner)asyncApiConfigurationOwner.get().getFactory());
             return new AsyncApiProducer(this, processor);
     }
 

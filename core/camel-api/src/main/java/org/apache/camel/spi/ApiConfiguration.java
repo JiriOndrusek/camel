@@ -32,6 +32,12 @@ public class ApiConfiguration {
     private RestConfiguration.RestHostNameResolver hostNameResolver = RestConfiguration.RestHostNameResolver.allLocalIp;
     private Map<String, Object> endpointProperties;
     private Map<String, Object> consumerProperties;
+    private String apiHost;
+    private String apiContextPath;
+    private String apiContextRouteId;
+    private String apiContextIdPattern;
+    private boolean apiContextListing;
+    private boolean apiVendorExtension;
 
     /**
      * Gets the name of the Camel component to use as the REST consumer
@@ -213,5 +219,91 @@ public class ApiConfiguration {
      */
     public void setConsumerProperties(Map<String, Object> consumerProperties) {
         this.consumerProperties = consumerProperties;
+    }
+
+    public String getApiHost() {
+        return apiHost;
+    }
+
+    /**
+     * To use an specific hostname for the API documentation (eg swagger)
+     * <p/>
+     * This can be used to override the generated host with this configured hostname
+     */
+    public void setApiHost(String apiHost) {
+        this.apiHost = apiHost;
+    }
+
+
+    public String getApiContextPath() {
+        return apiContextPath;
+    }
+
+    /**
+     * Sets a leading API context-path the REST API services will be using.
+     * <p/>
+     * This can be used when using components such as <tt>camel-servlet</tt> where the deployed web application
+     * is deployed using a context-path.
+     *
+     * @param contextPath the API context path
+     */
+    public void setApiContextPath(String contextPath) {
+        this.apiContextPath = contextPath;
+    }
+
+    public String getApiContextRouteId() {
+        return apiContextRouteId;
+    }
+
+    /**
+     * Sets the route id to use for the route that services the REST API.
+     * <p/>
+     * The route will by default use an auto assigned route id.
+     *
+     * @param apiContextRouteId  the route id
+     */
+    public void setApiContextRouteId(String apiContextRouteId) {
+        this.apiContextRouteId = apiContextRouteId;
+    }
+
+    public String getApiContextIdPattern() {
+        return apiContextIdPattern;
+    }
+
+    /**
+     * Optional CamelContext id pattern to only allow Rest APIs from rest services within CamelContext's which name matches the pattern.
+     * <p/>
+     * The pattern <tt>#name#</tt> refers to the CamelContext name, to match on the current CamelContext only.
+     * For any other value, the pattern uses the rules from {@link org.apache.camel.support.EndpointHelper#matchPattern(String, String)}
+     *
+     * @param apiContextIdPattern  the pattern
+     */
+    public void setApiContextIdPattern(String apiContextIdPattern) {
+        this.apiContextIdPattern = apiContextIdPattern;
+    }
+
+    public boolean isApiContextListing() {
+        return apiContextListing;
+    }
+
+    /**
+     * Sets whether listing of all available CamelContext's with REST services in the JVM is enabled. If enabled it allows to discover
+     * these contexts, if <tt>false</tt> then only the current CamelContext is in use.
+     */
+    public void setApiContextListing(boolean apiContextListing) {
+        this.apiContextListing = apiContextListing;
+    }
+
+    public boolean isApiVendorExtension() {
+        return apiVendorExtension;
+    }
+
+    /**
+     * Whether vendor extension is enabled in the Rest APIs. If enabled then Camel will include additional information
+     * as vendor extension (eg keys starting with x-) such as route ids, class names etc.
+     * Not all 3rd party API gateways and tools supports vendor-extensions when importing your API docs.
+     */
+    public void setApiVendorExtension(boolean apiVendorExtension) {
+        this.apiVendorExtension = apiVendorExtension;
     }
 }

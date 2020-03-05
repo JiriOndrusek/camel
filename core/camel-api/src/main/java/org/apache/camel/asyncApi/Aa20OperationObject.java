@@ -14,11 +14,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.camel.spi;
+package org.apache.camel.asyncApi;
 
-/**
- * todo from restconfiguration
- */
-public class AsyncApiConfiguration extends ApiConfiguration {
+public class Aa20OperationObject {
 
+    String operationId;
+    String summary;
+    String description;
+    //todo tags
+    //todo externalDocs
+    //todo bindings
+    //todo traits
+    //todo message
+
+
+    public String getOperationId() {
+        return operationId;
+    }
+
+    public void setOperationId(String operationId) {
+        this.operationId = operationId;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

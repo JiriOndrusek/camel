@@ -526,7 +526,7 @@ public class CamelContextFactoryBean extends AbstractCamelContextFactoryBean<Spr
     /**
      * Configuration for rest-dsl
      */
-    public void setRestConfiguration(RestConfigurationDefinition restConfiguration) {
+    public void nsetRestConfiguration(RestConfigurationDefinition restConfiguration) {
         this.restConfiguration = restConfiguration;
     }
 
