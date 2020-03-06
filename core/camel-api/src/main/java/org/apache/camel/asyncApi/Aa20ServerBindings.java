@@ -16,7 +16,7 @@
  */
 package org.apache.camel.asyncApi;
 
-public class Aa20ServerBindings {
+public class Aa20ServerBindings implements Aa20OrReferenceType<Aa20ServerBindings> {
 
     //TODO
 }

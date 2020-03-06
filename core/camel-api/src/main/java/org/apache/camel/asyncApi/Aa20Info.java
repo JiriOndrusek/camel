@@ -104,4 +104,9 @@ public class Aa20Info {
         this.license = license;
         return this;
     }
+
+    public Aa20License createLicense(String name) {
+        this.license = new Aa20License(name);
+        return this.license;
+    }
 }

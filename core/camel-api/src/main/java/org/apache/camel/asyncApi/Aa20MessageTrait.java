@@ -24,7 +24,7 @@ import java.util.List;
  *
  * If you’re looking to apply traits to an operation, see the Operation Trait Object.
  */
-public class Aa20MessageTrait extends AbstractMessage<Aa20MessageTrait> {
+public class Aa20MessageTrait extends AbstractMessage<Aa20MessageTrait>  implements  Aa20OrReferenceType<Aa20MessageTrait> {
 
     List<String> examples = new LinkedList<>();
 

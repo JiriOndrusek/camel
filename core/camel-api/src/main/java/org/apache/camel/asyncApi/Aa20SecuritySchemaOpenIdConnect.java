@@ -16,12 +16,22 @@
  */
 package org.apache.camel.asyncApi;
 
-/**
- * Describes a trait that MAY be applied to an Operation Object.
- * This object MAY contain any property from the Operation Object, except message and traits.
- *
- * If you’re looking to apply traits to a message, see the Message Trait Object.
- */
-public class Aa20OperationTrait extends AbstractOperation<Aa20OperationTrait> implements  Aa20OrReferenceType<Aa20OperationTrait> {
+public class Aa20SecuritySchemaOpenIdConnect extends Aa20AbstractSecuritySchema implements Aa20OrReferenceType<Aa20SecuritySchemaOpenIdConnect> {
 
+    /**
+     * An object containing configuration information for the flow types supported.
+     */
+    private final String openIdConnect;
+
+    /**
+     * @param openIdConnect  OpenId Connect URL to discover OAuth2 configuration values. This MUST be in the form of a URL.
+     */
+    public Aa20SecuritySchemaOpenIdConnect(String openIdConnect) {
+        super(Type.openIdConnect);
+        this.openIdConnect = openIdConnect;
+    }
+
+    public String getOpenIdConnect() {
+        return openIdConnect;
+    }
 }

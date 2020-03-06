@@ -18,5 +18,5 @@ package org.apache.camel.asyncApi;
 
 import java.util.LinkedHashMap;
 
-public class Aa20ChannelBindings extends LinkedHashMap {
+public class Aa20ChannelBindings extends LinkedHashMap  implements  Aa20OrReferenceType<Aa20ChannelBindings> {
 }

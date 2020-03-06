@@ -24,11 +24,11 @@ import java.util.Map;
 /**
  * Describes a message received on a given channel and operation.
  */
-public abstract class AbstractMessage<T extends AbstractMessage> extends AbstractObject<T>{
+public abstract class AbstractMessage<T extends AbstractMessage> extends AbstractObject<T> {
 
     //todo headers	Schema Object | Reference Object
     Map<String, Object> payload = new LinkedHashMap();
-    AbstractCorrelationIdOrReference correlationId;
+    Aa20OrReferenceType<Aa20CorellationId> correlationId;
     String schemaFormat;
     String contentType;
     String name;
@@ -45,14 +45,14 @@ public abstract class AbstractMessage<T extends AbstractMessage> extends Abstrac
         return (T)this;
     }
 
-    public AbstractCorrelationIdOrReference getCorrelationId() {
+    public Aa20OrReferenceType<Aa20CorellationId> getCorrelationId() {
         return correlationId;
     }
 
     public Aa20CorellationId createCorrelationId(String location) {
-        Aa20CorellationId corelationId = new Aa20CorellationId(location);
-        this.correlationId = correlationId;
-        return corelationId;
+        Aa20CorellationId corellationId = new Aa20CorellationId(location);
+        this.correlationId = corellationId;
+        return corellationId;
     }
 
     public Aa20Reference createReference(String $ref) {

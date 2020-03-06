@@ -35,7 +35,7 @@ public class Aa20Object {
     //todo ^[A-Za-z0-9_\-]+$
     Map<String, Aa20Server> servers = new LinkedHashMap();
     Map<String, Aa20ChannelItem> channels = new LinkedHashMap();
-    //todo components
+    Aa20Components components;
     List<Aa20Tag> tags = new LinkedList<>();
     Aa20ExternalDocumentation externalDocs;
 
@@ -116,10 +116,19 @@ public class Aa20Object {
         return this;
     }
 
-    public Aa20ChannelItem createChannels(String name) {
+    public Aa20ChannelItem createChannel(String name) {
         Aa20ChannelItem channelItem = new Aa20ChannelItem();
         this.channels.put(name, channelItem);
         return channelItem;
+    }
+
+    public Aa20Components getComponents() {
+        return components;
+    }
+
+    public Aa20Components createComponents() {
+        this.components = new Aa20Components();
+        return this.components;
     }
 
     /**

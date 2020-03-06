@@ -16,12 +16,19 @@
  */
 package org.apache.camel.asyncApi;
 
-/**
- * Describes a trait that MAY be applied to an Operation Object.
- * This object MAY contain any property from the Operation Object, except message and traits.
- *
- * If you’re looking to apply traits to a message, see the Message Trait Object.
- */
-public class Aa20OperationTrait extends AbstractOperation<Aa20OperationTrait> implements  Aa20OrReferenceType<Aa20OperationTrait> {
+public class Aa20SecuritySchemaHttpApiKey extends Aa20AbstractSecuritySchema implements Aa20OrReferenceType<Aa20SecuritySchemaHttpApiKey> {
 
+    private final String in;
+
+    /**
+     * @param in The location of the API key. Valid values are "user" and "password" for apiKey and "query", "header" or "cookie" for httpApiKey.
+     */
+    public Aa20SecuritySchemaHttpApiKey(String in) {
+        super(Type.httpApiKey);
+        this.in = in;
+    }
+
+    public String getIn() {
+        return in;
+    }
 }

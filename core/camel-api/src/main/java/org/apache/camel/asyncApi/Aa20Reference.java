@@ -29,7 +29,7 @@ package org.apache.camel.asyncApi;
  * For this specification, reference resolution is done as defined by the JSON Reference
  * specification and not by the JSON Schema specification.
  */
-public class Aa20Reference extends AbstractCorrelationIdOrReference {
+public class Aa20Reference  implements Aa20OrReferenceType {
 
     final String $ref;
 

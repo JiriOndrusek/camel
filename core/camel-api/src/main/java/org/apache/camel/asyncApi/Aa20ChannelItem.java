@@ -34,7 +34,7 @@ public class Aa20ChannelItem {
     String description;
     Aa20Operation subscribe;
     Aa20Operation publish;
-    Map<String, Aa20Partameter> parameters = new LinkedHashMap<>();
+    Map<String, Aa20OrReferenceType<Aa20Parameter>> parameters = new LinkedHashMap<>();
     Aa20ChannelBindings bindings = new Aa20ChannelBindings();
 
 
@@ -70,6 +70,43 @@ public class Aa20ChannelItem {
         return subscribe;
     }
 
+
+    public Aa20Operation getPublish() {
+        return publish;
+    }
+
+
+    public void setSubscribe(Aa20Operation subscribe) {
+        this.subscribe = subscribe;
+    }
+
+    public void setPublish(Aa20Operation publish) {
+        this.publish = publish;
+    }
+
+    public Map<String, Aa20OrReferenceType<Aa20Parameter>> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Map<String, Aa20OrReferenceType<Aa20Parameter>> parameters) {
+        this.parameters = parameters;
+    }
+
+
+
+    public Aa20ChannelBindings getBindings() {
+        return bindings;
+    }
+
+    //todo
+    public void setBindings(Aa20ChannelBindings bindings) {
+        this.bindings = bindings;
+    }
+
+
+    // --------------------------------------- create methods ---------------------------------------------------------
+
+
     /**
      * A definition of the SUBSCRIBE operation.
      */
@@ -79,9 +116,6 @@ public class Aa20ChannelItem {
         return subscribe;
     }
 
-    public Aa20Operation getPublish() {
-        return publish;
-    }
 
     /**
      * A definition of the PUBLISH operation.
@@ -92,24 +126,15 @@ public class Aa20ChannelItem {
         return publish;
     }
 
-    public Map<String, Aa20Partameter> getParameters() {
-        return parameters;
-    }
-
-    /**
-     */
-    public Aa20Partameter createParameter(String name) {
-        Aa20Partameter parameter = new Aa20Partameter();
+    public Aa20Parameter createParameter(String name) {
+        Aa20Parameter parameter = new Aa20Parameter();
         parameters.put(name, parameter);
         return parameter;
     }
 
-    public Aa20ChannelBindings getBindings() {
-        return bindings;
-    }
-
-    //todo
-    public void setBindings(Aa20ChannelBindings bindings) {
-        this.bindings = bindings;
+    public Aa20ChannelItem createParameterAsReference(String name, String $ref) {
+        Aa20Reference parameter = new Aa20Reference($ref);
+        parameters.put(name, parameter);
+        return this;
     }
 }

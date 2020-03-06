@@ -16,28 +16,9 @@
  */
 package org.apache.camel.asyncApi;
 
-public class AbstractCorrelationIdOrReference {
+public class Aa20SecuritySchemaAsymetricEncryption extends Aa20AbstractSecuritySchema implements Aa20OrReferenceType<Aa20SecuritySchemaAsymetricEncryption> {
 
-    public boolean isReference() {
-        return this instanceof Aa20Reference;
+    public Aa20SecuritySchemaAsymetricEncryption() {
+        super(Type.asymmetricEncryption);
     }
-
-    public Aa20Reference asRef() {
-        if(isReference()) {
-            return (Aa20Reference) this;
-        }
-        return  null;
-    }
-
-    public boolean isCorrelationId() {
-        return this instanceof Aa20CorellationId;
-    }
-
-    public Aa20CorellationId asCorrelation() {
-        if(isCorrelationId()) {
-            return (Aa20CorellationId) this;
-        }
-        return  null;
-    }
-
 }

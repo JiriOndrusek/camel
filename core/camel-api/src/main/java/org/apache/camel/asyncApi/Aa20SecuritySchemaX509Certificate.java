@@ -16,12 +16,9 @@
  */
 package org.apache.camel.asyncApi;
 
-/**
- * Describes a trait that MAY be applied to an Operation Object.
- * This object MAY contain any property from the Operation Object, except message and traits.
- *
- * If you’re looking to apply traits to a message, see the Message Trait Object.
- */
-public class Aa20OperationTrait extends AbstractOperation<Aa20OperationTrait> implements  Aa20OrReferenceType<Aa20OperationTrait> {
+public class Aa20SecuritySchemaX509Certificate extends Aa20AbstractSecuritySchema implements Aa20OrReferenceType<Aa20SecuritySchemaX509Certificate> {
 
+    public Aa20SecuritySchemaX509Certificate() {
+        super(Type.X509);
+    }
 }

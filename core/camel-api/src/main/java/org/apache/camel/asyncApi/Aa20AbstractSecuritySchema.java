@@ -16,22 +16,32 @@
  */
 package org.apache.camel.asyncApi;
 
-/**
- * An object that specifies an identifier at design time that can used for message tracing and correlation.
- *
- * For specifying and computing the location of a Correlation ID, a runtime expression is used.
- */
-public class Aa20CorellationId implements Aa20OrReferenceType<Aa20CorellationId> {
+public abstract class Aa20AbstractSecuritySchema {
 
-    String description;
-    final String location;
+    public enum Type {
+        userPassword,
+        apiKey,
+        X509,
+        symmetricEncryption,
+        asymmetricEncryption,
+        httpApiKey,
+        http,
+        oauth2,
+        openIdConnect;
+    }
+
+    private final Type type;
+    private String description;
 
     /**
-     *
-     * @param location REQUIRED. A runtime expression that specifies the location of the correlation ID.
+     * @param type The type of the security scheme. Valid values are "userPassword", "apiKey", "X509", "symmetricEncryption", "asymmetricEncryption", "httpApiKey", "http", oauth2, and openIdConnect.
      */
-    public Aa20CorellationId(String location) {
-        this.location = location;
+    public Aa20AbstractSecuritySchema(Type type) {
+        this.type = type;
+    }
+
+    public Type getType() {
+        return type;
     }
 
     public String getDescription() {
@@ -39,13 +49,9 @@ public class Aa20CorellationId implements Aa20OrReferenceType<Aa20CorellationId>
     }
 
     /**
-     * @param description An optional description of the identifier. CommonMark syntax can be used for rich text representation.
+     * @param description A short description for security scheme. CommonMark syntax MAY be used for rich text representation.
      */
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getLocation() {
-        return location;
     }
 }

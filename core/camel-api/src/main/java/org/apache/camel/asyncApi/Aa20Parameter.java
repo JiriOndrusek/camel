@@ -16,7 +16,7 @@
  */
 package org.apache.camel.asyncApi;
 
-public class Aa20Partameter {
+public class Aa20Parameter implements Aa20OrReferenceType<Aa20Parameter> {
 
     //todo CommonMark syntax can be used for rich text representation.
     String description;
@@ -30,7 +30,7 @@ public class Aa20Partameter {
     /**
      * @param description A verbose explanation of the parameter. CommonMark syntax can be used for rich text representation.
      */
-    public Aa20Partameter setDescription(String description) {
+    public Aa20Parameter setDescription(String description) {
         this.description = description;
         return this;
     }
@@ -42,7 +42,7 @@ public class Aa20Partameter {
     /**
      * @param location A runtime expression that specifies the location of the parameter value. Even when a definition for the target field exists, it MUST NOT be used to validate this parameter but, instead, the schema property MUST be used.
      */
-    public Aa20Partameter setLocation(String location) {
+    public Aa20Parameter setLocation(String location) {
         this.location = location;
         return this;
     }

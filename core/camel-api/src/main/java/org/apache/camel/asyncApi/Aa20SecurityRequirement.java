@@ -16,12 +16,13 @@
  */
 package org.apache.camel.asyncApi;
 
-/**
- * Describes a trait that MAY be applied to an Operation Object.
- * This object MAY contain any property from the Operation Object, except message and traits.
- *
- * If you’re looking to apply traits to a message, see the Message Trait Object.
- */
-public class Aa20OperationTrait extends AbstractOperation<Aa20OperationTrait> implements  Aa20OrReferenceType<Aa20OperationTrait> {
+import java.util.LinkedHashMap;
+import java.util.List;
 
+/**
+ * Lists the required security schemes to execute this operation. The name used for each property MUST correspond to a security scheme declared in the Security Schemes under the Components Object.
+ *
+ * When a list of Security Requirement Objects is defined on a Server object, only one of the Security Requirement Objects in the list needs to be satisfied to authorize the connection.
+ */
+public class Aa20SecurityRequirement extends LinkedHashMap<String, List<String>> {
 }

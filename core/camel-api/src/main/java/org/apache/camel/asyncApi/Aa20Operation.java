@@ -27,13 +27,27 @@ import java.util.List;
  */
 public class Aa20Operation extends AbstractOperation<Aa20Operation> {
 
-    List<Aa20OperationTrait> traits = new LinkedList<>();
-    Aa20Message message;
+    List<Aa20OrReferenceType<Aa20OperationTrait>> traits = new LinkedList<>();
+    private Aa20OrReferenceType<Aa20Message> message;
 
 
-    public List<Aa20OperationTrait> getTraits() {
+    public void setTraits(List<Aa20OrReferenceType<Aa20OperationTrait>> traits) {
+        this.traits = traits;
+    }
+
+    public List<Aa20OrReferenceType<Aa20OperationTrait>> getTraits() {
         return traits;
     }
+
+    public Aa20OrReferenceType<Aa20Message> getMessage() {
+        return message;
+    }
+
+    public void setMessage(Aa20OrReferenceType<Aa20Message> message) {
+        this.message = message;
+    }
+
+// --------------------------------------- create methods ---------------------------------------------------------
 
     /**
      * @return A list of traits to apply to the operation object.
@@ -46,8 +60,11 @@ public class Aa20Operation extends AbstractOperation<Aa20Operation> {
         return trait;
     }
 
-    public Aa20Message getMessage() {
-        return message;
+    public Aa20Operation createTraitAsReference(String $ref) {
+        Aa20Reference ref = new Aa20Reference($ref);
+        this.traits.add(ref);
+        return this;
+
     }
 
     /**
@@ -57,5 +74,11 @@ public class Aa20Operation extends AbstractOperation<Aa20Operation> {
         Aa20Message message = new Aa20Message();
         this.message = message;
         return message;
+    }
+
+    public Aa20Operation createMessageAsReference(String $ref) {
+        Aa20Reference ref = new Aa20Reference($ref);
+        this.message = ref;
+        return this;
     }
 }

@@ -16,5 +16,28 @@
  */
 package org.apache.camel.asyncApi;
 
-public class AbstractParameterOrReference {
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * Map describing protocol-specific definitions for an operation.
+ */
+public class Aa20OperationBindings extends LinkedHashMap<Aa20OperationBindings.type, Object> {
+
+    public enum type {
+        http,
+        ws,
+        kafka,
+        amqp,
+        amqp1,
+        mqtt,
+        mqtt5,
+        nats,
+        jms,
+        sns,
+        sqs,
+        stomp,
+        redis;
+    }
 }

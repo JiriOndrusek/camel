@@ -23,6 +23,7 @@ import javax.jms.ConnectionFactory;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
+import org.apache.camel.asyncApi.Aa20Message;
 import org.apache.camel.asyncApi.Aa20Object;
 import org.apache.camel.component.jms.JmsComponent;
 import org.apache.camel.component.jms.JmsConfiguration;
@@ -152,8 +153,22 @@ public class AMQPComponent extends JmsComponent implements AsyncApiConfiguration
                     .createMessage()
                         .addPayload("type", "string")
                         .addPayload("pattern", "^hello .+$");
+        object.createComponents();
+        object.getComponents().createMessage("testMessage")
+                .addPayload("type", "string")
+                .addPayload("pattern", "test");
+        object.getComponents().createMessageAsReference("testMessageAsReference", "something");
+
+        object.getComponents().createSecuritySchemaUserPassword("userPassword")
+                .setDescription("userPassword Description");
+
+        object.getComponents().createSecuritySchemaApiKey("apiKey", "user")
+                .setDescription("apiKey Description, in user");
 
 
+
+//object.getComponents().getMessages().get("testMessage").asObject(Aa20Message.class).getPayload();
+//object.getComponents().getMessages().get("testMessage").asReference().get$ref();
         return object;
     }
 }

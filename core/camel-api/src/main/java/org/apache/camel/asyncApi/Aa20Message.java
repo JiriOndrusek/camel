@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Describes a message received on a given channel and operation.
  */
-public class Aa20Message extends AbstractMessage<Aa20Message> {
+public class Aa20Message extends AbstractMessage<Aa20Message> implements Aa20OrReferenceType<Aa20Message> {
 
 
     List<Aa20MessageTrait> traits = new LinkedList<>();

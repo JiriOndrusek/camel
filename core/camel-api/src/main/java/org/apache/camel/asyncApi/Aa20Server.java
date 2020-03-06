@@ -16,6 +16,8 @@
  */
 package org.apache.camel.asyncApi;
 
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -31,8 +33,8 @@ public class Aa20Server {
     String protocol;
     String protocolVersion;
     String description;
-    Map<String, Aa20ServerVariable> variables;
-    //todo security
+    Map<String, Aa20ServerVariable> variables = new LinkedHashMap<>();
+    Map<Aa20AbstractSecuritySchema.Type, Collection<String>> security = new LinkedHashMap<>();
     Aa20ServerBindings bindings;
 
 
@@ -108,8 +110,22 @@ public class Aa20Server {
         return this;
     }
 
-    public Aa20Server addVariable(String name, Aa20ServerVariable value) {
-        this.variables = variables;
+    public Aa20ServerVariable createVariable(String name) {
+        Aa20ServerVariable variable = new Aa20ServerVariable();
+        this.variables.put(name, variable);
+        return variable;
+    }
+
+    public Map<Aa20AbstractSecuritySchema.Type, Collection<String>> getSecurity() {
+        return security;
+    }
+
+    public void setSecurity(Map<Aa20AbstractSecuritySchema.Type, Collection<String>> security) {
+        this.security = security;
+    }
+
+    public Aa20Server createSecurityRequirement(Aa20AbstractSecuritySchema.Type type, Collection<String> schemas) {
+        this.security.put(type, schemas);
         return this;
     }
 

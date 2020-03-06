@@ -16,8 +16,10 @@
  */
 package org.apache.camel.asyncApi;
 
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * An object representing a Server Variable for server URL template substitution.
@@ -25,20 +27,21 @@ import java.util.List;
  */
 public class Aa20ServerVariable {
 
-    String enumName;
+    private Set<String> enums = new LinkedHashSet();
     String defaultValue;
     String description;
     List<String> examples = new LinkedList<>();
 
-    public String getEnumName() {
-        return enumName;
+    public Set<String> getEnums() {
+        return enums;
     }
 
-    /**
-     * An enumeration of string values to be used if the substitution options are from a limited set.
-     */
-    public Aa20ServerVariable setEnumName(String enumName) {
-        this.enumName = enumName;
+    public void setEnums(Set<String> enums) {
+        this.enums = enums;
+    }
+
+    public Aa20ServerVariable createEnum(String enumName) {
+        this.enums.add(enumName);
         return this;
     }
 
