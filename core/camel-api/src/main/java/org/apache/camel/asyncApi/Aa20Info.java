@@ -19,94 +19,17 @@ package org.apache.camel.asyncApi;
 /**
  * The object provides metadata about the API. The metadata can be used by the clients if needed.
  */
-public class Aa20Info {
+public interface Aa20Info {
 
-    String title;
-    String version;
-    String description;
-    String termsOfService;
-    Aa20Contact contact;
-    Aa20License license;
+    String getTitle();
 
-    public Aa20Info(String title, String version) {
-        this.title = title;
-        this.version = version;
-    }
+    String getVersion();
 
-    public String getTitle() {
-        return title;
-    }
+    String getDescription();
 
-    /**
-     * Required. The title of the application.
-     */
-    public Aa20Info setTitle(String title) {
-        this.title = title;
-        return this;
-    }
+    String getTermsOfService();
 
-    public String getVersion() {
-        return version;
-    }
+    Aa20Contact getContact();
 
-    /**
-     * Required Provides the version of the application API (not to be confused with the specification version).
-     */
-    public Aa20Info setVersion(String version) {
-        this.version = version;
-        return this;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * A short description of the application. CommonMark syntax can be used for rich text representation.
-     */
-    public Aa20Info setDescription(String description) {
-        this.description = description;
-        return this;
-    }
-
-    public String getTermsOfService() {
-        return termsOfService;
-    }
-
-    /**
-     * A URL to the Terms of Service for the API. MUST be in the format of a URL.
-     */
-    public Aa20Info setTermsOfService(String termsOfService) {
-        this.termsOfService = termsOfService;
-        return this;
-    }
-
-    public Aa20Contact getContact() {
-        return contact;
-    }
-
-    /**
-     * The contact information for the exposed API.
-     */
-    public Aa20Contact createContact() {
-        this.contact = new Aa20Contact();
-        return this.contact;
-    }
-
-    public Aa20License getLicense() {
-        return license;
-    }
-
-    /**
-     * The license information for the exposed API.
-     */
-    public Aa20Info setLicense(Aa20License license) {
-        this.license = license;
-        return this;
-    }
-
-    public Aa20License createLicense(String name) {
-        this.license = new Aa20License(name);
-        return this.license;
-    }
+    Aa20License getLicense();
 }

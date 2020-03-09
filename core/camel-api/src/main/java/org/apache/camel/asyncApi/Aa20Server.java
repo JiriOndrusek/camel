@@ -35,6 +35,8 @@ public class Aa20Server {
     List<Aa20SecurityRequirement> security = new LinkedList();
     Aa20ServerBindings bindings;
 
+    private Aa20Server() {
+    }
 
     public Aa20Server(String url, String protocol) {
         this.url = url;

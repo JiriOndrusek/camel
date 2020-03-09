@@ -24,6 +24,9 @@ public class Aa20License {
     String name;
     String url;
 
+    public Aa20License() {
+    }
+
     public Aa20License(String name) {
         this.name = name;
     }
@@ -51,4 +54,7 @@ public class Aa20License {
         this.url = url;
         return this;
     }
+
+
+
 }
