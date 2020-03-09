@@ -42,8 +42,8 @@ public class Aa20OAuthFlows {
         return this;
     }
 
-    public Aa20OAuthFlow createImplicit(String authorizationUrl, String tokenUrl, Map<String, String> scopes) {
-        this.implicit = new Aa20OAuthFlow(authorizationUrl, tokenUrl, scopes);
+    public Aa20OAuthFlow createImplicit() {
+        this.implicit = new Aa20OAuthFlow();
         return this.implicit;
     }
 
@@ -59,8 +59,8 @@ public class Aa20OAuthFlows {
         return this;
     }
 
-    public Aa20OAuthFlow createPassword(String authorizationUrl, String tokenUrl, Map<String, String> scopes) {
-        this.password = new Aa20OAuthFlow(authorizationUrl, tokenUrl, scopes);
+    public Aa20OAuthFlow createPassword() {
+        this.password = new Aa20OAuthFlow();
         return this.password;
     }
 
@@ -76,8 +76,8 @@ public class Aa20OAuthFlows {
         return this;
     }
 
-    public Aa20OAuthFlow createClientCredentials(String authorizationUrl, String tokenUrl, Map<String, String> scopes) {
-        this.clientCredentials = new Aa20OAuthFlow(authorizationUrl, tokenUrl, scopes);
+    public Aa20OAuthFlow createClientCredentials() {
+        this.clientCredentials = new Aa20OAuthFlow();
         return this.clientCredentials;
     }
 
@@ -93,8 +93,8 @@ public class Aa20OAuthFlows {
         return this;
     }
 
-    public Aa20OAuthFlow createAuthorizationCode(String authorizationUrl, String tokenUrl, Map<String, String> scopes) {
-        this.authorizationCode = new Aa20OAuthFlow(authorizationUrl, tokenUrl, scopes);
+    public Aa20OAuthFlow createAuthorizationCode() {
+        this.authorizationCode = new Aa20OAuthFlow();
         return this.authorizationCode;
     }
 

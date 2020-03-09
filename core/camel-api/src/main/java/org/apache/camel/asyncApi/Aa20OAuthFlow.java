@@ -16,6 +16,7 @@
  */
 package org.apache.camel.asyncApi;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -23,21 +24,11 @@ import java.util.Map;
  */
 public class Aa20OAuthFlow {
 
-    private final String authorizationUrl;
-    private final String tokenUrl;
+    private String authorizationUrl;
+    private String tokenUrl;
     private String refreshUrl;
-    private final Map<String,String> scopes;
+    private Map<String,String> scopes = new LinkedHashMap<>();
 
-    /**
-     * @param authorizationUrl The authorization URL to be used for this flow. This MUST be in the form of a URL.
-     * @param tokenUrl The token URL to be used for this flow. This MUST be in the form of a URL.
-     * @param scopes The available scopes for the OAuth2 security scheme. A map between the scope name and a short description for it.
-     */
-    public Aa20OAuthFlow(String authorizationUrl, String tokenUrl, Map<String, String> scopes) {
-        this.authorizationUrl = authorizationUrl;
-        this.tokenUrl = tokenUrl;
-        this.scopes = scopes;
-    }
 
     public String getAuthorizationUrl() {
         return authorizationUrl;
@@ -51,6 +42,20 @@ public class Aa20OAuthFlow {
         return refreshUrl;
     }
 
+    public Aa20OAuthFlow setAuthorizationUrl(String authorizationUrl) {
+        this.authorizationUrl = authorizationUrl;
+        return this;
+    }
+
+    public Aa20OAuthFlow setTokenUrl(String tokenUrl) {
+        this.tokenUrl = tokenUrl;
+        return this;
+    }
+
+    public void setScopes(Map<String, String> scopes) {
+        this.scopes = scopes;
+    }
+
     /**
      * @param refreshUrl The URL to be used for obtaining refresh tokens. This MUST be in the form of a URL.
      */
@@ -62,4 +67,10 @@ public class Aa20OAuthFlow {
     public Map<String, String> getScopes() {
         return scopes;
     }
+
+    public Aa20OAuthFlow createScope(String name, String description) {
+        scopes.put(name, description);
+        return this;
+    }
+
 }

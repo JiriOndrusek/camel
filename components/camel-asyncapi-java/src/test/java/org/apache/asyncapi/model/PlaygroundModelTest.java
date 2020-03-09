@@ -4,14 +4,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
-import org.apache.camel.asyncApi.Aa20AbstractSecuritySchema;
-import org.apache.camel.asyncApi.Aa20ChannelItem;
-import org.apache.camel.asyncApi.Aa20Object;
-import org.apache.camel.asyncApi.Aa20Server;
+import org.apache.camel.asyncApi.*;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class PlaygroundModelTest {
 
@@ -43,12 +42,14 @@ public class PlaygroundModelTest {
         prod.setDescription("Testbroker");
         prod.createVariable("port")
             .setDescription("Secure connection (TLS) is available through port 8883.")
-            .setDefaultValue("1883")
+//            .setDefaultValue("1883")
             .createEnum("1883")
             .createEnum("8883");
-        prod.createSecurityRequirement(Aa20AbstractSecuritySchema.Type.apiKey, Collections.emptyList())
-                .createSecurityRequirement(Aa20AbstractSecuritySchema.Type.oauth2, Arrays.asList("streetlights:on", "streetlights:off", "streetlights:dim"))
-                .createSecurityRequirement(Aa20AbstractSecuritySchema.Type.openIdConnect, Collections.emptyList());
+
+       prod.createSecurityRequirementApiKey();
+       prod.createSecurityRequirementOAuth2().createSchema("treetlights:on").createSchema("streetlights:off").createSchema("streetlights:dim");
+       prod.createSecurityRequirementOpenIdConnect();
+
 
         Aa20ChannelItem channel = doc.createChannel("smartylighting/streetlights/1/0/event/{streetlightId}/lighting/measured");
         channel.setDescription("The topic on which measured values may be produced and consumed.");
@@ -77,10 +78,126 @@ public class PlaygroundModelTest {
                 .createPublish()
                 .setOperationId("dimLight")
                 .createTraitAsReference("#/components/operationTraits/kafka")
-                .createMessageAsReference("/components/messages/dimLight");
+                .createMessageAsReference("#/components/messages/dimLight");
+
+        Aa20Components comps = doc.createComponents();
+        comps.createMessage("lightMeasured")
+                .setName("lightMeasured")
+                .setTitle("Streetlights API")
+                .setSummary("Inform about environmental lighting conditions for a particular streetlight.")
+                .setContentType("application/json")
+                .createTraitAsReference("#/components/messageTraits/commonHeaders")
+                .createPayload("$ref", "#/components/schemas/lightMeasuredPayload");
+
+        comps.createMessage("turnOnOff")
+            .setName("turnOnOff")
+            .setTitle("Turn on/off")
+            .setSummary("ommand a particular streetlight to turn the lights on or off.")
+            .createTraitAsReference("#/components/messageTraits/commonHeaders")
+            .createPayload("$ref", "#/components/messageTraits/commonHeaders");
+
+        comps.createMessage("dimLight")
+                .setName("dimLight")
+                .setTitle("Dim light")
+                .setSummary("Command a particular streetlight to dim the lights.")
+                .createTraitAsReference("#/components/messageTraits/commonHeaders")
+                .createPayload("$ref", "#/components/schemas/dimLightPayload");
+
+        Aa20Schema schema = comps.createSchema("lightMeasuredPayload");
+        schema.put("type", "object");
+        Map<String, Object> properties = new LinkedHashMap<>();
+        schema.put("properties", properties);
+        Map<String, Object> lumens = new LinkedHashMap<>();
+        properties.put("lumens", lumens);
+        lumens.put("type", "integer");
+        lumens.put("minimum", 0);
+        lumens.put("description", "Light intensity measured in lumens.");
+        properties.put("sentAt", Collections.singletonMap("$ref", "#/components/schemas/sentAt"));
+
+        schema = comps.createSchema("turnOnOffPayload");
+        schema.put("type", "object");
+        Map<String, Object> command = new LinkedHashMap<>();
+        schema.put("properties", properties);
+        properties.put("command", command);
+        lumens.put("type", "string");
+        lumens.put("enum", Arrays.asList("on", "off"));
+        lumens.put("description", "Whether to turn on or off the light.");
+        properties.put("sentAt", Collections.singletonMap("$ref", "#/components/schemas/sentAt"));
+
+        schema = comps.createSchema("dimLightPayload");
+        schema.put("type", "object");
+        Map<String, Object> percentage = new LinkedHashMap<>();
+        schema.put("properties", properties);
+        properties.put("percentage", percentage);
+        percentage.put("type", "integer");
+        percentage.put("minimum", 0);
+        percentage.put("maximum", 100);
+        percentage.put("description", "Percentage to which the light should be dimmed to.");
+        properties.put("sentAt", Collections.singletonMap("$ref", "#/components/schemas/sentAt"));
+
+        schema = comps.createSchema("sentAt");
+        schema.put("type", "string");
+        schema.put("format", "date-time");
+        schema.put("description", "Date and time when the message was sent.");
+
+        comps.createSecuritySchemaApiKey("apiKey", "user")
+                .setDescription("Provide your API key as the user and leave the password empty.");
+        Aa20SecuritySchemaOAuth2 oAuthScheme = comps.createSecuritySchemaHttpOAuth2("supportedOauthFlows");
+        oAuthScheme.setDescription("Flows to support OAuth 2.0");
+
+        //todo even token urls should be mandatory
+        oAuthScheme.getFlows().createImplicit()
+                .setAuthorizationUrl("https://authserver.example/auth")
+                .createScope("streetlights:on", "Ability to switch lights on")
+                .createScope("streetlights:off", "Ability to switch lights off")
+                .createScope("streetlights:dim", "Ability to dim the lights");
+        oAuthScheme.getFlows().createPassword()
+                .setTokenUrl("https://authserver.example/token")
+                .createScope("streetlights:on", "Ability to switch lights on")
+                .createScope("streetlights:off", "Ability to switch lights off")
+                .createScope("streetlights:dim", "Ability to dim the lights");
+        oAuthScheme.getFlows().createClientCredentials()
+                .setTokenUrl("https://authserver.example/token")
+                .createScope("streetlights:on", "Ability to switch lights on")
+                .createScope("streetlights:off", "Ability to switch lights off")
+                .createScope("streetlights:dim", "Ability to dim the lights");
+        oAuthScheme.getFlows().createAuthorizationCode()
+                .setAuthorizationUrl("https://authserver.example/auth")
+                .setTokenUrl("https://authserver.example/token")
+                .setRefreshUrl("https://authserver.example/refresh")
+                .createScope("streetlights:on", "Ability to switch lights on")
+                .createScope("streetlights:off", "Ability to switch lights off")
+                .createScope("streetlights:dim", "Ability to dim the lights");
+
+        //todo openIdConnect vs openIdConnectUrl
+        comps.createSecuritySchemaOpenIdConnectDiscovery("openIdConnectWellKnown", "https://authserver.example/.well-known");
+
+        comps.createParameter("streetlightId")
+                .setDescription("The ID of the streetlight.")
+                .createSchema()
+                    .put("type", "string");
+
+        Aa20Schema headers = comps.createMessageTrait("commonHeaders")
+            .createHeaders();
+        headers.put("type", "object");
+        properties = new LinkedHashMap<>();
+
+//        Map<String, Object> myAppHeader = new LinkedHashMap<>();
+//        properties.put("my-app-header", myAppHeader);
+        headers.put("properties", properties);
+//        myAppHeader.put("type", "integer");
+//        myAppHeader.put("minimum", 0);
+//        myAppHeader.put("maximum", 100);
+
+        Aa20MessageBinding binding = comps.createOperationTrait("kafka")
+                .createBindings(Aa20MessageBinding.Field.kafka);
+        binding.put(Aa20MessageBinding.Field.kafka, Collections.singletonMap("clientId", "my-app-id"));
+
+
 
 
 
         return doc;
     }
+
 }

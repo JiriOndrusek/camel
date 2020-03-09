@@ -26,18 +26,4 @@ import java.util.List;
  */
 public class Aa20MessageTrait extends AbstractMessage<Aa20MessageTrait>  implements  Aa20OrReferenceType<Aa20MessageTrait> {
 
-    List<String> examples = new LinkedList<>();
-
-    public List<String> getExamples() {
-        return examples;
-    }
-
-    /**
-     * todo
-     * @param example An array with examples of valid message objects.
-     */
-    public Aa20MessageTrait addExample(String example) {
-        this.examples.add(example);
-        return this;
-    }
-}
+   }

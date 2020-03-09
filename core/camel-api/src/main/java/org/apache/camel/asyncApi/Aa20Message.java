@@ -16,28 +16,36 @@
  */
 package org.apache.camel.asyncApi;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Describes a message received on a given channel and operation.
  */
 public class Aa20Message extends AbstractMessage<Aa20Message> implements Aa20OrReferenceType<Aa20Message> {
 
+    Map<String, Object> payload = new LinkedHashMap();
+    List<Aa20OrReferenceType<Aa20MessageTrait>> traits = new LinkedList();
 
-    List<Aa20MessageTrait> traits = new LinkedList<>();
-
-    public List<Aa20MessageTrait> getTraits() {
-        return traits;
+    public Object getPayload() {
+        return payload;
     }
 
-    /**
-     * todo
-     * @return A list of traits to apply to the message object. Traits MUST be merged into the message object using the JSON Merge Patch algorithm in the same order they are defined here. The resulting object MUST be a valid Message Object.
-     */
+    public Aa20Message createPayload(String name, Object payload) {
+        this.payload.put(name, payload);
+        return this;
+    }
+
     public Aa20MessageTrait createTrait() {
         Aa20MessageTrait trait = new Aa20MessageTrait();
         this.traits.add(trait);
         return trait;
+    }
+
+    public Aa20Message createTraitAsReference(String $ref) {
+        this.traits.add(new Aa20Reference($ref));
+        return this;
     }
 }

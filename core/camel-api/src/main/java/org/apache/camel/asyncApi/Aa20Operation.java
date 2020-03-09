@@ -28,7 +28,10 @@ import java.util.List;
 public class Aa20Operation extends AbstractOperation<Aa20Operation> {
 
     List<Aa20OrReferenceType<Aa20OperationTrait>> traits = new LinkedList<>();
+    //todo or oneOf
     private Aa20OrReferenceType<Aa20Message> message;
+
+
 
 
     public void setTraits(List<Aa20OrReferenceType<Aa20OperationTrait>> traits) {

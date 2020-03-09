@@ -25,7 +25,7 @@ public class Aa20Components {
 
     private Map<String, Aa20OrReferenceType<Aa20Schema>> schemas = new LinkedHashMap();
     private Map<String, Aa20OrReferenceType<Aa20Message>> messages = new LinkedHashMap();
-    private Map<String, Aa20OrReferenceType<? extends Aa20AbstractSecuritySchema>> securitySchemas = new LinkedHashMap();
+    private Map<String, Aa20OrReferenceType<? extends Aa20AbstractSecuritySchema>> securitySchemes = new LinkedHashMap();
     private Map<String, Aa20OrReferenceType<Aa20Parameter>> parameters = new LinkedHashMap();
     private Map<String, Aa20OrReferenceType<Aa20CorellationId>> correlationIds = new LinkedHashMap();
     private Map<String, Aa20OrReferenceType<Aa20OperationTrait>> operationTraits = new LinkedHashMap();
@@ -57,15 +57,15 @@ public class Aa20Components {
         this.schemas = schemas;
     }
 
-    public Map<String, Aa20OrReferenceType<? extends Aa20AbstractSecuritySchema>> getSecuritySchemas() {
-        return securitySchemas;
+    public Map<String, Aa20OrReferenceType<? extends Aa20AbstractSecuritySchema>> getSecuritySchemes() {
+        return securitySchemes;
     }
 
     /**
-     * @param securitySchemas An object to hold reusable Security Scheme Objects.
+     * @param securitySchemes An object to hold reusable Security Scheme Objects.
      */
-    public void setSecuritySchemas(Map<String, Aa20OrReferenceType<? extends Aa20AbstractSecuritySchema>> securitySchemas) {
-        this.securitySchemas = securitySchemas;
+    public void setSecuritySchemes(Map<String, Aa20OrReferenceType<? extends Aa20AbstractSecuritySchema>> securitySchemes) {
+        this.securitySchemes = securitySchemes;
     }
 
     public Map<String, Aa20OrReferenceType<Aa20Parameter>> getParameters() {
@@ -200,60 +200,60 @@ public class Aa20Components {
 
     public Aa20SecuritySchemaApiKey createSecuritySchemaApiKey(String name, String in) {
         Aa20SecuritySchemaApiKey securitySchema = new Aa20SecuritySchemaApiKey(in);
-        securitySchemas.put(name, securitySchema);
+        securitySchemes.put(name, securitySchema);
         return securitySchema;
     }
 
     public Aa20SecuritySchemaSymetricEncryption createSecuritySchemaSymetricEncryption(String name) {
         Aa20SecuritySchemaSymetricEncryption securitySchema = new Aa20SecuritySchemaSymetricEncryption();
-        securitySchemas.put(name, securitySchema);
+        securitySchemes.put(name, securitySchema);
         return securitySchema;
     }
 
     public Aa20SecuritySchemaAsymetricEncryption createSecuritySchemaAsymetricEncryption(String name) {
         Aa20SecuritySchemaAsymetricEncryption securitySchema = new Aa20SecuritySchemaAsymetricEncryption();
-        securitySchemas.put(name, securitySchema);
+        securitySchemes.put(name, securitySchema);
         return securitySchema;
     }
 
     public Aa20SecuritySchemaHttpApiKey createSecuritySchemaHttpApiKey(String name, String in) {
         Aa20SecuritySchemaHttpApiKey securitySchema = new Aa20SecuritySchemaHttpApiKey(in);
-        securitySchemas.put(name, securitySchema);
+        securitySchemes.put(name, securitySchema);
         return securitySchema;
     }
 
     public Aa20SecuritySchemaHttp createSecuritySchemaHttp(String name, String schema) {
         Aa20SecuritySchemaHttp securitySchema = new Aa20SecuritySchemaHttp(schema);
-        securitySchemas.put(name, securitySchema);
+        securitySchemes.put(name, securitySchema);
         return securitySchema;
     }
 
     public Aa20SecuritySchemaOAuth2 createSecuritySchemaHttpOAuth2(String name) {
         Aa20SecuritySchemaOAuth2 securitySchema = new Aa20SecuritySchemaOAuth2();
-        securitySchemas.put(name, securitySchema);
+        securitySchemes.put(name, securitySchema);
         return securitySchema;
     }
 
     public Aa20SecuritySchemaOpenIdConnect createSecuritySchemaOpenIdConnectDiscovery(String name, String openIdConnect) {
         Aa20SecuritySchemaOpenIdConnect securitySchema = new Aa20SecuritySchemaOpenIdConnect(openIdConnect);
-        securitySchemas.put(name, securitySchema);
+        securitySchemes.put(name, securitySchema);
         return securitySchema;
     }
 
     public Aa20SecuritySchemaUserPassword createSecuritySchemaUserPassword(String name) {
         Aa20SecuritySchemaUserPassword securitySchema = new Aa20SecuritySchemaUserPassword();
-        securitySchemas.put(name, securitySchema);
+        securitySchemes.put(name, securitySchema);
         return securitySchema;
     }
 
     public Aa20SecuritySchemaX509Certificate createSecuritySchemaX509Certificate(String name) {
         Aa20SecuritySchemaX509Certificate securitySchema = new Aa20SecuritySchemaX509Certificate();
-        securitySchemas.put(name, securitySchema);
+        securitySchemes.put(name, securitySchema);
         return securitySchema;
     }
 
     public Aa20Reference createSecuritySchemaAsReference(String name, String $ref) {
-        return createItemAsReference(r -> securitySchemas.put(name, r), $ref);
+        return createItemAsReference(r -> securitySchemes.put(name, r), $ref);
     }
 
     public Aa20Parameter createParameter(String name) {

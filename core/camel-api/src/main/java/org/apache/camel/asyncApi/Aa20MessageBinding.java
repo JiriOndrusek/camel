@@ -23,9 +23,9 @@ import java.util.Map;
  * Map describing protocol-specific definitions for a message.
  * todo
  */
-public class Aa20MessageBinding extends HashMap  implements  Aa20OrReferenceType<Aa20MessageBinding>{
+public class Aa20MessageBinding extends HashMap<Aa20MessageBinding.Field, Object>  implements  Aa20OrReferenceType<Aa20MessageBinding>{
 
-    public enum field{
+    public enum Field{
         http,
         ws,
         kafka,

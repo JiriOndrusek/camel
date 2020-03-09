@@ -16,6 +16,8 @@
  */
 package org.apache.camel.asyncApi;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +29,7 @@ import java.util.Set;
  */
 public class Aa20ServerVariable {
 
+    @JsonProperty("enum")
     private Set<String> enums = new LinkedHashSet();
     String defaultValue;
     String description;

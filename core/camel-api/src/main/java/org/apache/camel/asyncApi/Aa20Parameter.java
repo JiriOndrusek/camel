@@ -20,7 +20,7 @@ public class Aa20Parameter implements Aa20OrReferenceType<Aa20Parameter> {
 
     //todo CommonMark syntax can be used for rich text representation.
     String description;
-    //todo schema
+    Aa20Schema schema;
     String location;
 
     public String getDescription() {
@@ -45,5 +45,19 @@ public class Aa20Parameter implements Aa20OrReferenceType<Aa20Parameter> {
     public Aa20Parameter setLocation(String location) {
         this.location = location;
         return this;
+    }
+
+    public Aa20Schema getSchema() {
+        return schema;
+    }
+
+    public void setSchema(Aa20Schema schema) {
+        this.schema = schema;
+    }
+
+    public Aa20Schema createSchema() {
+        this.schema = new Aa20Schema();
+        return this.schema;
+
     }
 }

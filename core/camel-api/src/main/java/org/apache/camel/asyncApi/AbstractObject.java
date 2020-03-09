@@ -91,8 +91,9 @@ public abstract class AbstractObject<T extends AbstractObject> {
         return bindings;
     }
 
-    public Aa20MessageBinding createBindings(Aa20MessageBinding.field name) {
+    public Aa20MessageBinding createBindings(Aa20MessageBinding.Field name) {
         Aa20MessageBinding bindings = new Aa20MessageBinding();
+        this.bindings = bindings;
         //todo put into bindigs
         return bindings;
     }

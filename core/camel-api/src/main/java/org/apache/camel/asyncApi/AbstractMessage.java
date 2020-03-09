@@ -26,24 +26,14 @@ import java.util.Map;
  */
 public abstract class AbstractMessage<T extends AbstractMessage> extends AbstractObject<T> {
 
-    //todo headers	Schema Object | Reference Object
-    Map<String, Object> payload = new LinkedHashMap();
+    Aa20OrReferenceType<Aa20Schema> headers;
     Aa20OrReferenceType<Aa20CorellationId> correlationId;
     String schemaFormat;
     String contentType;
     String name;
     String title;
     List<String> examples= new LinkedList<>();
-    List<Aa20MessageTrait> traits = new LinkedList();
 
-    public Object getPayload() {
-        return payload;
-    }
-
-    public T addPayload(String name, Object payload) {
-        this.payload.put(name, payload);
-        return (T)this;
-    }
 
     public Aa20OrReferenceType<Aa20CorellationId> getCorrelationId() {
         return correlationId;
@@ -106,13 +96,15 @@ public abstract class AbstractMessage<T extends AbstractMessage> extends Abstrac
         return (T)this;
     }
 
-    public List<Aa20MessageTrait> getTraits() {
-        return traits;
+
+    public Aa20Schema createHeaders() {
+        Aa20Schema schema = new Aa20Schema();
+        this.headers = schema;
+        return schema;
     }
 
-    public Aa20MessageTrait createTrait() {
-        Aa20MessageTrait trait = new Aa20MessageTrait();
-        this.traits.add(trait);
-        return trait;
+    public T createHeaderstAsReference(String $ref) {
+        this.headers = new Aa20Reference($ref);
+        return (T)this;
     }
 }

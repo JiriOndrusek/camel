@@ -16,7 +16,7 @@
  */
 package org.apache.camel.asyncApi;
 
-import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -24,12 +24,20 @@ import java.util.List;
  *
  * When a list of Security Requirement Objects is defined on a Server object, only one of the Security Requirement Objects in the list needs to be satisfied to authorize the connection.
  */
-public abstract class Aa20SecurityRequirement<T extends Aa20SecurityRequirement> {
+public class Aa20SecurityRequirementX509Certificate extends Aa20SecurityRequirement {
 
-    abstract List<String> getSchemas();
+    private List<String> x509Certificate = new LinkedList();
 
-    public T createSchema(String schema) {
-        getSchemas().add(schema);
-        return (T)this;
+    public List<String> getX509Certificate() {
+        return x509Certificate;
+    }
+
+    public void setX509Certificate(List<String> x509Certificate) {
+        this.x509Certificate = x509Certificate;
+    }
+
+    @Override
+    List<String> getSchemas() {
+        return x509Certificate;
     }
 }

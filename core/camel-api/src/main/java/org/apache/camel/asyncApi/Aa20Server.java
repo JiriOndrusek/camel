@@ -16,9 +16,7 @@
  */
 package org.apache.camel.asyncApi;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * An object representing a message broker, a server or any other kind of computer
@@ -34,7 +32,7 @@ public class Aa20Server {
     String protocolVersion;
     String description;
     Map<String, Aa20ServerVariable> variables = new LinkedHashMap<>();
-    Map<Aa20AbstractSecuritySchema.Type, Collection<String>> security = new LinkedHashMap<>();
+    List<Aa20SecurityRequirement> security = new LinkedList();
     Aa20ServerBindings bindings;
 
 
@@ -116,17 +114,64 @@ public class Aa20Server {
         return variable;
     }
 
-    public Map<Aa20AbstractSecuritySchema.Type, Collection<String>> getSecurity() {
+    public List<Aa20SecurityRequirement> getSecurity() {
         return security;
     }
 
-    public void setSecurity(Map<Aa20AbstractSecuritySchema.Type, Collection<String>> security) {
+    public void setSecurity(List<Aa20SecurityRequirement> security) {
         this.security = security;
     }
 
-    public Aa20Server createSecurityRequirement(Aa20AbstractSecuritySchema.Type type, Collection<String> schemas) {
-        this.security.put(type, schemas);
-        return this;
+    public Aa20SecurityRequirementApiKey createSecurityRequirementApiKey() {
+        Aa20SecurityRequirementApiKey securityRequirement = new Aa20SecurityRequirementApiKey();
+        this.security.add(securityRequirement);
+        return securityRequirement;
+    }
+
+    public Aa20SecurityRequirementAsymetricEncryption createSecurityRequirementAsymetricEncryption() {
+        Aa20SecurityRequirementAsymetricEncryption securityRequirement = new Aa20SecurityRequirementAsymetricEncryption();
+        this.security.add(securityRequirement);
+        return securityRequirement;
+    }
+    public Aa20SecurityRequirementHttp createSecurityRequirementHttp() {
+        Aa20SecurityRequirementHttp securityRequirement = new Aa20SecurityRequirementHttp();
+        this.security.add(securityRequirement);
+        return securityRequirement;
+    }
+    public Aa20SecurityRequirementHttpApiKey createSecurityRequirementHttpApiKey() {
+        Aa20SecurityRequirementHttpApiKey securityRequirement = new Aa20SecurityRequirementHttpApiKey();
+        this.security.add(securityRequirement);
+        return securityRequirement;
+    }
+
+    public Aa20SecurityRequirementOAuth2 createSecurityRequirementOAuth2() {
+        Aa20SecurityRequirementOAuth2 securityRequirement = new Aa20SecurityRequirementOAuth2();
+        this.security.add(securityRequirement);
+        return securityRequirement;
+    }
+
+    public Aa20SecurityRequirementOpenIdConnect createSecurityRequirementOpenIdConnect() {
+        Aa20SecurityRequirementOpenIdConnect securityRequirement = new Aa20SecurityRequirementOpenIdConnect();
+        this.security.add(securityRequirement);
+        return securityRequirement;
+    }
+
+    public Aa20SecurityRequirementSymetricEncryption createSecurityRequirementSymetricEncryption() {
+        Aa20SecurityRequirementSymetricEncryption securityRequirement = new Aa20SecurityRequirementSymetricEncryption();
+        this.security.add(securityRequirement);
+        return securityRequirement;
+    }
+
+    public Aa20SecurityRequirementUserPassword createSecurityRequirementUserPassword() {
+        Aa20SecurityRequirementUserPassword securityRequirement = new Aa20SecurityRequirementUserPassword();
+        this.security.add(securityRequirement);
+        return securityRequirement;
+    }
+
+    public Aa20SecurityRequirementX509Certificate createSecurityRequirementX509Certificate() {
+        Aa20SecurityRequirementX509Certificate securityRequirement = new Aa20SecurityRequirementX509Certificate();
+        this.security.add(securityRequirement);
+        return securityRequirement;
     }
 
     public Aa20ServerBindings getBindings() {
