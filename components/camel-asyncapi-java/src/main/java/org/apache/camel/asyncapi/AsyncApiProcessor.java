@@ -21,6 +21,7 @@ public class AsyncApiProcessor implements Processor {
     public void process(Exchange exchange) throws Exception {
 
         ObjectMapper objectMapper = new ObjectMapper();
+//        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
 
         Aa20Object object = configurationOwner.createAsyncAPIDefinition();

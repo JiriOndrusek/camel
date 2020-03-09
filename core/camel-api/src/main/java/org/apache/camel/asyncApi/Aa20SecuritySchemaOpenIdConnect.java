@@ -21,17 +21,17 @@ public class Aa20SecuritySchemaOpenIdConnect extends Aa20AbstractSecuritySchema 
     /**
      * An object containing configuration information for the flow types supported.
      */
-    private final String openIdConnect;
+    private final String openIdConnectUrl;
 
     /**
      * @param openIdConnect  OpenId Connect URL to discover OAuth2 configuration values. This MUST be in the form of a URL.
      */
     public Aa20SecuritySchemaOpenIdConnect(String openIdConnect) {
         super(Type.openIdConnect);
-        this.openIdConnect = openIdConnect;
+        this.openIdConnectUrl = openIdConnect;
     }
 
-    public String getOpenIdConnect() {
-        return openIdConnect;
+    public String getOpenIdConnectUrl() {
+        return openIdConnectUrl;
     }
 }

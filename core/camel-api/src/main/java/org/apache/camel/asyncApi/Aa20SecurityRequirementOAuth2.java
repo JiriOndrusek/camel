@@ -26,18 +26,18 @@ import java.util.List;
  */
 public class Aa20SecurityRequirementOAuth2 extends Aa20SecurityRequirement<Aa20SecurityRequirementOAuth2> {
 
-    private List<String> oAuth2 = new LinkedList();
+    private List<String> supportedOauthFlows = new LinkedList();
 
-    public List<String> getoAuth2() {
-        return oAuth2;
+    public List<String> getSupportedOauthFlows() {
+        return supportedOauthFlows;
     }
 
-    public void setoAuth2(List<String> oAuth2) {
-        this.oAuth2 = oAuth2;
+    public void setSupportedOauthFlows(List<String> supportedOauthFlows) {
+        this.supportedOauthFlows = supportedOauthFlows;
     }
 
     @Override
     List<String> getSchemas() {
-        return oAuth2;
+        return supportedOauthFlows;
     }
 }

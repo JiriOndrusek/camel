@@ -26,18 +26,18 @@ import java.util.List;
  */
 public class Aa20SecurityRequirementOpenIdConnect extends Aa20SecurityRequirement {
 
-    private List<String> openIdConnect = new LinkedList();
+    private List<String> openIdConnectWellKnown = new LinkedList();
 
-    public List<String> getOpenIdConnect() {
-        return openIdConnect;
+    public List<String> getOpenIdConnectWellKnown() {
+        return openIdConnectWellKnown;
     }
 
-    public void setOpenIdConnect(List<String> openIdConnect) {
-        this.openIdConnect = openIdConnect;
+    public void setOpenIdConnectWellKnown(List<String> openIdConnectWellKnown) {
+        this.openIdConnectWellKnown = openIdConnectWellKnown;
     }
 
     @Override
     List<String> getSchemas() {
-        return openIdConnect;
+        return openIdConnectWellKnown;
     }
 }

@@ -16,6 +16,8 @@
  */
 package org.apache.camel.asyncApi;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -24,6 +26,7 @@ import java.util.List;
  *
  * When a list of Security Requirement Objects is defined on a Server object, only one of the Security Requirement Objects in the list needs to be satisfied to authorize the connection.
  */
+@JsonInclude(JsonInclude.Include.ALWAYS)
 public abstract class Aa20SecurityRequirement<T extends Aa20SecurityRequirement> {
 
     abstract List<String> getSchemas();

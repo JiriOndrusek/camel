@@ -17,7 +17,7 @@ public class PlaygroundModelTest {
     @Test
     public void test() throws Exception{
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_ABSENT);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
 
         Aa20Object model = createModel();
         byte[] bytes = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(model);
@@ -47,7 +47,7 @@ public class PlaygroundModelTest {
             .createEnum("8883");
 
        prod.createSecurityRequirementApiKey();
-       prod.createSecurityRequirementOAuth2().createSchema("treetlights:on").createSchema("streetlights:off").createSchema("streetlights:dim");
+       prod.createSecurityRequirementOAuth2().createSchema("streetlights:on").createSchema("streetlights:off").createSchema("streetlights:dim");
        prod.createSecurityRequirementOpenIdConnect();
 
 
