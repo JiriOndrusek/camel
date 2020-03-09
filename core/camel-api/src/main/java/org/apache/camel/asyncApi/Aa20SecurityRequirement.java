@@ -18,21 +18,17 @@ package org.apache.camel.asyncApi;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
- * Lists the required security schemes to execute this operation. The name used for each property MUST correspond to a security scheme declared in the Security Schemes under the Components Object.
+ * Lists the required security schemes to execute this operation. The name used
+ * for each property MUST correspond to a security scheme declared in the Security S
+ * chemes under the Components Object.
  *
- * When a list of Security Requirement Objects is defined on a Server object, only one of the Security Requirement Objects in the list needs to be satisfied to authorize the connection.
+ * When a list of Security Requirement Objects is defined on a Server object,
+ * only one of the Security Requirement Objects in the list needs to be satisfied
+ * to authorize the connection.
  */
-@JsonInclude(JsonInclude.Include.ALWAYS)
-public abstract class Aa20SecurityRequirement<T extends Aa20SecurityRequirement> {
+public interface Aa20SecurityRequirement{
 
-    abstract List<String> getSchemas();
-
-    public T createSchema(String schema) {
-        getSchemas().add(schema);
-        return (T)this;
-    }
 }

@@ -16,28 +16,26 @@
  */
 package org.apache.camel.asyncApi;
 
-import java.util.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import java.util.List;
 
 /**
- * An object representing a message broker, a server or any other kind of computer
- * program capable of sending and/or receiving data. This object is used to capture
- * details such as URIs, protocols and security configuration. Variable substitution
- * can be used so that some details, for example usernames and passwords, can be
- * injected by code generation tools.
+ * Lists the required security schemes to execute this operation. The name used
+ * for each property MUST correspond to a security scheme declared in the Security S
+ * chemes under the Components Object.
+ *
+ * When a list of Security Requirement Objects is defined on a Server object,
+ * only one of the Security Requirement Objects in the list needs to be satisfied
+ * to authorize the connection.
  */
-public interface Aa20Server {
+@JsonInclude(JsonInclude.Include.ALWAYS)
+public abstract class Aa20SecurityRequirementOld<T extends Aa20SecurityRequirementOld> {
 
-    String getUrl();
+    abstract List<String> getSchemas();
 
-    String getProtocol();
-
-    String getProtocolVersion();
-
-    String getDescription();
-
-    Map<String, Aa20ServerVariable> getVariables();
-
-    List<Aa20SecurityRequirement> getSecurity();
-
-    Aa20ServerBindings getBindings();
+    public T createSchema(String schema) {
+        getSchemas().add(schema);
+        return (T)this;
+    }
 }

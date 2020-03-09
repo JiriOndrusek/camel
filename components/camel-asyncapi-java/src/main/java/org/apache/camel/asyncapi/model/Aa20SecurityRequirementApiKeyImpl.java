@@ -14,30 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.camel.asyncApi;
+package org.apache.camel.asyncapi.model;
 
-import java.util.*;
+import org.apache.camel.asyncApi.Aa20SchemaType;
+import org.apache.camel.asyncApi.Aa20SecurityRequirement;
+import org.apache.camel.asyncApi.Aa20SecurityRequirementApiKey;
 
-/**
- * An object representing a message broker, a server or any other kind of computer
- * program capable of sending and/or receiving data. This object is used to capture
- * details such as URIs, protocols and security configuration. Variable substitution
- * can be used so that some details, for example usernames and passwords, can be
- * injected by code generation tools.
- */
-public interface Aa20Server {
+import java.util.LinkedList;
+import java.util.List;
 
-    String getUrl();
+public class Aa20SecurityRequirementApiKeyImpl extends Aa20SecurityRequirementImpl implements Aa20SecurityRequirementApiKey {
 
-    String getProtocol();
+    @Override
+    public List<String> getApiKey() {
+        return getSchemas();
+    };
 
-    String getProtocolVersion();
 
-    String getDescription();
-
-    Map<String, Aa20ServerVariable> getVariables();
-
-    List<Aa20SecurityRequirement> getSecurity();
-
-    Aa20ServerBindings getBindings();
 }

@@ -9,12 +9,10 @@ public abstract class NestedBuilder<T, V> {
     protected T parent;
 
     public T done() {
-        Class<?> parentClass = parent.getClass();
+
         try {
             V build = this.build();
-            String methodname = "with" + build.getClass().getSimpleName();
-            Method method = parentClass.getDeclaredMethod(methodname, build.getClass());
-            method.invoke(parent, build);
+            setToParent(parent, build);
         } catch (NoSuchMethodException
                 | IllegalAccessException
                 | InvocationTargetException e) {
@@ -23,7 +21,12 @@ public abstract class NestedBuilder<T, V> {
         return parent;
     }
 
-
+    protected void setToParent(T parent, V build) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Class<?> parentClass = parent.getClass();
+        String methodname = "with" + build.getClass().getSimpleName();
+        Method method = parentClass.getDeclaredMethod(methodname, build.getClass());
+        method.invoke(parent, build);
+    }
 
     public <P extends NestedBuilder<T, V>> P withParentBuilder(T parent) {
         this.parent = parent;

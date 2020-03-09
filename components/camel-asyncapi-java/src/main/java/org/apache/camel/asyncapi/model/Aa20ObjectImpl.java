@@ -18,6 +18,7 @@ package org.apache.camel.asyncapi.model;
 
 import org.apache.camel.asyncApi.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +27,7 @@ public class Aa20ObjectImpl implements Aa20Object {
     private String asyncapi;
     private String id;
     private Aa20Info info;
+    private Map<String, Aa20Server> servers;
 
     public static Aa20ObjectImpl.Builder newBuilder() {
         return new Aa20ObjectImpl.Builder();
@@ -60,7 +62,11 @@ public class Aa20ObjectImpl implements Aa20Object {
 
     @Override
     public Map<String, Aa20Server> getServers() {
-        return null;
+        return servers;
+    }
+
+    public void setServers(Map<String, Aa20Server> servers) {
+        this.servers = servers;
     }
 
     @Override
@@ -94,6 +100,8 @@ public class Aa20ObjectImpl implements Aa20Object {
         private String id;
         private Aa20InfoImpl aa20Info;
         private Aa20InfoImpl.Builder builderInfo = Aa20InfoImpl.newBuilder().withParentBuilder(this);
+        private Map<String, Aa20Server> servers;
+        private Map<String, Aa20ServerImpl.Builder> serverBuilders = new LinkedHashMap<>();
 
         private Builder() {
         }
@@ -113,15 +121,35 @@ public class Aa20ObjectImpl implements Aa20Object {
             return this;
         }
 
+        public void withAa20Info(Aa20InfoImpl aa20Info) {
+            this.aa20Info = aa20Info;
+        }
+
         public Aa20InfoImpl.Builder addInfo() {
             return builderInfo;
         }
+
+        public void withAa20Server(String name, Aa20Server server) {
+            if(this.servers == null) {
+                this.servers = new LinkedHashMap<>();
+            }
+            this.servers.put(name, server);
+        }
+
+        public Aa20ServerImpl.Builder addServer(String name) {
+            Aa20ServerImpl.Builder builder = Aa20ServerImpl.newBuilder(name).withParentBuilder(this);
+            serverBuilders.put(name, builder);
+            return builder;
+        }
+
+
 
         public Aa20Object build() {
             Aa20ObjectImpl object = new Aa20ObjectImpl();
             object.setAsyncapi(this.asyncapi);
             object.setId(this.id);
             object.setInfo(this.aa20Info);
+            object.setServers(this.servers);
             return object;
         }
     }

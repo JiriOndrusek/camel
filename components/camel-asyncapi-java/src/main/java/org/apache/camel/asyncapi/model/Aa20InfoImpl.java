@@ -1,3 +1,19 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.apache.camel.asyncapi.model;
 
 import org.apache.camel.asyncApi.Aa20Contact;
@@ -77,10 +93,17 @@ public class Aa20InfoImpl implements Aa20Info {
     // --------------------------------------- builder ---------------------------------------------------------
 
     public static class Builder extends NestedBuilder<Aa20ObjectImpl.Builder, Aa20Info> {
-        String title;
-        String version;
-        String description;
-        String termsOfService;
+        private String title;
+        private String version;
+        private String description;
+        private String termsOfService;
+        private Aa20ContactImpl contact;
+        private Aa20ContactImpl.Builder contactBuilder = Aa20ContactImpl.newBuilder().withParentBuilder(this);
+        private Aa20LicenseImpl license;
+        private Aa20LicenseImpl.Builder licenseBuilder = Aa20LicenseImpl.newBuilder().withParentBuilder(this);
+
+        private Builder() {
+        }
 
         public Builder withTitle(String title) {
             this.title = title;
@@ -102,6 +125,22 @@ public class Aa20InfoImpl implements Aa20Info {
             return this;
         }
 
+        public void withAa20ContactImpl(Aa20ContactImpl contact) {
+            this.contact = contact;
+        }
+
+        public void withAa20LicenseImpl(Aa20LicenseImpl license) {
+            this.license = license;
+        }
+
+        public Aa20ContactImpl.Builder addContact() {
+            return contactBuilder;
+        }
+
+        public Aa20LicenseImpl.Builder addLicense() {
+            return licenseBuilder;
+        }
+
         @Override
         public Aa20Info build() {
             Aa20InfoImpl info = new Aa20InfoImpl();
@@ -109,6 +148,8 @@ public class Aa20InfoImpl implements Aa20Info {
             info.setDescription(this.description);
             info.setVersion(this.version);
             info.setTermsOfService(this.termsOfService);
+            info.setContact(this.contact);
+            info.setLicense(this.license);
             return info;
         }
     }

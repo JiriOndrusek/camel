@@ -19,42 +19,9 @@ package org.apache.camel.asyncApi;
 /**
  * License information for the exposed API.
  */
-public class Aa20License {
+public interface Aa20License {
 
-    String name;
-    String url;
+    String getName();
 
-    public Aa20License() {
-    }
-
-    public Aa20License(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Required. The license name used for the API.
-     */
-    public Aa20License setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    /**
-     * A URL to the license used for the API. MUST be in the format of a URL.
-     */
-    public Aa20License setUrl(String url) {
-        this.url = url;
-        return this;
-    }
-
-
-
+    String getUrl();
 }

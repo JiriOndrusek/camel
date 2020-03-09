@@ -24,7 +24,7 @@ import java.util.List;
  *
  * When a list of Security Requirement Objects is defined on a Server object, only one of the Security Requirement Objects in the list needs to be satisfied to authorize the connection.
  */
-public class Aa20SecurityRequirementHttp extends Aa20SecurityRequirement {
+public class Aa20SecurityRequirementHttp extends Aa20SecurityRequirementOld {
 
     private List<String> http = new LinkedList();
 

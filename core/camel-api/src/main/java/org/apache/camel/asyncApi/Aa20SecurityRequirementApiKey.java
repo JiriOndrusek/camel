@@ -16,9 +16,6 @@
  */
 package org.apache.camel.asyncApi;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,20 +24,7 @@ import java.util.List;
  *
  * When a list of Security Requirement Objects is defined on a Server object, only one of the Security Requirement Objects in the list needs to be satisfied to authorize the connection.
  */
-public class Aa20SecurityRequirementApiKey extends Aa20SecurityRequirement<Aa20SecurityRequirementApiKey> {
+public interface Aa20SecurityRequirementApiKey extends Aa20SecurityRequirement {
 
-    private List<String> apiKey = new LinkedList();
-
-    public List<String> getApiKey() {
-        return apiKey;
-    }
-
-    public void setApiKey(List<String> apiKey) {
-        this.apiKey = apiKey;
-    }
-
-    @Override
-    List<String> getSchemas() {
-        return apiKey;
-    }
+    public List<String> getApiKey();
 }

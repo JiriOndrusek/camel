@@ -56,8 +56,26 @@ public class PlaygroundModelTest {
         Aa20ObjectImpl.Builder builder = Aa20ObjectImpl.newBuilder();
 
         builder.withAsyncApi("2.0.0")
-            .addInfo().withTitle("Streetlights API")
-                .withVersion("1.0.0").done();
+            .addInfo()
+                .withTitle("Streetlights API")
+                .withVersion("1.0.0")
+                .addContact()
+                    .withEmail("test@email.com")
+                    .withName("test")
+                .done()
+                .addLicense()
+                    .withName("license name")
+                    .withUrl("licenseUrl")
+                .done()
+            .done()
+            .addServer("production")
+                .withUrl("https://www.apache.org/licenses/LICENSE-2.0")
+                .withProtocol("mqtt")
+                .withDescription("test broker")
+                .addSecurityRequirement(Aa20SchemaType.apiKey).withSchema("streetlights:on").done()
+            .done();
+
+
 
         Aa20Object obj = builder.build();
 

@@ -16,28 +16,15 @@
  */
 package org.apache.camel.asyncApi;
 
-import java.util.*;
+public enum Aa20SchemaType {
 
-/**
- * An object representing a message broker, a server or any other kind of computer
- * program capable of sending and/or receiving data. This object is used to capture
- * details such as URIs, protocols and security configuration. Variable substitution
- * can be used so that some details, for example usernames and passwords, can be
- * injected by code generation tools.
- */
-public interface Aa20Server {
-
-    String getUrl();
-
-    String getProtocol();
-
-    String getProtocolVersion();
-
-    String getDescription();
-
-    Map<String, Aa20ServerVariable> getVariables();
-
-    List<Aa20SecurityRequirement> getSecurity();
-
-    Aa20ServerBindings getBindings();
+        userPassword,
+        apiKey,
+        X509,
+        symmetricEncryption,
+        asymmetricEncryption,
+        httpApiKey,
+        http,
+        oauth2,
+        openIdConnect;
 }
