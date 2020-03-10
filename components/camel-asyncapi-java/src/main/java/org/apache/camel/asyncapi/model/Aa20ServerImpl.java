@@ -110,16 +110,16 @@ public class Aa20ServerImpl implements Aa20Server {
 
     // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder<T> extends NestedBuilder<T, Aa20Server> {
+    public static class Builder extends NestedBuilder<Aa20ObjectImpl.Builder, Aa20Server> {
         private String url;
         private String protocol;
         private String protocolVersion;
         private String description;
         private Map<String, Aa20ServerVariable> aa20ServerVariables = new LinkedHashMap<>();
-        private Aa20SecurityRequirementImpl aa20SecurityRequirementImpl;
-        private Aa20ServerBindingsImpl aa20ServerBindingsImpl;
+        private Aa20SecurityRequirement aa20SecurityRequirement;
+        private Aa20ServerBindings aa20ServerBindings;
 
-        private Builder(T parent, Consumer<Aa20Server> consumer) {
+        private Builder(Aa20ObjectImpl.Builder parent, Consumer<Aa20Server> consumer) {
             super(parent, consumer);
         }
 
@@ -149,31 +149,27 @@ public class Aa20ServerImpl implements Aa20Server {
         }
 
 
-        public Builder withAa20SecurityRequirementImpl(Aa20SecurityRequirementImpl aa20SecurityRequirementImpl) {
-            this.aa20SecurityRequirementImpl = aa20SecurityRequirementImpl;
+        public Builder withAa20SecurityRequirement(Aa20SecurityRequirement aa20SecurityRequirement) {
+            this.aa20SecurityRequirement = aa20SecurityRequirement;
             return this;
         }
 
-        public Builder withAa20ServerBindingsImpl(Aa20ServerBindingsImpl aa20ServerBindingsImpl) {
-            this.aa20ServerBindingsImpl = aa20ServerBindingsImpl;
+        public Builder withAa20ServerBindings(Aa20ServerBindings aa20ServerBindings) {
+            this.aa20ServerBindings = aa20ServerBindings;
             return this;
         }
 
-//        public Aa20SecurityRequirementImpl.Builder addSecurityRequirement() {
-//            return Aa20SecurityRequirementImpl.newBuilder().withParentBuilder(this);
-//        }
-//
-//        public Aa20ServerVariableImpl.Builder addVariable(String name) {
-//            return Aa20ServerVariableImpl.newBuilder().withParentBuilder(this).withConsumerBuilder(v -> withAa20ServerVariable(name, v));
-//        }
-//
-//        public Aa20ServerBindingsImpl.Builder addBindings() {
-//            return Aa20ServerBindingsImpl.newBuilder().withParentBuilder(this);
-//        }
-//
-//        public Aa20ServerBindingsImpl.Builder addSecurity() {
-//            return Aa20ServerBindingsImpl.newBuilder().withParentBuilder(this);
-//        }
+        public Aa20SecurityRequirementImpl.Builder addSecurity() {
+            return Aa20SecurityRequirementImpl.newBuilder(this, o -> withAa20SecurityRequirement(o));
+        }
+
+        public Aa20ServerVariableImpl.Builder addVariable(String name) {
+            return Aa20ServerVariableImpl.newBuilder(this, o -> withAa20ServerVariable(name, o));
+        }
+
+        public Aa20ServerBindingsImpl.Builder addBindings() {
+            return Aa20ServerBindingsImpl.newBuilder(this, o -> withAa20ServerBindings(o));
+        }
 
         @Override
         public Aa20Server build() {
@@ -182,9 +178,9 @@ public class Aa20ServerImpl implements Aa20Server {
             server.setProtocol(this.protocol);
             server.setProtocolVersion(this.protocolVersion);
             server.setDescription(this.description);
-            server.setSecurity(this.aa20SecurityRequirementImpl);
+            server.setSecurity(this.aa20SecurityRequirement);
             server.setVariables(this.aa20ServerVariables);
-            server.setBindings(this.aa20ServerBindingsImpl);
+            server.setBindings(this.aa20ServerBindings);
             return server;
         }
 

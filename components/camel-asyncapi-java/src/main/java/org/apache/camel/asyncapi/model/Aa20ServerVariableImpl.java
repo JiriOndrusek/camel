@@ -26,6 +26,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class Aa20ServerVariableImpl implements Aa20ServerVariable {
 
@@ -34,9 +35,9 @@ public class Aa20ServerVariableImpl implements Aa20ServerVariable {
     private String description;
     private List<String> examples = new LinkedList<>();
 
-//    public static Aa20ServerVariableImpl.Builder newBuilder() {
-//        return new Aa20ServerVariableImpl.Builder();
-//    }
+    public static Aa20ServerVariableImpl.Builder newBuilder(Aa20ServerImpl.Builder parent, Consumer<Aa20ServerVariable> consumer) {
+        return new Aa20ServerVariableImpl.Builder(parent, consumer);
+    }
 
     public List<String> getEnum() {
         return enums;
@@ -74,42 +75,46 @@ public class Aa20ServerVariableImpl implements Aa20ServerVariable {
 
 // --------------------------------------- builder ---------------------------------------------------------
 
-//    public static class Builder extends NestedBuilder<Aa20ServerImpl.Builder, Aa20ServerVariable> {
-//
-//        private List<String> enums = new LinkedList<>();
-//        private String defaultValue;
-//        private String description;
-//        private List<String> examples = new LinkedList<>();
-//
-//        public Builder withEnum(String name) {
-//            this.enums.add(name);
-//            return this;
-//        }
-//
-//        public Builder withDefault(String defaultValue) {
-//            this.defaultValue = defaultValue;
-//            return this;
-//        }
-//
-//        public Builder withDescription(String description) {
-//            this.description = description;
-//            return this;
-//        }
-//
-//        public Builder withExample(String example) {
-//            this.examples.add(example);
-//            return this;
-//        }
-//
-//
-//        @Override
-//        public Aa20ServerVariable build() {
-//            Aa20ServerVariableImpl variable = new Aa20ServerVariableImpl();
-//            variable.setDefault(this.defaultValue);
-//            variable.setDescription(this.description);
-//            variable.setEnum(this.enums);
-//            variable.setExamples(this.examples);
-//            return variable;
-//        }
-//    }
+    public static class Builder extends NestedBuilder<Aa20ServerImpl.Builder, Aa20ServerVariable> {
+
+        private List<String> enums = new LinkedList<>();
+        private String defaultValue;
+        private String description;
+        private List<String> examples = new LinkedList<>();
+
+        public Builder(Aa20ServerImpl.Builder parent, Consumer<Aa20ServerVariable> consumer) {
+            super(parent, consumer);
+        }
+
+        public Builder withEnum(String name) {
+            this.enums.add(name);
+            return this;
+        }
+
+        public Builder withDefault(String defaultValue) {
+            this.defaultValue = defaultValue;
+            return this;
+        }
+
+        public Builder withDescription(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder withExample(String example) {
+            this.examples.add(example);
+            return this;
+        }
+
+
+        @Override
+        public Aa20ServerVariable build() {
+            Aa20ServerVariableImpl variable = new Aa20ServerVariableImpl();
+            variable.setDefault(this.defaultValue);
+            variable.setDescription(this.description);
+            variable.setEnum(this.enums);
+            variable.setExamples(this.examples);
+            return variable;
+        }
+    }
 }

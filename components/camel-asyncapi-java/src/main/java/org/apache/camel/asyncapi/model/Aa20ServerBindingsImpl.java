@@ -23,6 +23,7 @@ import org.apache.camel.asyncApi.Aa20ServerBindings;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class Aa20ServerBindingsImpl implements Aa20ServerBindings {
 
@@ -53,9 +54,9 @@ public class Aa20ServerBindingsImpl implements Aa20ServerBindings {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Map<String, Object> redis;
 
-//    public static Aa20ServerBindingsImpl.Builder newBuilder() {
-//        return new Aa20ServerBindingsImpl.Builder();
-//    }
+    public static Aa20ServerBindingsImpl.Builder newBuilder(Aa20ServerImpl.Builder parent, Consumer<Aa20ServerBindings> consumer) {
+        return new Aa20ServerBindingsImpl.Builder(parent, consumer);
+    }
 
     @Override
     public Map<String, Object> getHttp() {
@@ -175,60 +176,64 @@ public class Aa20ServerBindingsImpl implements Aa20ServerBindings {
     }
 // --------------------------------------- builder ---------------------------------------------------------
 
-//    public static class Builder extends NestedBuilder<Aa20ServerImpl.Builder, Aa20ServerBindings> {
-//        private Map<String, Object> http;
-//        private Map<String, Object> ws;
-//        private Map<String, Object> kafka;
-//        private Map<String, Object> amqp;
-//        private Map<String, Object> amqp1;
-//        private Map<String, Object> mqtt;
-//        private Map<String, Object> mqtt5;
-//        private Map<String, Object> nats;
-//        private Map<String, Object> jms;
-//        private Map<String, Object> sns;
-//        private Map<String, Object> sqs;
-//        private Map<String, Object> stomp;
-//        private Map<String, Object> redis;
-//
-//        public Builder withHttp() {
-//            if(http == null) {
-//                http = new HashMap<>();
-//            }
-//            return this;
-//        }
-//
-//        public Builder withHttpSchema(String schema) {
-//            if(http == null) {
-//                http = new HashMap<>();
-//            }
-//            //todo use builder for json
-//            http.put(schema, "todo");
-//            return this;
-//        }
-//
-//        public Builder withWs() {
-//            if(ws == null) {
-//                ws = new HashMap<>();
-//            }
-//            return this;
-//        }
-//
-//        public Builder withWsSchema(String schema) {
-//            if(ws == null) {
-//                ws = new HashMap<>();
-//            }
-//            //todo use builder for json
-//            ws.put(schema, "todo");
-//            return this;
-//        }
-//
-//
-//        @Override
-//        public Aa20ServerBindings build() {
-//            Aa20ServerBindingsImpl bindings = new Aa20ServerBindingsImpl();
-//            bindings.setHttp(this.http);
-//            bindings.setWs(this.ws);
-//            return bindings;
-//        }
-//    }
+    public static class Builder extends NestedBuilder<Aa20ServerImpl.Builder, Aa20ServerBindings> {
+        private Map<String, Object> http;
+        private Map<String, Object> ws;
+        private Map<String, Object> kafka;
+        private Map<String, Object> amqp;
+        private Map<String, Object> amqp1;
+        private Map<String, Object> mqtt;
+        private Map<String, Object> mqtt5;
+        private Map<String, Object> nats;
+        private Map<String, Object> jms;
+        private Map<String, Object> sns;
+        private Map<String, Object> sqs;
+        private Map<String, Object> stomp;
+        private Map<String, Object> redis;
+
+        public Builder(Aa20ServerImpl.Builder parent, Consumer<Aa20ServerBindings> consumer) {
+            super(parent, consumer);
+        }
+
+        public Builder withHttp() {
+            if(http == null) {
+                http = new HashMap<>();
+            }
+            return this;
+        }
+
+        public Builder withHttpSchema(String schema) {
+            if(http == null) {
+                http = new HashMap<>();
+            }
+            //todo use builder for json
+            http.put(schema, "todo");
+            return this;
+        }
+
+        public Builder withWs() {
+            if(ws == null) {
+                ws = new HashMap<>();
+            }
+            return this;
+        }
+
+        public Builder withWsSchema(String schema) {
+            if(ws == null) {
+                ws = new HashMap<>();
+            }
+            //todo use builder for json
+            ws.put(schema, "todo");
+            return this;
+        }
+
+
+        @Override
+        public Aa20ServerBindings build() {
+            Aa20ServerBindingsImpl bindings = new Aa20ServerBindingsImpl();
+            bindings.setHttp(this.http);
+            bindings.setWs(this.ws);
+            return bindings;
+        }
+    }
 }

@@ -43,6 +43,8 @@ public class Aa20MessageImpl implements Aa20Message {
         return new Aa20MessageImpl.FromMessageBuilder(parent, consumer);
     }
 
+
+
     private Aa20MessageImpl() {
     }
 
@@ -147,54 +149,13 @@ public class Aa20MessageImpl implements Aa20Message {
 
     // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class FromOperationBuilder extends NestedBuilder<Aa20OperationImpl.OperationBuilder, Aa20Message> {
+    public static class FromOperationBuilder extends AbstractMessageBuilder<Aa20OperationImpl.OperationBuilder> {
         private FromOperationBuilder(Aa20OperationImpl.OperationBuilder parent, Consumer<Aa20Message> consumer) {
             super(parent, consumer);
         }
 
-//        private Aa20OrReferenceType<Aa20Schema> headers;
-//        private Aa20OrReferenceType<Aa20CorellationId> correlationId;
-        private String schemaFormat;
-        private String contentType;
-        private String name;
-        private String title;
-        private List<String> examples= new LinkedList<>();
-        private Map<String, Object> payload = new LinkedHashMap();
-//        private List<Aa20OrReferenceType<Aa20MessageTrait>> traits = new LinkedList();
         private Set<Aa20Message> oneOf;
-        private String $ref;
 
-
-//        public NestedBuilder<T, Aa20Message> withSchemaFormat(String schemaFormat) {
-//            this.schemaFormat = schemaFormat;
-//            return this;
-//        }
-//
-//        public NestedBuilder<T, Aa20Message> withContentType(String contentType) {
-//            this.contentType = contentType;
-//            return this;
-//        }
-//
-//        public NestedBuilder<T, Aa20Message> withName(String name) {
-//            this.name = name;
-//            return this;
-//        }
-//
-//        public NestedBuilder<T, Aa20Message> withTitle(String title) {
-//            this.title = title;
-//            return this;
-//        }
-//
-//        public NestedBuilder<T, Aa20Message> withExamples(List<String> examples) {
-//            this.examples = examples;
-//            return this;
-//        }
-//
-//        public NestedBuilder<T, Aa20Message> withPayload(Map<String, Object> payload) {
-//            this.payload = payload;
-//            return this;
-//        }
-//
         public FromOperationBuilder  withOneOf(Aa20Message message) {
             if(this.oneOf == null) {
                 oneOf = new LinkedHashSet<>();
@@ -203,36 +164,32 @@ public class Aa20MessageImpl implements Aa20Message {
             return this;
         }
 
-        public FromMessageBuilder addOneOfMessage() {
+        public Aa20MessageImpl.FromMessageBuilder addOneOfMessage() {
             return Aa20MessageImpl.newFromMessageBuilder(this, o -> withOneOf(o));
         }
 
-        public FromOperationBuilder with$ref(String $ref) {
-            this.$ref = $ref;
-            return this;
-        }
 
         @Override
         public Aa20Message build() {
-            Aa20MessageImpl message = new Aa20MessageImpl();
-            message.setSchemaFormat(this.title);
-            message.setContentType(this.contentType);
-            message.setName(this.name);
-            message.setTitle(this.title);
-            message.setExamples(this.examples);
-            message.setPayload(this.payload);
+            Aa20MessageImpl message = (Aa20MessageImpl)super.build();
             message.setOneOf(this.oneOf);
-            message.set$ref(this.$ref);
             return message;
         }
     }
 
-    public static class FromMessageBuilder extends NestedBuilder<Aa20MessageImpl.FromOperationBuilder, Aa20Message> {
+
+    public static class FromMessageBuilder extends AbstractMessageBuilder<Aa20MessageImpl.FromOperationBuilder> {
         private FromMessageBuilder(Aa20MessageImpl.FromOperationBuilder parent, Consumer<Aa20Message> consumer) {
             super(parent, consumer);
         }
+    }
 
-        //        private Aa20OrReferenceType<Aa20Schema> headers;
+    public static abstract class AbstractMessageBuilder<T> extends NestedBuilder<T, Aa20Message> {
+        private AbstractMessageBuilder(T parent, Consumer<Aa20Message> consumer) {
+            super(parent, consumer);
+        }
+
+//        private Aa20OrReferenceType<Aa20Schema> headers;
 //        private Aa20OrReferenceType<Aa20CorellationId> correlationId;
         private String schemaFormat;
         private String contentType;
@@ -245,49 +202,38 @@ public class Aa20MessageImpl implements Aa20Message {
         private String $ref;
 
 
-//        public NestedBuilder<T, Aa20Message> withSchemaFormat(String schemaFormat) {
-//            this.schemaFormat = schemaFormat;
-//            return this;
-//        }
-//
-//        public NestedBuilder<T, Aa20Message> withContentType(String contentType) {
-//            this.contentType = contentType;
-//            return this;
-//        }
-//
-//        public NestedBuilder<T, Aa20Message> withName(String name) {
-//            this.name = name;
-//            return this;
-//        }
-//
-//        public NestedBuilder<T, Aa20Message> withTitle(String title) {
-//            this.title = title;
-//            return this;
-//        }
-//
-//        public NestedBuilder<T, Aa20Message> withExamples(List<String> examples) {
-//            this.examples = examples;
-//            return this;
-//        }
-//
-//        public NestedBuilder<T, Aa20Message> withPayload(Map<String, Object> payload) {
-//            this.payload = payload;
-//            return this;
-//        }
-//
-//        public FromMessageBuilder  withOneOf(Aa20Message message) {
-//            if(this.oneOf == null) {
-//                oneOf = new LinkedHashSet<>();
-//            }
-//            this.oneOf.add(message);
-//            return this;
-//        }
-//
-//        public FromMessageBuilder addOneOfMessage() {
-//            return Aa20MessageImpl.newFromMessageBuilder(this, o -> withOneOf(o));
-//        }
+        public AbstractMessageBuilder<T> withSchemaFormat(String schemaFormat) {
+            this.schemaFormat = schemaFormat;
+            return this;
+        }
 
-        public FromMessageBuilder with$ref(String $ref) {
+        public AbstractMessageBuilder<T> withContentType(String contentType) {
+            this.contentType = contentType;
+            return this;
+        }
+
+        public NestedBuilder<T, Aa20Message> withName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public AbstractMessageBuilder<T> withTitle(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public AbstractMessageBuilder<T> withExamples(List<String> examples) {
+            this.examples = examples;
+            return this;
+        }
+
+        public AbstractMessageBuilder<T> withPayload(Map<String, Object> payload) {
+            this.payload = payload;
+            return this;
+        }
+
+
+        public AbstractMessageBuilder<T> with$ref(String $ref) {
             this.$ref = $ref;
             return this;
         }
