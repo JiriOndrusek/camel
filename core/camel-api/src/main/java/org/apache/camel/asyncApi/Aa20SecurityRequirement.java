@@ -31,4 +31,13 @@ import java.util.List;
  */
 public interface Aa20SecurityRequirement{
 
+    List<String> getUserPassword();
+    List<String> getApiKey();
+    List<String> getX509();
+    List<String> getSymmetricEncryption();
+    List<String> getAsymmetricEncryption();
+    List<String> getHttpApiKey();
+    List<String> getHttp();
+    List<String> getOauth2();
+    List<String> getOpenIdConnect();
 }

@@ -37,7 +37,7 @@ public interface Aa20Server {
 
     Map<String, Aa20ServerVariable> getVariables();
 
-    List<Aa20SecurityRequirement> getSecurity();
+    Aa20SecurityRequirement getSecurity();
 
     Aa20ServerBindings getBindings();
 }
