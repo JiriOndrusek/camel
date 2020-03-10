@@ -65,7 +65,7 @@ public class PlaygroundModelTest {
                 .done()
                 .addLicense()
                     .withName("license name")
-                    .withUrl("licenseUrl")
+                    .withUrl("http://testLicense.com")
                 .done()
             .done()
             .addServer("production")
@@ -80,6 +80,15 @@ public class PlaygroundModelTest {
                 .addVariable("port").withDescription("Secure connection (TLS) is available through port 8883.").withEnum("1883").withEnum("8883").done()
                 .addBindings().withHttp().done()
                 .addBindings().withWsSchema("test").done()
+            .done()
+            .addChannel("smartylighting/streetlights/1/0/event/{streetlightId}/lighting/measured")
+                .withDescription("The topic on which measured values may be produced and consumed.")
+                .addSubscribe()
+                    .withDescription("Receive information about environmental lighting conditions of a particular streetlight.")
+                .done()
+                .addPublish()
+                    .withOperationId("turnOn")
+                .done()
             .done();
 
         Aa20Object obj = builder.build();

@@ -23,118 +23,18 @@ import java.util.Map;
  * Describes the operations available on a single channel.
  * todo This object can be extended with Specification Extensions.
  */
-public class Aa20ChannelItem {
-
-    //todo The referenced
-    //     * structure MUST be in the format of a Channel Item Object. If there are
-    //     * conflicts between the referenced definition and this Channel Item’s
-    //     * definition, the behavior is undefined.
-    String $ref;
-    // todo CommonMark syntax can be used for rich text representation.
-    String description;
-    Aa20Operation subscribe;
-    Aa20Operation publish;
-    Map<String, Aa20OrReferenceType<Aa20Parameter>> parameters = new LinkedHashMap<>();
-    Aa20ChannelBindings bindings = new Aa20ChannelBindings();
+public interface Aa20ChannelItem {
 
 
-    public String get$ref() {
-        return $ref;
-    }
+    String get$ref();
 
-    /**
-     * Allows for an external definition of this channel item. The referenced
-     * structure MUST be in the format of a Channel Item Object. If there are
-     * conflicts between the referenced definition and this Channel Item’s
-     * definition, the behavior is undefined.
-     */
-    public Aa20ChannelItem set$ref(String $ref) {
-        this.$ref = $ref;
-        return this;
-    }
+    String getDescription();
 
-    public String getDescription() {
-        return description;
-    }
+    Aa20Operation getSubscribe();
 
-    /**
-     * An optional description of this channel item. CommonMark syntax can be
-     * used for rich text representation.
-     */
-    public Aa20ChannelItem setDescription(String description) {
-        this.description = description;
-        return this;
-    }
+    Aa20Operation getPublish();
 
-    public Aa20Operation getSubscribe() {
-        return subscribe;
-    }
+    Map<String, Aa20OrReferenceType<Aa20Parameter>> getParameters();
 
-
-    public Aa20Operation getPublish() {
-        return publish;
-    }
-
-
-    public void setSubscribe(Aa20Operation subscribe) {
-        this.subscribe = subscribe;
-    }
-
-    public void setPublish(Aa20Operation publish) {
-        this.publish = publish;
-    }
-
-    public Map<String, Aa20OrReferenceType<Aa20Parameter>> getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(Map<String, Aa20OrReferenceType<Aa20Parameter>> parameters) {
-        this.parameters = parameters;
-    }
-
-
-
-    public Aa20ChannelBindings getBindings() {
-        return bindings;
-    }
-
-    //todo
-    public void setBindings(Aa20ChannelBindings bindings) {
-        this.bindings = bindings;
-    }
-
-
-    // --------------------------------------- create methods ---------------------------------------------------------
-
-
-    /**
-     * A definition of the SUBSCRIBE operation.
-     */
-    public Aa20Operation createSubscribe() {
-        Aa20Operation subscribe = new Aa20Operation();
-        this.subscribe = subscribe;
-        return subscribe;
-    }
-
-
-    /**
-     * A definition of the PUBLISH operation.
-     */
-    public Aa20Operation createPublish() {
-        Aa20Operation publish = new Aa20Operation();
-        this.publish = publish;
-        return publish;
-    }
-
-    public Aa20Parameter createParameter(String name) {
-        Aa20Parameter parameter = new Aa20Parameter();
-        parameters.put(name, parameter);
-        return parameter;
-    }
-
-    public Aa20ChannelItem createParameterAsReference(String name, String $ref) {
-        Aa20Reference parameter = new Aa20Reference($ref);
-        parameters.put(name, parameter);
-        return this;
-    }
+    Aa20ChannelBindings getBindings();
 }

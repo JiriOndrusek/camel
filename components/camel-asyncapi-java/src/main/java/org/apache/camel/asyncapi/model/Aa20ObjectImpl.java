@@ -28,6 +28,7 @@ public class Aa20ObjectImpl implements Aa20Object {
     private String id;
     private Aa20Info info;
     private Map<String, Aa20Server> servers;
+    private Map<String, Aa20ChannelItem> channels;
 
     public static Aa20ObjectImpl.Builder newBuilder() {
         return new Aa20ObjectImpl.Builder();
@@ -71,7 +72,11 @@ public class Aa20ObjectImpl implements Aa20Object {
 
     @Override
     public Map<String, Aa20ChannelItem> getChannels() {
-        return null;
+        return channels;
+    }
+
+    public void setChannels(Map<String, Aa20ChannelItem> channels) {
+        this.channels = channels;
     }
 
     @Override
@@ -93,6 +98,8 @@ public class Aa20ObjectImpl implements Aa20Object {
         this.info = info;
     }
 
+
+
     // --------------------------------------- builder ---------------------------------------------------------
     public static class Builder {
 
@@ -101,7 +108,8 @@ public class Aa20ObjectImpl implements Aa20Object {
         private Aa20InfoImpl aa20Info;
         private Aa20InfoImpl.Builder builderInfo = Aa20InfoImpl.newBuilder().withParentBuilder(this);
         private Map<String, Aa20Server> servers;
-        private Map<String, Aa20ServerImpl.Builder> serverBuilders = new LinkedHashMap<>();
+        private Map<String, Aa20ChannelItem> channels;
+        private Map<String, Aa20ChannelItemImpl.Builder> channelBuilders = new LinkedHashMap<>();
 
         private Builder() {
         }
@@ -137,12 +145,22 @@ public class Aa20ObjectImpl implements Aa20Object {
         }
 
         public Aa20ServerImpl.Builder addServer(String name) {
-            Aa20ServerImpl.Builder builder = Aa20ServerImpl.newBuilder(name).withParentBuilder(this);
-            serverBuilders.put(name, builder);
+            Aa20ServerImpl.Builder builder = Aa20ServerImpl.newBuilder().withParentBuilder(this).withConsumerBuilder(s -> withAa20Server(name, s));
             return builder;
         }
 
+        public void withAa20Channel(String name, Aa20ChannelItem aa20ChannelItem) {
+            if(this.channels == null) {
+                this.channels = new LinkedHashMap<>();
+            }
+            this.channels.put(name, aa20ChannelItem);
+        }
 
+        public Aa20ChannelItemImpl.Builder addChannel(String name) {
+            Aa20ChannelItemImpl.Builder builder = Aa20ChannelItemImpl.newBuilder().withParentBuilder(this).withConsumerBuilder(i -> withAa20Channel(name, i));
+            channelBuilders.put(name, builder);
+            return builder;
+        }
 
         public Aa20Object build() {
             Aa20ObjectImpl object = new Aa20ObjectImpl();
@@ -150,6 +168,7 @@ public class Aa20ObjectImpl implements Aa20Object {
             object.setId(this.id);
             object.setInfo(this.aa20Info);
             object.setServers(this.servers);
+            object.setChannels(this.channels);
             return object;
         }
     }

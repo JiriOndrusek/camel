@@ -25,63 +25,21 @@ import java.util.List;
  * an operation might describe a chat application use case where a user
  * sends a text message to a group.
  */
-public class Aa20Operation extends AbstractOperation<Aa20Operation> {
+public interface Aa20Operation {
 
-    List<Aa20OrReferenceType<Aa20OperationTrait>> traits = new LinkedList<>();
-    //todo or oneOf
-    private Aa20OrReferenceType<Aa20Message> message;
+    String getOperationId();
 
+    String getSummary();
 
+    String getDescription();
 
+    List<Aa20Tag> getTags();
 
-    public void setTraits(List<Aa20OrReferenceType<Aa20OperationTrait>> traits) {
-        this.traits = traits;
-    }
+    Aa20ExternalDocumentation getExternalDocs();
 
-    public List<Aa20OrReferenceType<Aa20OperationTrait>> getTraits() {
-        return traits;
-    }
+    Aa20MessageBinding getBindings();
 
-    public Aa20OrReferenceType<Aa20Message> getMessage() {
-        return message;
-    }
+    List<Aa20OperationTrait> getTraits();
 
-    public void setMessage(Aa20OrReferenceType<Aa20Message> message) {
-        this.message = message;
-    }
-
-// --------------------------------------- create methods ---------------------------------------------------------
-
-    /**
-     * @return A list of traits to apply to the operation object.
-     * Traits MUST be merged into the operation object using
-     * the JSON Merge Patch algorithm in the same order they are defined here.
-     */
-    public Aa20OperationTrait createTrait() {
-        Aa20OperationTrait trait = new Aa20OperationTrait();
-        this.traits.add(trait);
-        return trait;
-    }
-
-    public Aa20Operation createTraitAsReference(String $ref) {
-        Aa20Reference ref = new Aa20Reference($ref);
-        this.traits.add(ref);
-        return this;
-
-    }
-
-    /**
-     * A definition of the message that will be published or received on this channel. oneOf is allowed here to specify multiple messages, however, a message MUST be valid only against one of the referenced message objects.
-     */
-    public Aa20Message createMessage() {
-        Aa20Message message = new Aa20Message();
-        this.message = message;
-        return message;
-    }
-
-    public Aa20Operation createMessageAsReference(String $ref) {
-        Aa20Reference ref = new Aa20Reference($ref);
-        this.message = ref;
-        return this;
-    }
+    Aa20Message getMessage();
 }

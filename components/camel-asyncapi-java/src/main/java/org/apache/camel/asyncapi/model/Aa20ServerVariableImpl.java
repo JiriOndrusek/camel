@@ -34,8 +34,8 @@ public class Aa20ServerVariableImpl implements Aa20ServerVariable {
     private String description;
     private List<String> examples = new LinkedList<>();
 
-    public static Aa20ServerVariableImpl.Builder newBuilder(String name) {
-        return new Aa20ServerVariableImpl.Builder(name);
+    public static Aa20ServerVariableImpl.Builder newBuilder() {
+        return new Aa20ServerVariableImpl.Builder();
     }
 
     public Set<String> getEnum() {
@@ -76,15 +76,10 @@ public class Aa20ServerVariableImpl implements Aa20ServerVariable {
 
     public static class Builder extends NestedBuilder<Aa20ServerImpl.Builder, Aa20ServerVariable> {
 
-        private final String _name;
         private Set<String> enums = new LinkedHashSet();
         private String defaultValue;
         private String description;
         private List<String> examples = new LinkedList<>();
-
-        private Builder(String name) {
-            this._name = name;
-        }
 
         public Builder withEnum(String name) {
             this.enums.add(name);
@@ -115,10 +110,6 @@ public class Aa20ServerVariableImpl implements Aa20ServerVariable {
             variable.setEnum(this.enums);
             variable.setExamples(this.examples);
             return variable;
-        }
-
-        protected void setToParent(Aa20ServerImpl.Builder parent, Aa20ServerVariable build) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-            parent.withAa20ServerVariable(_name, build);
         }
     }
 }
