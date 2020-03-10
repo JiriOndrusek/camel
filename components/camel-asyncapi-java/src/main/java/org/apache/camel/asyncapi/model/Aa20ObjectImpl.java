@@ -16,6 +16,7 @@
  */
 package org.apache.camel.asyncapi.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.camel.asyncApi.*;
 
 import java.util.LinkedHashMap;

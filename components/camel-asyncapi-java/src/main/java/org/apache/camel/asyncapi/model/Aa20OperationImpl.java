@@ -166,18 +166,24 @@ public class Aa20OperationImpl implements Aa20Operation {
 //        public void setTraits(List<Aa20OperationTrait> traits) {
 //            this.traits = traits;
 //        }
-//
-//        public void withMessage(Aa20Message message) {
-//            this.message = message;
-//        }
+
+        public Builder withAa20MessageImpl(Aa20MessageImpl message) {
+            this.message = message;
+            return this;
+        }
+
+        public Aa20MessageImpl.Builder addMessage() {
+            return Aa20MessageImpl.newBuilder().withParentBuilder(this);
+        }
 
         @Override
         public Aa20Operation build() {
-            Aa20OperationImpl contact = new Aa20OperationImpl();
-            contact.setOperationId(this.operationId);
-            contact.setSummary(this.summary);
-            contact.setDescription(this.description);
-            return contact;
+            Aa20OperationImpl operation = new Aa20OperationImpl();
+            operation.setOperationId(this.operationId);
+            operation.setSummary(this.summary);
+            operation.setDescription(this.description);
+            operation.setMessage(this.message);
+            return operation;
         }
     }
 }

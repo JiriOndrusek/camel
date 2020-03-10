@@ -190,9 +190,9 @@ public class Aa20Components {
        return createItemAsReference(r -> schemas.put(name, r), $ref);
     }
 
-    public Aa20Message createMessage(String name) {
-        return createItem(() -> new Aa20Message(), messages, name).asObject(Aa20Message.class);
-    }
+//    public Aa20Message createMessage(String name) {
+//        return createItem(() -> new Aa20Message(), messages, name).asObject(Aa20Message.class);
+//    }
 
     public Aa20Reference createMessageAsReference(String name, String $ref) {
         return createItemAsReference(r -> messages.put(name, r), $ref);

@@ -1,11 +1,15 @@
 package org.apache.asyncapi.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import org.apache.camel.asyncApi.*;
-import org.apache.camel.asyncapi.model.Aa20ObjectImpl;
+import org.apache.camel.asyncapi.model.*;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
@@ -43,16 +47,93 @@ public class PlaygroundModelTest {
 //
 //
 //    }
-//    @Test
-//    public void test2() throws Exception {
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        //JSON from file to Object
-//        Aa20Object doc = objectMapper.readValue(new File("/home/jondruse/git/camel/components/camel-asyncapi-java/src/test/resources/generated.json"), Aa20Object.class);
-//        System.out.println(doc);
-//    }
+    @Test
+    public void test2() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        SimpleModule module = new SimpleModule("CustomModel", Version.unknownVersion());
+
+        SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver();
+        resolver.addMapping(Aa20Info.class, Aa20InfoImpl.class);
+        resolver.addMapping(Aa20Contact.class, Aa20ContactImpl.class);
+        resolver.addMapping(Aa20License.class, Aa20LicenseImpl.class);
+        resolver.addMapping(Aa20Server.class, Aa20ServerImpl.class);
+        resolver.addMapping(Aa20ServerVariable.class, Aa20ServerVariableImpl.class);
+        resolver.addMapping(Aa20ServerBindings.class, Aa20ServerBindingsImpl.class);
+        resolver.addMapping(Aa20SecurityRequirement.class, Aa20SecurityRequirementImpl.class);
+        resolver.addMapping(Aa20ChannelItem.class, Aa20ChannelItemImpl.class);
+        resolver.addMapping(Aa20Message.class, Aa20MessageImpl.class);
+        resolver.addMapping(Aa20Operation.class, Aa20OperationImpl.class);
+
+        module.setAbstractTypes(resolver);
+
+        objectMapper.registerModule(module);
+
+
+        //JSON from file to Object
+        Aa20Object doc = objectMapper.readValue(new File("/home/jondruse/git/camel/components/camel-asyncapi-java/src/test/resources/generated.json"), Aa20ObjectImpl.class);
+        System.out.println(doc);
+    }
 
     @Test
+    public void testCompareSerializationAndDeserializationr() throws Exception {
+
+
+        Aa20Object obj = createModel();
+
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule("CustomModel", Version.unknownVersion());
+
+        SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver();
+        resolver.addMapping(Aa20Info.class, Aa20InfoImpl.class);
+        resolver.addMapping(Aa20Contact.class, Aa20ContactImpl.class);
+        resolver.addMapping(Aa20License.class, Aa20LicenseImpl.class);
+        resolver.addMapping(Aa20Server.class, Aa20ServerImpl.class);
+        resolver.addMapping(Aa20ServerVariable.class, Aa20ServerVariableImpl.class);
+        resolver.addMapping(Aa20ServerBindings.class, Aa20ServerBindingsImpl.class);
+        resolver.addMapping(Aa20SecurityRequirement.class, Aa20SecurityRequirementImpl.class);
+        resolver.addMapping(Aa20ChannelItem.class, Aa20ChannelItemImpl.class);
+        resolver.addMapping(Aa20Message.class, Aa20MessageImpl.class);
+        resolver.addMapping(Aa20Operation.class, Aa20OperationImpl.class);
+
+        module.setAbstractTypes(resolver);
+
+        objectMapper.registerModule(module);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
+
+        String s = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+        System.out.println(s);
+
+        Aa20Object doc = objectMapper.readValue(s, Aa20ObjectImpl.class);
+        String s2 = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(doc);
+
+        Assert.assertEquals(s, s2);
+    }
+  @Test
     public void testBuilder() throws Exception {
+
+
+        Aa20Object obj = createModel();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
+
+//        byte[] bytes = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(obj);
+//        JsonNode node = objectMapper.readTree(bytes);
+//        String yaml = new YAMLMapper().writeValueAsString(node);
+
+//        System.out.println(yaml);
+
+
+        String s = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+
+        System.out.println(s);
+    }
+
+    private Aa20Object createModel() {
+
         Aa20ObjectImpl.Builder builder = Aa20ObjectImpl.newBuilder();
 
         builder.withAsyncApi("2.0.0")
@@ -85,23 +166,19 @@ public class PlaygroundModelTest {
                 .withDescription("The topic on which measured values may be produced and consumed.")
                 .addSubscribe()
                     .withDescription("Receive information about environmental lighting conditions of a particular streetlight.")
+                    .addMessage()
+                        .with$ref("#/components/messages/lightMeasured")
+                    .done()
                 .done()
                 .addPublish()
                     .withOperationId("turnOn")
+                    .addMessage()
+                        .with$ref("#/components/messages/turnOnOff")
+                    .done()
                 .done()
             .done();
 
-        Aa20Object obj = builder.build();
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
-
-        byte[] bytes = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(obj);
-        JsonNode node = objectMapper.readTree(bytes);
-        String yaml = new YAMLMapper().writeValueAsString(node);
-
-        System.out.println(yaml);
-
+        return builder.build();
     }
 
 //    private Aa20Object createModel() {

@@ -259,4 +259,42 @@ public class Aa20ServerImpl implements Aa20Server {
         return computedSecurity;
     }
 
+    public void setComputedSecurity(List<Aa20SecurityRequirement> computedSecurity) {
+        this.computedSecurity = computedSecurity;
+
+        //fill security
+        if(!computedSecurity.isEmpty()) {
+            Aa20SecurityRequirementImpl security = new Aa20SecurityRequirementImpl();
+            for (Aa20SecurityRequirement req: computedSecurity) {
+                if(req.getOpenIdConnect() != null) {
+                    security.setOpenIdConnect(req.getOpenIdConnect());
+                }
+                if(req.getOauth2() != null) {
+                    security.setOauth2(req.getOauth2());
+                }
+                if(req.getHttpApiKey() != null) {
+                    security.setHttpApiKey(req.getHttpApiKey());
+                }
+                if(req.getHttp() != null) {
+                    security.setHttp(req.getHttp());
+                }
+                if(req.getSymmetricEncryption() != null) {
+                    security.setSymmetricEncryption(req.getSymmetricEncryption());
+                }
+                if(req.getX509() != null) {
+                    security.setX509(req.getX509());
+                }
+                if(req.getAsymmetricEncryption() != null) {
+                    security.setAsymmetricEncryption(req.getAsymmetricEncryption());
+                }
+                if(req.getUserPassword() != null) {
+                    security.setUserPassword(req.getUserPassword());
+                }
+                if(req.getApiKey() != null) {
+                    security.setApiKey(req.getApiKey());
+                }
+            }
+            this.security = security;
+        }
+    }
 }

@@ -29,7 +29,7 @@ import java.util.Set;
 
 public class Aa20ServerVariableImpl implements Aa20ServerVariable {
 
-    private Set<String> enums = new LinkedHashSet();
+    private List<String> enums = new LinkedList<>();
     private String defaultValue;
     private String description;
     private List<String> examples = new LinkedList<>();
@@ -38,11 +38,11 @@ public class Aa20ServerVariableImpl implements Aa20ServerVariable {
         return new Aa20ServerVariableImpl.Builder();
     }
 
-    public Set<String> getEnum() {
+    public List<String> getEnum() {
         return enums;
     }
 
-    public void setEnum(Set<String> enums) {
+    public void setEnum(List<String> enums) {
         this.enums = enums;
     }
 
@@ -76,7 +76,7 @@ public class Aa20ServerVariableImpl implements Aa20ServerVariable {
 
     public static class Builder extends NestedBuilder<Aa20ServerImpl.Builder, Aa20ServerVariable> {
 
-        private Set<String> enums = new LinkedHashSet();
+        private List<String> enums = new LinkedList<>();
         private String defaultValue;
         private String description;
         private List<String> examples = new LinkedList<>();

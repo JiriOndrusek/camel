@@ -28,7 +28,8 @@ import java.util.Set;
  */
 public interface Aa20ServerVariable {
 
-    Set<String> getEnum();
+    //todo probably better set
+    List<String> getEnum();
 
     String getDefault();
 
