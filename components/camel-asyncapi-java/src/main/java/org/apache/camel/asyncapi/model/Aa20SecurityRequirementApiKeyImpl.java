@@ -16,6 +16,7 @@
  */
 package org.apache.camel.asyncapi.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.camel.asyncApi.Aa20SchemaType;
 import org.apache.camel.asyncApi.Aa20SecurityRequirement;
 import org.apache.camel.asyncApi.Aa20SecurityRequirementApiKey;
@@ -25,6 +26,7 @@ import java.util.List;
 
 public class Aa20SecurityRequirementApiKeyImpl extends Aa20SecurityRequirementImpl implements Aa20SecurityRequirementApiKey {
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Override
     public List<String> getApiKey() {
         return getSchemas();

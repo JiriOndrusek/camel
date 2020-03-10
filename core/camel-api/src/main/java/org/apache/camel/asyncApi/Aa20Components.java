@@ -288,9 +288,9 @@ public class Aa20Components {
         return createItemAsReference(r -> messageTraits.put(name, r), $ref);
     }
 
-    public Aa20ServerBindings createServerBindings(String name) {
-        return createItem(() -> new Aa20ServerBindings(), serverBindings, name).asObject(Aa20ServerBindings.class);
-    }
+//    public Aa20ServerBindings createServerBindings(String name) {
+//        return createItem(() -> new Aa20ServerBindings(), serverBindings, name).asObject(Aa20ServerBindings.class);
+//    }
 
     public Aa20Reference createServerBindingAsReference(String name, String $ref) {
         return createItemAsReference(r -> serverBindings.put(name, r), $ref);

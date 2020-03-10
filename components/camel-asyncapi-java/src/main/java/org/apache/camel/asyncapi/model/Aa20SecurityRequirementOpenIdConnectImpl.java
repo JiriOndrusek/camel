@@ -14,17 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.camel.asyncApi;
+package org.apache.camel.asyncapi.model;
+
+import org.apache.camel.asyncApi.Aa20SecurityRequirementOpenIdConnect;
 
 import java.util.List;
 
-/**
- * Lists the required security schemes to execute this operation. The name used for each property MUST correspond to a security scheme declared in the Security Schemes under the Components Object.
- *
- * When a list of Security Requirement Objects is defined on a Server object, only one of the Security Requirement Objects in the list needs to be satisfied to authorize the connection.
- */
-public interface Aa20SecurityRequirementOAuth2 extends Aa20SecurityRequirement {
+public class Aa20SecurityRequirementOpenIdConnectImpl extends Aa20SecurityRequirementImpl implements Aa20SecurityRequirementOpenIdConnect {
+
+    @Override
+    public List<String> getOpenIdConnectWellKnown() {
+        return getSchemas();
+    };
 
 
-    List<String> getSupportedOauthFlows();
 }

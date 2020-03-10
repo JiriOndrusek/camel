@@ -25,67 +25,14 @@ import java.util.Set;
 
 /**
  * An object representing a Server Variable for server URL template substitution.
- * todo This object MAY be extended with Specification Extensions.
  */
-public class Aa20ServerVariable {
+public interface Aa20ServerVariable {
 
-    @JsonProperty("enum")
-    private Set<String> enums = new LinkedHashSet();
-    String defaultValue;
-    String description;
-    List<String> examples = new LinkedList<>();
+    Set<String> getEnum();
 
-    public Set<String> getEnums() {
-        return enums;
-    }
+    String getDefault();
 
-    public void setEnums(Set<String> enums) {
-        this.enums = enums;
-    }
+    String getDescription();
 
-    public Aa20ServerVariable createEnum(String enumName) {
-        this.enums.add(enumName);
-        return this;
-    }
-
-    public String getDefaultValue() {
-        return defaultValue;
-    }
-
-    /**
-     * The default value to use for substitution, and to send, if an alternate value is not supplied.
-     */
-    public Aa20ServerVariable setDefaultValue(String defaultValue) {
-        this.defaultValue = defaultValue;
-        return this;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * An optional description for the server variable. CommonMark syntax MAY be used for rich text representation.
-     */
-    public Aa20ServerVariable setDescription(String description) {
-        this.description = description;
-        return this;
-    }
-
-    public List<String> getExamples() {
-        return examples;
-    }
-
-    /**
-     * An array of examples of the server variable.
-     */
-    public Aa20ServerVariable setExamples(List<String> examples) {
-        this.examples = examples;
-        return this;
-    }
-
-    public Aa20ServerVariable addExample(String example) {
-        examples.add(example);
-        return this;
-    }
+    List<String> getExamples();
 }

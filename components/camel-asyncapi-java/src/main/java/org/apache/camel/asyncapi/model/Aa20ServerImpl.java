@@ -41,6 +41,7 @@ public class Aa20ServerImpl implements Aa20Server {
     private Aa20ServerImpl() {
     }
 
+    @Override
     public String getUrl() {
         return url;
     }
@@ -49,6 +50,7 @@ public class Aa20ServerImpl implements Aa20Server {
         this.url = url;
     }
 
+    @Override
     public String getProtocol() {
         return protocol;
     }
@@ -57,6 +59,7 @@ public class Aa20ServerImpl implements Aa20Server {
         this.protocol = protocol;
     }
 
+    @Override
     public String getProtocolVersion() {
         return protocolVersion;
     }
@@ -74,6 +77,7 @@ public class Aa20ServerImpl implements Aa20Server {
         this.description = description;
     }
 
+    @Override
     public Map<String, Aa20ServerVariable> getVariables() {
         return variables;
     }
@@ -82,6 +86,7 @@ public class Aa20ServerImpl implements Aa20Server {
         this.variables = variables;
     }
 
+    @Override
     public List<Aa20SecurityRequirement> getSecurity() {
         return security;
     }
@@ -90,6 +95,7 @@ public class Aa20ServerImpl implements Aa20Server {
         this.security = security;
     }
 
+    @Override
     public Aa20ServerBindings getBindings() {
         return bindings;
     }
@@ -106,11 +112,9 @@ public class Aa20ServerImpl implements Aa20Server {
         private String protocol;
         private String protocolVersion;
         private String description;
-        private Map<String, Aa20ServerVariable> variables;
+        private Map<String, Aa20ServerVariable> aa20ServerVariables = new LinkedHashMap<>();
         private List<Aa20SecurityRequirement> aa20SecurityRequirements;
-//        List
-private Aa20ServerBindings bindings;
-//        private Map<String, todo> licenseBuilder = Aa20LicenseImpl.newBuilder().withParentBuilder(this);
+        private Aa20ServerBindingsImpl aa20ServerBindingsImpl;
 
         private Builder(String name) {
             this._name = name;
@@ -136,8 +140,8 @@ private Aa20ServerBindings bindings;
             return this;
         }
 
-        public Builder setVariables(Map<String, Aa20ServerVariable> variables) {
-            this.variables = variables;
+        public Builder withAa20ServerVariable(String name, Aa20ServerVariable variable) {
+            this.aa20ServerVariables.put(name, variable);
             return this;
         }
 
@@ -150,8 +154,8 @@ private Aa20ServerBindings bindings;
             return this;
         }
 
-        public Builder setBindings(Aa20ServerBindings bindings) {
-            this.bindings = bindings;
+        public Builder withAa20ServerBindingsImpl(Aa20ServerBindingsImpl aa20ServerBindingsImpl) {
+            this.aa20ServerBindingsImpl = aa20ServerBindingsImpl;
             return this;
         }
 
@@ -172,6 +176,14 @@ private Aa20ServerBindings bindings;
             return Aa20SecurityRequirementImpl.newBuilder(type).withParentBuilder(this);
         }
 
+        public Aa20ServerVariableImpl.Builder addVariable(String name) {
+            return Aa20ServerVariableImpl.newBuilder(name).withParentBuilder(this);
+        }
+
+        public Aa20ServerBindingsImpl.Builder addBindings() {
+            return Aa20ServerBindingsImpl.newBuilder().withParentBuilder(this);
+        }
+
         @Override
         public Aa20Server build() {
             Aa20ServerImpl server = new Aa20ServerImpl();
@@ -180,7 +192,8 @@ private Aa20ServerBindings bindings;
             server.setProtocolVersion(this.protocolVersion);
             server.setDescription(this.description);
             server.setSecurity(new LinkedList<>(this.aa20SecurityRequirements));
-
+            server.setVariables(this.aa20ServerVariables);
+            server.setBindings(this.aa20ServerBindingsImpl);
             return server;
         }
 

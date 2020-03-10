@@ -24,20 +24,7 @@ import java.util.List;
  *
  * When a list of Security Requirement Objects is defined on a Server object, only one of the Security Requirement Objects in the list needs to be satisfied to authorize the connection.
  */
-public class Aa20SecurityRequirementOpenIdConnect extends Aa20SecurityRequirementOld {
+public interface Aa20SecurityRequirementOpenIdConnect extends Aa20SecurityRequirement {
 
-    private List<String> openIdConnectWellKnown = new LinkedList();
-
-    public List<String> getOpenIdConnectWellKnown() {
-        return openIdConnectWellKnown;
-    }
-
-    public void setOpenIdConnectWellKnown(List<String> openIdConnectWellKnown) {
-        this.openIdConnectWellKnown = openIdConnectWellKnown;
-    }
-
-    @Override
-    List<String> getSchemas() {
-        return openIdConnectWellKnown;
-    }
+    List<String> getOpenIdConnectWellKnown();
 }

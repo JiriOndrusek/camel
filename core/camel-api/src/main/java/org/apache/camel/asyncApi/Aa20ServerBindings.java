@@ -16,7 +16,33 @@
  */
 package org.apache.camel.asyncApi;
 
-public class Aa20ServerBindings implements Aa20OrReferenceType<Aa20ServerBindings> {
+import java.util.Map;
 
-    //TODO
+public interface Aa20ServerBindings {
+
+   Map<String, Object> getHttp();
+
+   Map<String, Object> getWs();
+
+   Map<String, Object> getKafka();
+
+   Map<String, Object> getAmqp();
+
+   Map<String, Object> getAmqp1();
+
+   Map<String, Object> getMqtt();
+
+   Map<String, Object> getMqtt5();
+
+   Map<String, Object> getNats();
+
+   Map<String, Object> getJms();
+
+   Map<String, Object> getSns();
+
+   Map<String, Object> getSqs();
+
+   Map<String, Object> getStomp();
+
+   Map<String, Object> getRedis();
 }

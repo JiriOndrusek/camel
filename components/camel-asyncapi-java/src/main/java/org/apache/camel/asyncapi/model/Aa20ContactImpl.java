@@ -16,9 +16,11 @@
  */
 package org.apache.camel.asyncapi.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.camel.asyncApi.Aa20Contact;
 
 public class Aa20ContactImpl implements Aa20Contact {
+
 
     String name;
     String url;

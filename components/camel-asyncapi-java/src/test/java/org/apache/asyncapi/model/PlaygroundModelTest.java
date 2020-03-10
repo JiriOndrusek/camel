@@ -72,7 +72,12 @@ public class PlaygroundModelTest {
                 .withUrl("https://www.apache.org/licenses/LICENSE-2.0")
                 .withProtocol("mqtt")
                 .withDescription("test broker")
-                .addSecurityRequirement(Aa20SchemaType.apiKey).withSchema("streetlights:on").done()
+                .addSecurityRequirement(Aa20SchemaType.apiKey).done()
+                .addSecurityRequirement(Aa20SchemaType.oauth2).withSchema("streetlights:on").withSchema("streetlights:off").withSchema("streetlights:dim").done()
+                .addSecurityRequirement(Aa20SchemaType.openIdConnect).done()
+                .addVariable("port").withDescription("Secure connection (TLS) is available through port 8883.").withEnum("1883").withEnum("8883").done()
+                .addBindings().withHttp().done()
+                .addBindings().withWsSchema("test").done()
             .done();
 
 
