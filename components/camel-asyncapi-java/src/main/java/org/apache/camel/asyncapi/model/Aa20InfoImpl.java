@@ -21,6 +21,8 @@ import org.apache.camel.asyncApi.Aa20Contact;
 import org.apache.camel.asyncApi.Aa20Info;
 import org.apache.camel.asyncApi.Aa20License;
 
+import java.util.function.Consumer;
+
 public class Aa20InfoImpl implements Aa20Info {
 
     private String title;
@@ -30,8 +32,8 @@ public class Aa20InfoImpl implements Aa20Info {
     private Aa20Contact contact;
     private Aa20License license;
 
-    public static Aa20InfoImpl.Builder newBuilder() {
-        return new Aa20InfoImpl.Builder();
+    public static Aa20InfoImpl.Builder newBuilder(Aa20ObjectImpl.Builder parent, Consumer<Aa20Info> c) {
+        return new Aa20InfoImpl.Builder(parent, c);
     }
 
     private Aa20InfoImpl() {
@@ -98,12 +100,11 @@ public class Aa20InfoImpl implements Aa20Info {
         private String version;
         private String description;
         private String termsOfService;
-        private Aa20ContactImpl contact;
-        private Aa20ContactImpl.Builder contactBuilder = Aa20ContactImpl.newBuilder().withParentBuilder(this);
-        private Aa20LicenseImpl license;
-        private Aa20LicenseImpl.Builder licenseBuilder = Aa20LicenseImpl.newBuilder().withParentBuilder(this);
+        private Aa20Contact contact;
+        private Aa20License license;
 
-        private Builder() {
+        private Builder(Aa20ObjectImpl.Builder parent, Consumer<Aa20Info> c) {
+            super(parent, c);
         }
 
         public Builder withTitle(String title) {
@@ -126,20 +127,20 @@ public class Aa20InfoImpl implements Aa20Info {
             return this;
         }
 
-        public void withAa20ContactImpl(Aa20ContactImpl contact) {
+        public void withAa20ContactImpl(Aa20Contact contact) {
             this.contact = contact;
         }
 
-        public void withAa20LicenseImpl(Aa20LicenseImpl license) {
+        public void withAa20LicenseImpl(Aa20License license) {
             this.license = license;
         }
 
         public Aa20ContactImpl.Builder addContact() {
-            return contactBuilder;
+            return Aa20ContactImpl.newBuilder(this, o -> {withAa20ContactImpl(o);});
         }
 
         public Aa20LicenseImpl.Builder addLicense() {
-            return licenseBuilder;
+            return Aa20LicenseImpl.newBuilder(this, o -> {withAa20LicenseImpl(o);});
         }
 
         @Override

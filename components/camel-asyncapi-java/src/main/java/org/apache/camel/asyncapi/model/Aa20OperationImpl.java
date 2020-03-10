@@ -18,10 +18,8 @@ package org.apache.camel.asyncapi.model;
 
 import org.apache.camel.asyncApi.*;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class Aa20OperationImpl implements Aa20Operation {
@@ -39,8 +37,8 @@ public class Aa20OperationImpl implements Aa20Operation {
     //todo or oneOf
     private Aa20Message message;
 
-    public static Aa20OperationImpl.Builder newBuilder() {
-        return new Aa20OperationImpl.Builder();
+    public static OperationBuilder newBuilder(Aa20ChannelItemImpl.Builder parent, Consumer<Aa20Operation> consumer) {
+        return new OperationBuilder(parent, consumer);
     }
 
     private Aa20OperationImpl() {
@@ -120,7 +118,7 @@ public class Aa20OperationImpl implements Aa20Operation {
 
 // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder extends NestedBuilder<Aa20ChannelItemImpl.Builder, Aa20Operation> {
+    public static class OperationBuilder extends NestedBuilder<Aa20ChannelItemImpl.Builder, Aa20Operation> {
 
         private String operationId;
         String summary;
@@ -133,20 +131,21 @@ public class Aa20OperationImpl implements Aa20Operation {
         //todo or oneOf
         private Aa20Message message;
 
-        private Builder() {
+        private OperationBuilder(Aa20ChannelItemImpl.Builder parent, Consumer<Aa20Operation> consumer) {
+            super(parent, consumer);
         }
 
-        public Builder withOperationId(String operationId) {
+        public OperationBuilder withOperationId(String operationId) {
             this.operationId = operationId;
             return this;
         }
 
-        public Builder withSummary(String summary) {
+        public OperationBuilder withSummary(String summary) {
             this.summary = summary;
             return this;
         }
 
-        public Builder withDescription(String description) {
+        public OperationBuilder withDescription(String description) {
             this.description = description;
             return this;
         }
@@ -167,13 +166,13 @@ public class Aa20OperationImpl implements Aa20Operation {
 //            this.traits = traits;
 //        }
 
-        public Builder withAa20MessageImpl(Aa20MessageImpl message) {
+        public OperationBuilder withAa20MessageImpl(Aa20Message message) {
             this.message = message;
             return this;
         }
 
-        public Aa20MessageImpl.Builder addMessage() {
-            return Aa20MessageImpl.newBuilder().withParentBuilder(this);
+        public Aa20MessageImpl.FromOperationBuilder addMessage() {
+            return Aa20MessageImpl.newFromOperationBuilder(this, o -> withAa20MessageImpl(o));
         }
 
         @Override

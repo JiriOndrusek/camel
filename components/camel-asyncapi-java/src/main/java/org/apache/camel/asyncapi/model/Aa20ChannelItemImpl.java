@@ -18,9 +18,9 @@ package org.apache.camel.asyncapi.model;
 
 import org.apache.camel.asyncApi.*;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class Aa20ChannelItemImpl implements Aa20ChannelItem {
 
@@ -31,8 +31,8 @@ public class Aa20ChannelItemImpl implements Aa20ChannelItem {
     private Map<String, Aa20OrReferenceType<Aa20Parameter>> parameters = new LinkedHashMap<>();
     private Aa20ChannelBindings bindings = new Aa20ChannelBindings();
 
-    public static Aa20ChannelItemImpl.Builder newBuilder() {
-        return new Aa20ChannelItemImpl.Builder();
+    public static Aa20ChannelItemImpl.Builder newBuilder(Aa20ObjectImpl.Builder parent, Consumer<Aa20ChannelItem> consumer) {
+        return new Aa20ChannelItemImpl.Builder(parent, consumer);
     }
 
     private Aa20ChannelItemImpl() {
@@ -94,7 +94,7 @@ public class Aa20ChannelItemImpl implements Aa20ChannelItem {
 
     // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder extends NestedBuilder<Aa20ObjectImpl.Builder, Aa20ChannelItem> {
+    public static class Builder<T> extends NestedBuilder<T,  Aa20ChannelItem> {
 
         private String $ref;
         private String description;
@@ -103,7 +103,8 @@ public class Aa20ChannelItemImpl implements Aa20ChannelItem {
 //        private Map<String, Aa20OrReferenceType<Aa20Parameter>> parameters = new LinkedHashMap<>();
 //        private Aa20ChannelBindings bindings = new Aa20ChannelBindings();
 
-        private Builder() {
+        private Builder(T parent, Consumer<Aa20ChannelItem> consumer) {
+            super(parent, consumer);
         }
 
         public Builder with$ref(String $ref) {
@@ -136,18 +137,12 @@ public class Aa20ChannelItemImpl implements Aa20ChannelItem {
             return channel;
         }
 
-        public Aa20OperationImpl.Builder addSubscribe() {
-            return Aa20OperationImpl.newBuilder().withParentBuilder(this).withConsumerBuilder(o -> withSubscribe(o));
+        public Aa20OperationImpl.OperationBuilder addSubscribe() {
+            return Aa20OperationImpl.newBuilder(this, o -> withSubscribe(o));
         }
 
-        public Aa20OperationImpl.Builder addPublish() {
-            return Aa20OperationImpl.newBuilder().withParentBuilder(this).withConsumerBuilder(o -> withPublish(o));
+        public Aa20OperationImpl.OperationBuilder addPublish() {
+            return Aa20OperationImpl.newBuilder(this, o -> withPublish(o));
         }
-
-        @Override
-        public Aa20ObjectImpl.Builder done() {
-            return super.done();
-        }
-
     }
 }

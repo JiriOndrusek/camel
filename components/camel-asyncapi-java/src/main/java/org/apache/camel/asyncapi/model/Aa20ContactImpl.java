@@ -18,6 +18,9 @@ package org.apache.camel.asyncapi.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.camel.asyncApi.Aa20Contact;
+import org.apache.camel.asyncApi.Aa20Info;
+
+import java.util.function.Consumer;
 
 public class Aa20ContactImpl implements Aa20Contact {
 
@@ -26,8 +29,8 @@ public class Aa20ContactImpl implements Aa20Contact {
     String url;
     String email;
 
-    public static Aa20ContactImpl.Builder newBuilder() {
-        return new Aa20ContactImpl.Builder();
+    public static Aa20ContactImpl.Builder newBuilder(Aa20InfoImpl.Builder parent, Consumer<Aa20Contact> consumer) {
+        return new Aa20ContactImpl.Builder(parent, consumer);
     }
 
     private Aa20ContactImpl() {
@@ -66,6 +69,10 @@ public class Aa20ContactImpl implements Aa20Contact {
         String name;
         String url;
         String email;
+
+        public Builder(Aa20InfoImpl.Builder parent, Consumer<Aa20Contact> consumer) {
+            super(parent, consumer);
+        }
 
         public String getName() {
             return name;

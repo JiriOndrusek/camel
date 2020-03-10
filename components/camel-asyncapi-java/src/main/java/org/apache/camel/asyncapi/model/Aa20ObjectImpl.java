@@ -106,8 +106,7 @@ public class Aa20ObjectImpl implements Aa20Object {
 
         private String asyncapi;
         private String id;
-        private Aa20InfoImpl aa20Info;
-        private Aa20InfoImpl.Builder builderInfo = Aa20InfoImpl.newBuilder().withParentBuilder(this);
+        private Aa20Info aa20Info;
         private Map<String, Aa20Server> servers;
         private Map<String, Aa20ChannelItem> channels;
         private Map<String, Aa20ChannelItemImpl.Builder> channelBuilders = new LinkedHashMap<>();
@@ -130,12 +129,12 @@ public class Aa20ObjectImpl implements Aa20Object {
             return this;
         }
 
-        public void withAa20Info(Aa20InfoImpl aa20Info) {
+        public void withAa20Info(Aa20Info aa20Info) {
             this.aa20Info = aa20Info;
         }
 
         public Aa20InfoImpl.Builder addInfo() {
-            return builderInfo;
+            return  Aa20InfoImpl.newBuilder(this, o -> withAa20Info(o));
         }
 
         public void withAa20Server(String name, Aa20Server server) {
@@ -146,7 +145,7 @@ public class Aa20ObjectImpl implements Aa20Object {
         }
 
         public Aa20ServerImpl.Builder addServer(String name) {
-            Aa20ServerImpl.Builder builder = Aa20ServerImpl.newBuilder().withParentBuilder(this).withConsumerBuilder(s -> withAa20Server(name, s));
+            Aa20ServerImpl.Builder builder = Aa20ServerImpl.newBuilder(this, o -> withAa20Server(name, o));
             return builder;
         }
 
@@ -158,7 +157,7 @@ public class Aa20ObjectImpl implements Aa20Object {
         }
 
         public Aa20ChannelItemImpl.Builder addChannel(String name) {
-            Aa20ChannelItemImpl.Builder builder = Aa20ChannelItemImpl.newBuilder().withParentBuilder(this).withConsumerBuilder(i -> withAa20Channel(name, i));
+            Aa20ChannelItemImpl.Builder builder = Aa20ChannelItemImpl.newBuilder(this, o -> withAa20Channel(name, o));
             channelBuilders.put(name, builder);
             return builder;
         }

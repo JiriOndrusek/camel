@@ -16,15 +16,18 @@
  */
 package org.apache.camel.asyncapi.model;
 
+import org.apache.camel.asyncApi.Aa20Contact;
 import org.apache.camel.asyncApi.Aa20License;
+
+import java.util.function.Consumer;
 
 public class Aa20LicenseImpl implements Aa20License {
 
     String name;
     String url;
 
-    public static Aa20LicenseImpl.Builder newBuilder() {
-        return new Aa20LicenseImpl.Builder();
+    public static Aa20LicenseImpl.Builder newBuilder(Aa20InfoImpl.Builder parent, Consumer<Aa20License> consumer) {
+        return new Aa20LicenseImpl.Builder(parent, consumer);
     }
 
     private Aa20LicenseImpl() {
@@ -53,6 +56,10 @@ public class Aa20LicenseImpl implements Aa20License {
     public static class Builder extends NestedBuilder<Aa20InfoImpl.Builder, Aa20License> {
         String name;
         String url;
+
+        public Builder(Aa20InfoImpl.Builder parent, Consumer<Aa20License> consumer) {
+            super(parent, consumer);
+        }
 
         public String getName() {
             return name;

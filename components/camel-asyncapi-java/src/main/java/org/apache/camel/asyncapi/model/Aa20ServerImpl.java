@@ -22,6 +22,7 @@ import org.apache.camel.asyncApi.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class Aa20ServerImpl implements Aa20Server {
 
@@ -36,8 +37,8 @@ public class Aa20ServerImpl implements Aa20Server {
     List<Aa20SecurityRequirement> computedSecurity;
     Aa20ServerBindings bindings;
 
-    public static Aa20ServerImpl.Builder newBuilder() {
-        return new Aa20ServerImpl.Builder();
+    public static Aa20ServerImpl.Builder newBuilder(Aa20ObjectImpl.Builder parent, Consumer<Aa20Server> consumer) {
+        return new Aa20ServerImpl.Builder(parent, consumer);
     }
 
     private Aa20ServerImpl() {
@@ -109,7 +110,7 @@ public class Aa20ServerImpl implements Aa20Server {
 
     // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder extends NestedBuilder<Aa20ObjectImpl.Builder, Aa20Server> {
+    public static class Builder<T> extends NestedBuilder<T, Aa20Server> {
         private String url;
         private String protocol;
         private String protocolVersion;
@@ -118,7 +119,8 @@ public class Aa20ServerImpl implements Aa20Server {
         private Aa20SecurityRequirementImpl aa20SecurityRequirementImpl;
         private Aa20ServerBindingsImpl aa20ServerBindingsImpl;
 
-        private Builder() {
+        private Builder(T parent, Consumer<Aa20Server> consumer) {
+            super(parent, consumer);
         }
 
         public Builder withUrl(String url) {
@@ -157,21 +159,21 @@ public class Aa20ServerImpl implements Aa20Server {
             return this;
         }
 
-        public Aa20SecurityRequirementImpl.Builder addSecurityRequirement() {
-            return Aa20SecurityRequirementImpl.newBuilder().withParentBuilder(this);
-        }
-
-        public Aa20ServerVariableImpl.Builder addVariable(String name) {
-            return Aa20ServerVariableImpl.newBuilder().withParentBuilder(this).withConsumerBuilder(v -> withAa20ServerVariable(name, v));
-        }
-
-        public Aa20ServerBindingsImpl.Builder addBindings() {
-            return Aa20ServerBindingsImpl.newBuilder().withParentBuilder(this);
-        }
-
-        public Aa20ServerBindingsImpl.Builder addSecurity() {
-            return Aa20ServerBindingsImpl.newBuilder().withParentBuilder(this);
-        }
+//        public Aa20SecurityRequirementImpl.Builder addSecurityRequirement() {
+//            return Aa20SecurityRequirementImpl.newBuilder().withParentBuilder(this);
+//        }
+//
+//        public Aa20ServerVariableImpl.Builder addVariable(String name) {
+//            return Aa20ServerVariableImpl.newBuilder().withParentBuilder(this).withConsumerBuilder(v -> withAa20ServerVariable(name, v));
+//        }
+//
+//        public Aa20ServerBindingsImpl.Builder addBindings() {
+//            return Aa20ServerBindingsImpl.newBuilder().withParentBuilder(this);
+//        }
+//
+//        public Aa20ServerBindingsImpl.Builder addSecurity() {
+//            return Aa20ServerBindingsImpl.newBuilder().withParentBuilder(this);
+//        }
 
         @Override
         public Aa20Server build() {
@@ -186,11 +188,7 @@ public class Aa20ServerImpl implements Aa20Server {
             return server;
         }
 
-        @Override
-        public Aa20ObjectImpl.Builder done() {
-            return super.done();
-        }
-    }
+   }
 
     // --------------------------------------- computed fields ---------------------------------------------------------
 

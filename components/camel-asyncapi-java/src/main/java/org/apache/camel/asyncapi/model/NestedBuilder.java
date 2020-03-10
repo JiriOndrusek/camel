@@ -6,13 +6,15 @@ import java.util.function.Consumer;
 
 public abstract class NestedBuilder<T, V> {
 
-    protected NestedBuilder() {
+    public NestedBuilder(T parent, Consumer<V> consumer) {
+        this.parent = parent;
+        this.consumer = consumer;
     }
 
     public abstract V build();
 
-    private T parent;
-    private Consumer<V> consumer;
+    private final T parent;
+    private final Consumer<V> consumer;
 
 
     public T done() {
@@ -36,13 +38,4 @@ public abstract class NestedBuilder<T, V> {
         return parent;
     }
 
-    public <P extends NestedBuilder<T, V>> P withParentBuilder(T parent) {
-        this.parent = parent;
-        return (P) this;
-    }
-
-    public <P extends NestedBuilder<T, V>> P withConsumerBuilder(Consumer<V> consumer) {
-        this.consumer = consumer;
-        return (P) this;
-    }
 }
