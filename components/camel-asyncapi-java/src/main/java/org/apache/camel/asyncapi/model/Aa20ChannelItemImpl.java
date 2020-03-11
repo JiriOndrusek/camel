@@ -18,7 +18,6 @@ package org.apache.camel.asyncapi.model;
 
 import org.apache.camel.asyncApi.*;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -28,14 +27,21 @@ public class Aa20ChannelItemImpl implements Aa20ChannelItem {
     private String description;
     private Aa20Operation subscribe;
     private Aa20Operation publish;
-    private Map<String, Aa20OrReferenceType<Aa20Parameter>> parameters = new LinkedHashMap<>();
-    private Aa20ChannelBindings bindings = new Aa20ChannelBindings();
+    private Map<String, Aa20Parameter> parameters;
+    private Aa20ChannelBindings bindings;
 
-    public static Aa20ChannelItemImpl.Builder newBuilder(Aa20ObjectImpl.Builder parent, Consumer<Aa20ChannelItem> consumer) {
-        return new Aa20ChannelItemImpl.Builder(parent, consumer);
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     private Aa20ChannelItemImpl() {
+    }
+
+    private Aa20ChannelItemImpl(Builder b) {
+        this.description = b.description;
+        this.$ref = b.$ref;
+        this.subscribe = b.subscribe;
+        this.publish = b.publish;
     }
 
     @Override
@@ -75,11 +81,11 @@ public class Aa20ChannelItemImpl implements Aa20ChannelItem {
     }
 
     @Override
-    public Map<String, Aa20OrReferenceType<Aa20Parameter>> getParameters() {
+    public Map<String, Aa20Parameter> getParameters() {
         return parameters;
     }
 
-    public void setParameters(Map<String, Aa20OrReferenceType<Aa20Parameter>> parameters) {
+    public void setParameters(Map<String, Aa20Parameter> parameters) {
         this.parameters = parameters;
     }
 
@@ -94,7 +100,7 @@ public class Aa20ChannelItemImpl implements Aa20ChannelItem {
 
     // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder<T> extends NestedBuilder<T,  Aa20ChannelItem> {
+    public static class Builder extends AbstractBuilder<Aa20ChannelItem> {
 
         private String $ref;
         private String description;
@@ -103,8 +109,8 @@ public class Aa20ChannelItemImpl implements Aa20ChannelItem {
 //        private Map<String, Aa20OrReferenceType<Aa20Parameter>> parameters = new LinkedHashMap<>();
 //        private Aa20ChannelBindings bindings = new Aa20ChannelBindings();
 
-        private Builder(T parent, Consumer<Aa20ChannelItem> consumer) {
-            super(parent, consumer);
+        private Builder() {
+
         }
 
         public Builder with$ref(String $ref) {
@@ -128,21 +134,8 @@ public class Aa20ChannelItemImpl implements Aa20ChannelItem {
         }
 
         @Override
-        public Aa20ChannelItem build() {
-            Aa20ChannelItemImpl channel = new Aa20ChannelItemImpl();
-            channel.set$ref(this.$ref);
-            channel.setDescription(this.description);
-            channel.setSubscribe(this.subscribe);
-            channel.setPublish(this.publish);
-            return channel;
-        }
-
-        public Aa20OperationImpl.OperationBuilder addSubscribe() {
-            return Aa20OperationImpl.newBuilder(this, o -> withSubscribe(o));
-        }
-
-        public Aa20OperationImpl.OperationBuilder addPublish() {
-            return Aa20OperationImpl.newBuilder(this, o -> withPublish(o));
+        public Aa20ChannelItem done() {
+            return new Aa20ChannelItemImpl(this);
         }
     }
 }

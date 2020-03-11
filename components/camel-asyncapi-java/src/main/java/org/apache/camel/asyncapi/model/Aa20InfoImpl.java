@@ -16,7 +16,6 @@
  */
 package org.apache.camel.asyncapi.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.camel.asyncApi.Aa20Contact;
 import org.apache.camel.asyncApi.Aa20Info;
 import org.apache.camel.asyncApi.Aa20License;
@@ -32,11 +31,20 @@ public class Aa20InfoImpl implements Aa20Info {
     private Aa20Contact contact;
     private Aa20License license;
 
-    public static Aa20InfoImpl.Builder newBuilder(Aa20ObjectImpl.Builder parent, Consumer<Aa20Info> c) {
-        return new Aa20InfoImpl.Builder(parent, c);
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     private Aa20InfoImpl() {
+    }
+
+    private Aa20InfoImpl(Builder b) {
+        this.title = b.title;
+        this.description = b.description;
+        this.version = b.version;
+        this.termsOfService = b.termsOfService;
+        this.contact = b.contact;
+        this.license = b.license;
     }
 
     @Override
@@ -95,7 +103,8 @@ public class Aa20InfoImpl implements Aa20Info {
 
     // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder extends NestedBuilder<Aa20ObjectImpl.Builder, Aa20Info> {
+    public static class Builder extends AbstractBuilder<Aa20Info> {
+
         private String title;
         private String version;
         private String description;
@@ -103,8 +112,7 @@ public class Aa20InfoImpl implements Aa20Info {
         private Aa20Contact contact;
         private Aa20License license;
 
-        private Builder(Aa20ObjectImpl.Builder parent, Consumer<Aa20Info> c) {
-            super(parent, c);
+        private Builder() {
         }
 
         public Builder withTitle(String title) {
@@ -127,32 +135,19 @@ public class Aa20InfoImpl implements Aa20Info {
             return this;
         }
 
-        public void withAa20ContactImpl(Aa20Contact contact) {
+        public Builder withContact(Aa20Contact contact) {
             this.contact = contact;
+            return this;
         }
 
-        public void withAa20LicenseImpl(Aa20License license) {
+        public Builder withLicense(Aa20License license) {
             this.license = license;
-        }
-
-        public Aa20ContactImpl.Builder addContact() {
-            return Aa20ContactImpl.newBuilder(this, o -> {withAa20ContactImpl(o);});
-        }
-
-        public Aa20LicenseImpl.Builder addLicense() {
-            return Aa20LicenseImpl.newBuilder(this, o -> {withAa20LicenseImpl(o);});
+            return this;
         }
 
         @Override
-        public Aa20Info build() {
-            Aa20InfoImpl info = new Aa20InfoImpl();
-            info.setTitle(this.title);
-            info.setDescription(this.description);
-            info.setVersion(this.version);
-            info.setTermsOfService(this.termsOfService);
-            info.setContact(this.contact);
-            info.setLicense(this.license);
-            return info;
+        public Aa20Info done() {
+            return new Aa20InfoImpl(this);
         }
     }
 }

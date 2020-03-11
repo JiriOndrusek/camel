@@ -17,11 +17,8 @@
 package org.apache.camel.asyncapi.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.apache.camel.asyncApi.Aa20SchemaType;
 import org.apache.camel.asyncApi.Aa20SecurityRequirement;
-import org.apache.camel.asyncApi.Aa20Server;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -49,11 +46,23 @@ public class Aa20SecurityRequirementImpl implements Aa20SecurityRequirement {
     private List<String> openIdConnect;
 
 
-    public static Aa20SecurityRequirementImpl.Builder newBuilder(Aa20ServerImpl.Builder parent, Consumer<Aa20SecurityRequirement> consumer) {
-        return new Aa20SecurityRequirementImpl.Builder(parent, consumer);
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
-    protected Aa20SecurityRequirementImpl() {
+    private Aa20SecurityRequirementImpl() {
+    }
+
+    private Aa20SecurityRequirementImpl(Builder b) {
+        this.apiKey = b.apiKey;
+        this.userPassword = b.userPassword;
+        this.x509 = b.x509;
+        this.asymmetricEncryption = b.asymmetricEncryption;
+        this.symmetricEncryption = b.symmetricEncryption;
+        this.httpApiKey = b.httpApiKey;
+        this.http = b.http;
+        this.oauth2 = b.oauth2;
+        this.openIdConnect = b.openIdConnect;
     }
 
     @Override
@@ -139,7 +148,7 @@ public class Aa20SecurityRequirementImpl implements Aa20SecurityRequirement {
 
 // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder extends NestedBuilder<Aa20ServerImpl.Builder, Aa20SecurityRequirement> {
+    public static class Builder extends AbstractBuilder<Aa20SecurityRequirement> {
         private List<String> userPassword;
         private List<String> apiKey;
         private List<String> x509;
@@ -152,8 +161,8 @@ public class Aa20SecurityRequirementImpl implements Aa20SecurityRequirement {
 
 
 
-        private Builder(Aa20ServerImpl.Builder parent, Consumer<Aa20SecurityRequirement> consumer) {
-            super(parent, consumer);
+        private Builder() {
+
         }
 
         public Builder withUserPassword() {
@@ -166,6 +175,11 @@ public class Aa20SecurityRequirementImpl implements Aa20SecurityRequirement {
         public Builder withUserPassword(String schema) {
             withUserPassword();
             this.userPassword.add(schema);
+            return this;
+        }
+
+        public Builder withUserPassword(List<String> schemas) {
+            this.userPassword = schemas;
             return this;
         }
 
@@ -182,6 +196,12 @@ public class Aa20SecurityRequirementImpl implements Aa20SecurityRequirement {
             return this;
         }
 
+        public Builder withApiKey(List<String> schemas) {
+            this.apiKey = schemas;
+            return this;
+        }
+
+
         public Builder withX509() {
             if(x509 == null){
                 x509 = new LinkedList<>();
@@ -195,6 +215,13 @@ public class Aa20SecurityRequirementImpl implements Aa20SecurityRequirement {
             return this;
         }
 
+
+        public Builder withX509(List<String> schemas) {
+            this.x509 = schemas;
+            return this;
+        }
+
+
         public Builder withAsymmetricEncryption() {
             if(asymmetricEncryption == null){
                 asymmetricEncryption = new LinkedList<>();
@@ -207,6 +234,13 @@ public class Aa20SecurityRequirementImpl implements Aa20SecurityRequirement {
             this.asymmetricEncryption.add(schema);
             return this;
         }
+
+        public Builder withAsymmetricEncryption(List<String> schemas) {
+            this.asymmetricEncryption = schemas;
+            return this;
+        }
+
+
         public Builder withSymmetricEncryption() {
             if(symmetricEncryption == null){
                 symmetricEncryption = new LinkedList<>();
@@ -220,6 +254,12 @@ public class Aa20SecurityRequirementImpl implements Aa20SecurityRequirement {
             return this;
         }
 
+        public Builder withSymmetricEncryption(List<String> schemas) {
+            this.symmetricEncryption = schemas;
+            return this;
+        }
+
+
         public Builder withHttpApiKey() {
             if(httpApiKey == null){
                 httpApiKey = new LinkedList<>();
@@ -230,6 +270,11 @@ public class Aa20SecurityRequirementImpl implements Aa20SecurityRequirement {
         public Builder withHttpApiKey(String schema) {
             withHttpApiKey();
             this.httpApiKey.add(schema);
+            return this;
+        }
+
+        public Builder withHttpApiKey(List<String> schemas) {
+            this.httpApiKey = schemas;
             return this;
         }
 
@@ -246,6 +291,11 @@ public class Aa20SecurityRequirementImpl implements Aa20SecurityRequirement {
             return this;
         }
 
+        public Builder withHttp(List<String> schemas) {
+            this.http = schemas;
+            return this;
+        }
+
         public Builder withOAuth2() {
             if(oauth2 == null){
                 oauth2 = new LinkedList<>();
@@ -258,6 +308,12 @@ public class Aa20SecurityRequirementImpl implements Aa20SecurityRequirement {
             this.oauth2.add(schema);
             return this;
         }
+
+        public Builder withOAuth2(List<String> schemas) {
+            this.oauth2 = schemas;
+            return this;
+        }
+
         public Builder withOpenIdConnect() {
             if(openIdConnect == null){
                 openIdConnect = new LinkedList<>();
@@ -271,22 +327,15 @@ public class Aa20SecurityRequirementImpl implements Aa20SecurityRequirement {
             return this;
         }
 
+        public Builder withOpenIdConnect(List<String> schemas) {
+            this.openIdConnect = schemas;
+            return this;
+        }
 
 
         @Override
-        public Aa20SecurityRequirement build() {
-            Aa20SecurityRequirementImpl securityRequirement =  new Aa20SecurityRequirementImpl();
-            securityRequirement.setApiKey(this.apiKey);
-            securityRequirement.setUserPassword(this.userPassword);
-            securityRequirement.setX509(this.x509);
-            securityRequirement.setAsymmetricEncryption(this.asymmetricEncryption);
-            securityRequirement.setSymmetricEncryption(this.symmetricEncryption);
-            securityRequirement.setHttpApiKey(this.httpApiKey);
-            securityRequirement.setHttp(this.http);
-            securityRequirement.setOauth2(this.oauth2);
-            securityRequirement.setOpenIdConnect(this.openIdConnect);
-
-            return securityRequirement;
+        public Aa20SecurityRequirement done() {
+            return new Aa20SecurityRequirementImpl(this);
         }
     }
 }

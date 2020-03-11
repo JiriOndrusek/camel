@@ -16,24 +16,26 @@
  */
 package org.apache.camel.asyncapi.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.camel.asyncApi.Aa20Contact;
-import org.apache.camel.asyncApi.Aa20Info;
-
-import java.util.function.Consumer;
 
 public class Aa20ContactImpl implements Aa20Contact {
-
 
     String name;
     String url;
     String email;
 
-    public static Aa20ContactImpl.Builder newBuilder(Aa20InfoImpl.Builder parent, Consumer<Aa20Contact> consumer) {
-        return new Aa20ContactImpl.Builder(parent, consumer);
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     private Aa20ContactImpl() {
+    }
+
+    private Aa20ContactImpl(Builder b) {
+
+        this.name = b.name;
+        this.url = b.url;
+        this.email = b.email;
     }
 
     @Override
@@ -65,13 +67,12 @@ public class Aa20ContactImpl implements Aa20Contact {
 
     // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder extends NestedBuilder<Aa20InfoImpl.Builder, Aa20Contact> {
+    public static class Builder extends AbstractBuilder<Aa20Contact> {
         String name;
         String url;
         String email;
 
-        public Builder(Aa20InfoImpl.Builder parent, Consumer<Aa20Contact> consumer) {
-            super(parent, consumer);
+        private Builder() {
         }
 
         public String getName() {
@@ -102,12 +103,8 @@ public class Aa20ContactImpl implements Aa20Contact {
         }
 
         @Override
-        public Aa20Contact build() {
-            Aa20ContactImpl contact = new Aa20ContactImpl();
-            contact.setName(this.name);
-            contact.setUrl(this.url);
-            contact.setEmail((this.email));
-            return contact;
+        public Aa20Contact done() {
+            return new Aa20ContactImpl(this);
         }
     }
 }

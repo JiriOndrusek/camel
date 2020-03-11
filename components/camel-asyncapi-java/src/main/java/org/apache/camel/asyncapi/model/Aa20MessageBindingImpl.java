@@ -24,11 +24,15 @@ public class Aa20MessageBindingImpl implements Aa20MessageBinding {
 
     String $ref;
 
-    public static Builder newBuilder(Aa20OperationImpl.OperationBuilder parent, Consumer<Aa20MessageBinding> consumer) {
-        return new Builder(parent, consumer);
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     private Aa20MessageBindingImpl() {
+    }
+
+    private Aa20MessageBindingImpl(Builder b) {
+        this.$ref = b.$ref;
     }
 
     @Override
@@ -42,11 +46,10 @@ public class Aa20MessageBindingImpl implements Aa20MessageBinding {
 
     // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder extends NestedBuilder<Aa20OperationImpl.OperationBuilder, Aa20MessageBinding> {
+    public static class Builder extends AbstractBuilder<Aa20MessageBinding> {
         String $ref;
 
-        public Builder(Aa20OperationImpl.OperationBuilder parent, Consumer<Aa20MessageBinding> consumer) {
-            super(parent, consumer);
+        public Builder() {
         }
 
         public Builder with$ref(String $ref) {
@@ -55,10 +58,8 @@ public class Aa20MessageBindingImpl implements Aa20MessageBinding {
         }
 
         @Override
-        public Aa20MessageBinding build() {
-            Aa20MessageBindingImpl messageBinding = new Aa20MessageBindingImpl();
-            messageBinding.set$ref(this.$ref);
-            return messageBinding;
+        public Aa20MessageBinding done() {
+            return new Aa20MessageBindingImpl(this);
         }
     }
 }

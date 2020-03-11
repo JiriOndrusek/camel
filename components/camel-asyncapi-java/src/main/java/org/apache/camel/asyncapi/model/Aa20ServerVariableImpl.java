@@ -16,27 +16,31 @@
  */
 package org.apache.camel.asyncapi.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import org.apache.camel.asyncApi.Aa20SchemaType;
-import org.apache.camel.asyncApi.Aa20SecurityRequirement;
 import org.apache.camel.asyncApi.Aa20ServerVariable;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 
 public class Aa20ServerVariableImpl implements Aa20ServerVariable {
 
-    private List<String> enums = new LinkedList<>();
+    private List<String> enums;
     private String defaultValue;
     private String description;
-    private List<String> examples = new LinkedList<>();
+    private List<String> examples;
 
-    public static Aa20ServerVariableImpl.Builder newBuilder(Aa20ServerImpl.Builder parent, Consumer<Aa20ServerVariable> consumer) {
-        return new Aa20ServerVariableImpl.Builder(parent, consumer);
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    private Aa20ServerVariableImpl() {
+    }
+
+    public Aa20ServerVariableImpl(Builder b) {
+        this.defaultValue = b.defaultValue;
+        this.description = b.description;
+        this.enums = b.enums;
+        this.examples = b.examples;
     }
 
     public List<String> getEnum() {
@@ -75,15 +79,14 @@ public class Aa20ServerVariableImpl implements Aa20ServerVariable {
 
 // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder extends NestedBuilder<Aa20ServerImpl.Builder, Aa20ServerVariable> {
+    public static class Builder extends AbstractBuilder<Aa20ServerVariable> {
 
         private List<String> enums = new LinkedList<>();
         private String defaultValue;
         private String description;
         private List<String> examples = new LinkedList<>();
 
-        public Builder(Aa20ServerImpl.Builder parent, Consumer<Aa20ServerVariable> consumer) {
-            super(parent, consumer);
+        public Builder() {
         }
 
         public Builder withEnum(String name) {
@@ -106,15 +109,9 @@ public class Aa20ServerVariableImpl implements Aa20ServerVariable {
             return this;
         }
 
-
         @Override
-        public Aa20ServerVariable build() {
-            Aa20ServerVariableImpl variable = new Aa20ServerVariableImpl();
-            variable.setDefault(this.defaultValue);
-            variable.setDescription(this.description);
-            variable.setEnum(this.enums);
-            variable.setExamples(this.examples);
-            return variable;
+        public Aa20ServerVariable done() {
+            return new Aa20ServerVariableImpl(this);
         }
     }
 }

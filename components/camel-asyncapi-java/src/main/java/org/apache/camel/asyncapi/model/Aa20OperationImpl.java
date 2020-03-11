@@ -24,24 +24,31 @@ import java.util.function.Consumer;
 
 public class Aa20OperationImpl implements Aa20Operation {
 
-
-
     private String operationId;
     private String summary;
     private String description;
-    private List<Aa20Tag> tags = new LinkedList<>();
+    private List<Aa20Tag> tags;
     private Aa20ExternalDocumentation externalDocs;
     private Aa20MessageBinding binding;
-    //ref
     private List<Aa20OperationTrait> traits;
-    //todo or oneOf
     private Aa20Message message;
 
-    public static OperationBuilder newBuilder(Aa20ChannelItemImpl.Builder parent, Consumer<Aa20Operation> consumer) {
-        return new OperationBuilder(parent, consumer);
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     private Aa20OperationImpl() {
+    }
+
+    public Aa20OperationImpl(Builder b) {
+        this.operationId = b.operationId;
+        this.summary = b.summary;
+        this.description = b.description;
+        this.tags = b.tags;
+        this.externalDocs = b.externalDocs;
+        this.binding = b.binding;
+        this.traits = b.traits;
+        this.message = b.message;
     }
 
     @Override
@@ -89,7 +96,7 @@ public class Aa20OperationImpl implements Aa20Operation {
         this.externalDocs = externalDocs;
     }
 
-    public Aa20MessageBinding getBinding() {
+    public Aa20MessageBinding getBindings() {
         return binding;
     }
 
@@ -119,7 +126,7 @@ public class Aa20OperationImpl implements Aa20Operation {
 
 // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class OperationBuilder extends NestedBuilder<Aa20ChannelItemImpl.Builder, Aa20Operation> {
+    public static class Builder extends AbstractBuilder<Aa20Operation> {
 
         private String operationId;
         String summary;
@@ -130,66 +137,52 @@ public class Aa20OperationImpl implements Aa20Operation {
         List<Aa20OperationTrait> traits;
         private Aa20Message message;
 
-        private OperationBuilder(Aa20ChannelItemImpl.Builder parent, Consumer<Aa20Operation> consumer) {
-            super(parent, consumer);
+        public Builder() {
         }
 
-        public OperationBuilder withOperationId(String operationId) {
+        public Builder withOperationId(String operationId) {
             this.operationId = operationId;
             return this;
         }
 
-        public OperationBuilder withSummary(String summary) {
+        public Builder withSummary(String summary) {
             this.summary = summary;
             return this;
         }
 
-        public OperationBuilder withDescription(String description) {
+        public Builder withDescription(String description) {
             this.description = description;
             return this;
         }
 
-//        public Builder setTags(List<Aa20Tag> tags) {
-//            this.tags = tags;
-//        }
-//
-//        public void setExternalDocs(Aa20ExternalDocumentation externalDocs) {
-//            this.externalDocs = externalDocs;
-//        }
-//
+        public Builder withTags(List<Aa20Tag> tags) {
+            this.tags = tags;
+            return this;
+        }
 
+        public Builder withExternalDocs(Aa20ExternalDocumentation externalDocs) {
+            this.externalDocs = externalDocs;
+            return this;
+        }
 
-        public OperationBuilder withBinding(Aa20MessageBinding binding) {
+        public Builder withBinding(Aa20MessageBinding binding) {
             this.binding = binding;
             return this;
         }
 
-        public Aa20MessageBindingImpl.Builder addBindings() {
-            return Aa20MessageBindingImpl.newBuilder(this, o -> withBinding(o));
+        public Builder withTraits(List<Aa20OperationTrait> traits) {
+            this.traits = traits;
+            return this;
         }
-//
-//        public void setTraits(List<Aa20OperationTrait> traits) {
-//            this.traits = traits;
-//        }
 
-        public OperationBuilder withAa20MessageImpl(Aa20Message message) {
+        public Builder withMessage(Aa20Message message) {
             this.message = message;
             return this;
         }
 
-        public Aa20MessageImpl.FromOperationBuilder addMessage() {
-            return Aa20MessageImpl.newFromOperationBuilder(this, o -> withAa20MessageImpl(o));
-        }
-
         @Override
-        public Aa20Operation build() {
-            Aa20OperationImpl operation = new Aa20OperationImpl();
-            operation.setOperationId(this.operationId);
-            operation.setSummary(this.summary);
-            operation.setDescription(this.description);
-            operation.setMessage(this.message);
-            operation.setBinding(this.binding);
-            return operation;
+        public Aa20Operation done() {
+            return new Aa20OperationImpl(this);
         }
     }
 }

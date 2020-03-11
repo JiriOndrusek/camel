@@ -20,9 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.camel.asyncApi.*;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.function.Consumer;
 
 public class Aa20ServerImpl implements Aa20Server {
 
@@ -37,11 +35,23 @@ public class Aa20ServerImpl implements Aa20Server {
     List<Aa20SecurityRequirement> computedSecurity;
     Aa20ServerBindings bindings;
 
-    public static Aa20ServerImpl.Builder newBuilder(Aa20ObjectImpl.Builder parent, Consumer<Aa20Server> consumer) {
-        return new Aa20ServerImpl.Builder(parent, consumer);
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     private Aa20ServerImpl() {
+    }
+
+    private Aa20ServerImpl(Builder b) {
+        this.url = b.url;
+        this.protocol = b.protocol;
+        this.protocolVersion = b.protocolVersion;
+        this.description = b.description;
+        this.security = b.security;
+        this.variables = b.variables;
+        this.bindings = b.bindings;
+
+        computeSecurity();
     }
 
     @Override
@@ -110,17 +120,17 @@ public class Aa20ServerImpl implements Aa20Server {
 
     // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder extends NestedBuilder<Aa20ObjectImpl.Builder, Aa20Server> {
+    public static class Builder extends AbstractBuilder<Aa20Server> {
         private String url;
         private String protocol;
         private String protocolVersion;
         private String description;
-        private Map<String, Aa20ServerVariable> aa20ServerVariables = new LinkedHashMap<>();
-        private Aa20SecurityRequirement aa20SecurityRequirement;
-        private Aa20ServerBindings aa20ServerBindings;
+        private Map<String, Aa20ServerVariable> variables;
+        private Aa20SecurityRequirement security;
+        private Aa20ServerBindings bindings;
 
-        private Builder(Aa20ObjectImpl.Builder parent, Consumer<Aa20Server> consumer) {
-            super(parent, consumer);
+        private Builder() {
+
         }
 
         public Builder withUrl(String url) {
@@ -143,107 +153,74 @@ public class Aa20ServerImpl implements Aa20Server {
             return this;
         }
 
-        public Builder withAa20ServerVariable(String name, Aa20ServerVariable variable) {
-            this.aa20ServerVariables.put(name, variable);
+        public Builder withVariable(String name, Aa20ServerVariable variable) {
+            if(variables == null) {
+                variables = new LinkedHashMap<>();
+            }
+            this.variables.put(name, variable);
             return this;
         }
 
 
-        public Builder withAa20SecurityRequirement(Aa20SecurityRequirement aa20SecurityRequirement) {
-            this.aa20SecurityRequirement = aa20SecurityRequirement;
+        public Builder withSecurity(Aa20SecurityRequirement security) {
+            this.security = security;
             return this;
         }
 
-        public Builder withAa20ServerBindings(Aa20ServerBindings aa20ServerBindings) {
-            this.aa20ServerBindings = aa20ServerBindings;
+        public Builder withBindings(Aa20ServerBindings bindings) {
+            this.bindings = bindings;
             return this;
-        }
-
-        public Aa20SecurityRequirementImpl.Builder addSecurity() {
-            return Aa20SecurityRequirementImpl.newBuilder(this, o -> withAa20SecurityRequirement(o));
-        }
-
-        public Aa20ServerVariableImpl.Builder addVariable(String name) {
-            return Aa20ServerVariableImpl.newBuilder(this, o -> withAa20ServerVariable(name, o));
-        }
-
-        public Aa20ServerBindingsImpl.Builder addBindings() {
-            return Aa20ServerBindingsImpl.newBuilder(this, o -> withAa20ServerBindings(o));
         }
 
         @Override
-        public Aa20Server build() {
-            Aa20ServerImpl server = new Aa20ServerImpl();
-            server.setUrl(this.url);
-            server.setProtocol(this.protocol);
-            server.setProtocolVersion(this.protocolVersion);
-            server.setDescription(this.description);
-            server.setSecurity(this.aa20SecurityRequirement);
-            server.setVariables(this.aa20ServerVariables);
-            server.setBindings(this.aa20ServerBindings);
-            return server;
+        public Aa20Server done() {
+            return new Aa20ServerImpl(this);
         }
-
-   }
+    }
 
     // --------------------------------------- computed fields ---------------------------------------------------------
 
     private void computeSecurity() {
         computedSecurity = new LinkedList<>();
+        if(security == null) {
+            return;
+        }
         //json structure has to be an array of one type securityRequirementa
         //this method creates a new SecurityRequirement for each type
         if(security.getUserPassword() != null) {
-            Aa20SecurityRequirementImpl securityRequirement = new Aa20SecurityRequirementImpl();
-            securityRequirement.setUserPassword(security.getUserPassword());
-            computedSecurity.add(securityRequirement);
+            computedSecurity.add(Aa20SecurityRequirementImpl.newBuilder().withUserPassword(security.getUserPassword()).done());
         }
 
         if(security.getApiKey() != null) {
-            Aa20SecurityRequirementImpl securityRequirement = new Aa20SecurityRequirementImpl();
-            securityRequirement.setApiKey(security.getApiKey());
-            computedSecurity.add(securityRequirement);
+            computedSecurity.add(Aa20SecurityRequirementImpl.newBuilder().withApiKey(security.getApiKey()).done());
         }
 
         if(security.getX509() != null) {
-            Aa20SecurityRequirementImpl securityRequirement = new Aa20SecurityRequirementImpl();
-            securityRequirement.setX509(security.getX509());
-            computedSecurity.add(securityRequirement);
+            computedSecurity.add(Aa20SecurityRequirementImpl.newBuilder().withX509(security.getX509()).done());
         }
 
         if(security.getSymmetricEncryption() != null) {
-            Aa20SecurityRequirementImpl securityRequirement = new Aa20SecurityRequirementImpl();
-            securityRequirement.setSymmetricEncryption(security.getSymmetricEncryption());
-            computedSecurity.add(securityRequirement);
+            computedSecurity.add(Aa20SecurityRequirementImpl.newBuilder().withSymmetricEncryption(security.getSymmetricEncryption()).done());
         }
 
         if(security.getAsymmetricEncryption() != null) {
-            Aa20SecurityRequirementImpl securityRequirement = new Aa20SecurityRequirementImpl();
-            securityRequirement.setAsymmetricEncryption(security.getAsymmetricEncryption());
-            computedSecurity.add(securityRequirement);
+            computedSecurity.add(Aa20SecurityRequirementImpl.newBuilder().withAsymmetricEncryption(security.getAsymmetricEncryption()).done());
         }
 
         if(security.getHttpApiKey() != null) {
-            Aa20SecurityRequirementImpl securityRequirement = new Aa20SecurityRequirementImpl();
-            securityRequirement.setHttpApiKey(security.getHttpApiKey());
-            computedSecurity.add(securityRequirement);
+            computedSecurity.add(Aa20SecurityRequirementImpl.newBuilder().withHttpApiKey(security.getHttpApiKey()).done());
         }
 
         if(security.getHttp() != null) {
-            Aa20SecurityRequirementImpl securityRequirement = new Aa20SecurityRequirementImpl();
-            securityRequirement.setHttp(security.getHttp());
-            computedSecurity.add(securityRequirement);
+            computedSecurity.add(Aa20SecurityRequirementImpl.newBuilder().withHttp(security.getHttp()).done());
         }
 
         if(security.getOauth2() != null) {
-            Aa20SecurityRequirementImpl securityRequirement = new Aa20SecurityRequirementImpl();
-            securityRequirement.setOauth2(security.getOauth2());
-            computedSecurity.add(securityRequirement);
+            computedSecurity.add(Aa20SecurityRequirementImpl.newBuilder().withOAuth2(security.getOauth2()).done());
         }
 
         if(security.getOpenIdConnect() != null) {
-            Aa20SecurityRequirementImpl securityRequirement = new Aa20SecurityRequirementImpl();
-            securityRequirement.setOpenIdConnect(security.getOpenIdConnect());
-            computedSecurity.add(securityRequirement);
+            computedSecurity.add(Aa20SecurityRequirementImpl.newBuilder().withOpenIdConnect(security.getOpenIdConnect()).done());
         }
 
 
@@ -258,34 +235,34 @@ public class Aa20ServerImpl implements Aa20Server {
 
         //fill security
         if(!computedSecurity.isEmpty()) {
-            Aa20SecurityRequirementImpl security = new Aa20SecurityRequirementImpl();
+            Aa20SecurityRequirementImpl.Builder securityBuilder = Aa20SecurityRequirementImpl.newBuilder();
             for (Aa20SecurityRequirement req: computedSecurity) {
                 if(req.getOpenIdConnect() != null) {
-                    security.setOpenIdConnect(req.getOpenIdConnect());
+                    securityBuilder.withOpenIdConnect(req.getOpenIdConnect());
                 }
                 if(req.getOauth2() != null) {
-                    security.setOauth2(req.getOauth2());
+                    securityBuilder.withOAuth2(req.getOauth2());
                 }
                 if(req.getHttpApiKey() != null) {
-                    security.setHttpApiKey(req.getHttpApiKey());
+                    securityBuilder.withHttpApiKey(req.getHttpApiKey());
                 }
                 if(req.getHttp() != null) {
-                    security.setHttp(req.getHttp());
+                    securityBuilder.withHttp(req.getHttp());
                 }
                 if(req.getSymmetricEncryption() != null) {
-                    security.setSymmetricEncryption(req.getSymmetricEncryption());
+                    securityBuilder.withSymmetricEncryption(req.getSymmetricEncryption());
                 }
                 if(req.getX509() != null) {
-                    security.setX509(req.getX509());
+                    securityBuilder.withX509(req.getX509());
                 }
                 if(req.getAsymmetricEncryption() != null) {
-                    security.setAsymmetricEncryption(req.getAsymmetricEncryption());
+                    securityBuilder.withAsymmetricEncryption(req.getAsymmetricEncryption());
                 }
                 if(req.getUserPassword() != null) {
-                    security.setUserPassword(req.getUserPassword());
+                    securityBuilder.withUserPassword(req.getUserPassword());
                 }
                 if(req.getApiKey() != null) {
-                    security.setApiKey(req.getApiKey());
+                    securityBuilder.withApiKey(req.getApiKey());
                 }
             }
             this.security = security;

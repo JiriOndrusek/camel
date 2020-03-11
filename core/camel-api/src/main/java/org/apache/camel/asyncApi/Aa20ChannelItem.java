@@ -34,7 +34,7 @@ public interface Aa20ChannelItem {
 
     Aa20Operation getPublish();
 
-    Map<String, Aa20OrReferenceType<Aa20Parameter>> getParameters();
+    Map<String, Aa20Parameter> getParameters();
 
     Aa20ChannelBindings getBindings();
 }

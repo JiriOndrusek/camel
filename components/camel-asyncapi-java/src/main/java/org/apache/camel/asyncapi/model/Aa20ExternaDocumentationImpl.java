@@ -28,9 +28,9 @@ public class Aa20ExternaDocumentationImpl implements Aa20ExternalDocumentation {
 
     // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder extends NestedBuilder<Aa20InfoImpl.Builder, Aa20ExternalDocumentation> {
-
-    }
+//    public static class Builder extends NestedBuilder<Aa20InfoImpl.Builder, Aa20ExternalDocumentation> {
+//
+//    }
 
 
 }

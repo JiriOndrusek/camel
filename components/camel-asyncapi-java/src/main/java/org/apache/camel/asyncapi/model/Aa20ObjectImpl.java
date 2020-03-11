@@ -16,7 +16,6 @@
  */
 package org.apache.camel.asyncapi.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.camel.asyncApi.*;
 
 import java.util.LinkedHashMap;
@@ -30,12 +29,22 @@ public class Aa20ObjectImpl implements Aa20Object {
     private Aa20Info info;
     private Map<String, Aa20Server> servers;
     private Map<String, Aa20ChannelItem> channels;
+    private Aa20Components components;
 
     public static Aa20ObjectImpl.Builder newBuilder() {
         return new Aa20ObjectImpl.Builder();
     }
 
     private Aa20ObjectImpl() {
+    }
+
+    private Aa20ObjectImpl(Builder builder) {
+        this.asyncapi = builder.asyncapi;
+        this.id = builder.id;
+        this.info = builder.info;
+        this.servers = builder.servers;
+        this.channels = builder.channels;
+        this.components = builder.components;
     }
 
     public Aa20ObjectImpl(String asyncapi) {
@@ -80,10 +89,6 @@ public class Aa20ObjectImpl implements Aa20Object {
         this.channels = channels;
     }
 
-    @Override
-    public Aa20Components getComponents() {
-        return null;
-    }
 
     @Override
     public List<Aa20Tag> getTags() {
@@ -99,23 +104,32 @@ public class Aa20ObjectImpl implements Aa20Object {
         this.info = info;
     }
 
+    @Override
+    public Aa20Components getComponents() {
+        return components;
+    }
+
+    public void setComponents(Aa20Components components) {
+        this.components = components;
+    }
 
 
     // --------------------------------------- builder ---------------------------------------------------------
-    public static class Builder {
+    public static class Builder extends AbstractBuilder<Aa20Object> {
 
-        private String asyncapi;
-        private String id;
-        private Aa20Info aa20Info;
-        private Map<String, Aa20Server> servers;
-        private Map<String, Aa20ChannelItem> channels;
-        private Map<String, Aa20ChannelItemImpl.Builder> channelBuilders = new LinkedHashMap<>();
+        String asyncapi;
+        String id;
+        Aa20Info info;
+        Map<String, Aa20Server> servers;
+        Map<String, Aa20ChannelItem> channels;
+        Map<String, Aa20ChannelItemImpl.Builder> channelBuilders = new LinkedHashMap<>();
+        Aa20Components components;
 
         private Builder() {
         }
 
-        public Builder withAa20InfoImpl(Aa20InfoImpl aa20Info) {
-            this.aa20Info = aa20Info;
+        public Builder withInfo(Aa20Info info) {
+            this.info = info;
             return this;
         }
 
@@ -129,47 +143,31 @@ public class Aa20ObjectImpl implements Aa20Object {
             return this;
         }
 
-        public void withAa20Info(Aa20Info aa20Info) {
-            this.aa20Info = aa20Info;
-        }
-
-        public Aa20InfoImpl.Builder addInfo() {
-            return  Aa20InfoImpl.newBuilder(this, o -> withAa20Info(o));
-        }
-
-        public void withAa20Server(String name, Aa20Server server) {
+        public Builder withServer(String name, Aa20Server server) {
             if(this.servers == null) {
                 this.servers = new LinkedHashMap<>();
             }
             this.servers.put(name, server);
+            return this;
         }
 
-        public Aa20ServerImpl.Builder addServer(String name) {
-            Aa20ServerImpl.Builder builder = Aa20ServerImpl.newBuilder(this, o -> withAa20Server(name, o));
-            return builder;
-        }
 
-        public void withAa20Channel(String name, Aa20ChannelItem aa20ChannelItem) {
+        public Builder withChannel(String name, Aa20ChannelItem aa20ChannelItem) {
             if(this.channels == null) {
                 this.channels = new LinkedHashMap<>();
             }
             this.channels.put(name, aa20ChannelItem);
+            return this;
         }
 
-        public Aa20ChannelItemImpl.Builder addChannel(String name) {
-            Aa20ChannelItemImpl.Builder builder = Aa20ChannelItemImpl.newBuilder(this, o -> withAa20Channel(name, o));
-            channelBuilders.put(name, builder);
-            return builder;
+        public Builder withComponents(Aa20Components components) {
+            this.components = components;
+            return this;
         }
 
-        public Aa20Object build() {
-            Aa20ObjectImpl object = new Aa20ObjectImpl();
-            object.setAsyncapi(this.asyncapi);
-            object.setId(this.id);
-            object.setInfo(this.aa20Info);
-            object.setServers(this.servers);
-            object.setChannels(this.channels);
-            return object;
+        @Override
+        public Aa20Object done() {
+            return new Aa20ObjectImpl(this);
         }
     }
 }

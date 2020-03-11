@@ -23,46 +23,51 @@ import java.util.function.Consumer;
 
 public class Aa20MessageImpl implements Aa20Message {
 
-    private Aa20OrReferenceType<Aa20Schema> headers;
-    private Aa20OrReferenceType<Aa20CorellationId> correlationId;
+    private Aa20Schema headers;
+    private Aa20CorellationId correlationId;
     private String schemaFormat;
     private String contentType;
     private String name;
     private String title;
     private List<String> examples= new LinkedList<>();
     private Map<String, Object> payload = new LinkedHashMap();
-    private List<Aa20OrReferenceType<Aa20MessageTrait>> traits = new LinkedList();
+    private List<Aa20MessageTrait> traits = new LinkedList();
     private Set<Aa20Message> oneOf;
     private String $ref;
 
-    public static Aa20MessageImpl.FromOperationBuilder newFromOperationBuilder(Aa20OperationImpl.OperationBuilder parent, Consumer<Aa20Message> consumer) {
-        return new Aa20MessageImpl.FromOperationBuilder(parent, consumer);
+    public static Builder newBuilder() {
+        return new Builder();
     }
-
-    public static Aa20MessageImpl.FromMessageBuilder newFromMessageBuilder(Aa20MessageImpl.FromOperationBuilder parent, Consumer<Aa20Message> consumer) {
-        return new Aa20MessageImpl.FromMessageBuilder(parent, consumer);
-    }
-
-
 
     private Aa20MessageImpl() {
     }
 
+    public Aa20MessageImpl(Builder b) {
+        this.schemaFormat = b.schemaFormat;
+        this.contentType = b.contentType;
+        this.name = b.name;
+        this.title = b.title;
+        this.examples = b.examples;
+        this.payload = b.payload;
+        this.oneOf = b.oneOf;
+        this.$ref = b.$ref;
+    }
+
     @Override
-    public Aa20OrReferenceType<Aa20Schema> getHeaders() {
+    public Aa20Schema getHeaders() {
         return headers;
     }
 
-    public void setHeaders(Aa20OrReferenceType<Aa20Schema> headers) {
+    public void setHeaders(Aa20Schema headers) {
         this.headers = headers;
     }
 
     @Override
-    public Aa20OrReferenceType<Aa20CorellationId> getCorrelationId() {
+    public Aa20CorellationId getCorrelationId() {
         return correlationId;
     }
 
-    public void setCorrelationId(Aa20OrReferenceType<Aa20CorellationId> correlationId) {
+    public void setCorrelationId(Aa20CorellationId correlationId) {
         this.correlationId = correlationId;
     }
 
@@ -121,11 +126,11 @@ public class Aa20MessageImpl implements Aa20Message {
     }
 
     @Override
-    public List<Aa20OrReferenceType<Aa20MessageTrait>> getTraits() {
+    public List<Aa20MessageTrait> getTraits() {
         return traits;
     }
 
-    public void setTraits(List<Aa20OrReferenceType<Aa20MessageTrait>> traits) {
+    public void setTraits(List<Aa20MessageTrait> traits) {
         this.traits = traits;
     }
 
@@ -149,44 +154,9 @@ public class Aa20MessageImpl implements Aa20Message {
 
     // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class FromOperationBuilder extends AbstractMessageBuilder<Aa20OperationImpl.OperationBuilder> {
-        private FromOperationBuilder(Aa20OperationImpl.OperationBuilder parent, Consumer<Aa20Message> consumer) {
-            super(parent, consumer);
-        }
+    public static class Builder extends AbstractBuilder<Aa20Message> {
 
-        private Set<Aa20Message> oneOf;
-
-        public FromOperationBuilder  withOneOf(Aa20Message message) {
-            if(this.oneOf == null) {
-                oneOf = new LinkedHashSet<>();
-            }
-            this.oneOf.add(message);
-            return this;
-        }
-
-        public Aa20MessageImpl.FromMessageBuilder addOneOfMessage() {
-            return Aa20MessageImpl.newFromMessageBuilder(this, o -> withOneOf(o));
-        }
-
-
-        @Override
-        public Aa20Message build() {
-            Aa20MessageImpl message = (Aa20MessageImpl)super.build();
-            message.setOneOf(this.oneOf);
-            return message;
-        }
-    }
-
-
-    public static class FromMessageBuilder extends AbstractMessageBuilder<Aa20MessageImpl.FromOperationBuilder> {
-        private FromMessageBuilder(Aa20MessageImpl.FromOperationBuilder parent, Consumer<Aa20Message> consumer) {
-            super(parent, consumer);
-        }
-    }
-
-    public static abstract class AbstractMessageBuilder<T> extends NestedBuilder<T, Aa20Message> {
-        private AbstractMessageBuilder(T parent, Consumer<Aa20Message> consumer) {
-            super(parent, consumer);
+        public Builder() {
         }
 
 //        private Aa20OrReferenceType<Aa20Schema> headers;
@@ -202,54 +172,53 @@ public class Aa20MessageImpl implements Aa20Message {
         private String $ref;
 
 
-        public AbstractMessageBuilder<T> withSchemaFormat(String schemaFormat) {
+        public Builder withSchemaFormat(String schemaFormat) {
             this.schemaFormat = schemaFormat;
             return this;
         }
 
-        public AbstractMessageBuilder<T> withContentType(String contentType) {
+        public Builder withContentType(String contentType) {
             this.contentType = contentType;
             return this;
         }
 
-        public NestedBuilder<T, Aa20Message> withName(String name) {
+        public Builder withName(String name) {
             this.name = name;
             return this;
         }
 
-        public AbstractMessageBuilder<T> withTitle(String title) {
+        public Builder withTitle(String title) {
             this.title = title;
             return this;
         }
 
-        public AbstractMessageBuilder<T> withExamples(List<String> examples) {
+        public Builder withExamples(List<String> examples) {
             this.examples = examples;
             return this;
         }
 
-        public AbstractMessageBuilder<T> withPayload(Map<String, Object> payload) {
+        public Builder withPayload(Map<String, Object> payload) {
             this.payload = payload;
             return this;
         }
 
+        public Builder withOneOf(Aa20Message message) {
+            if(this.oneOf == null) {
+                this.oneOf = new HashSet<>();
+            }
+            this.oneOf.add(message);
+            return this;
+        }
 
-        public AbstractMessageBuilder<T> with$ref(String $ref) {
+
+        public Builder with$ref(String $ref) {
             this.$ref = $ref;
             return this;
         }
 
         @Override
-        public Aa20Message build() {
-            Aa20MessageImpl message = new Aa20MessageImpl();
-            message.setSchemaFormat(this.title);
-            message.setContentType(this.contentType);
-            message.setName(this.name);
-            message.setTitle(this.title);
-            message.setExamples(this.examples);
-            message.setPayload(this.payload);
-            message.setOneOf(this.oneOf);
-            message.set$ref(this.$ref);
-            return message;
+        public Aa20Message done() {
+            return new Aa20MessageImpl(this);
         }
     }
 }

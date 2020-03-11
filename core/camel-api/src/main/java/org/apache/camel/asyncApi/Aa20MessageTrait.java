@@ -28,9 +28,9 @@ import java.util.Set;
  */
 public interface Aa20MessageTrait {
 
-   Aa20OrReferenceType<Aa20Schema> getHeaders() ;
+   Aa20Schema getHeaders() ;
 
-   Aa20OrReferenceType<Aa20CorellationId> getCorrelationId();
+   Aa20CorellationId getCorrelationId();
 
    String getSchemaFormat() ;
 

@@ -24,9 +24,9 @@ import java.util.*;
 public interface Aa20Message  {
 
 
-    Aa20OrReferenceType<Aa20Schema> getHeaders() ;
+    Aa20Schema getHeaders() ;
 
-    Aa20OrReferenceType<Aa20CorellationId> getCorrelationId();
+    Aa20CorellationId getCorrelationId();
 
     String getSchemaFormat() ;
 
@@ -40,7 +40,7 @@ public interface Aa20Message  {
 
     Map<String, Object> getPayload();
 
-    List<Aa20OrReferenceType<Aa20MessageTrait>> getTraits();
+    List<Aa20MessageTrait> getTraits();
 
     Set<Aa20Message> getOneOf();
 

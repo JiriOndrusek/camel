@@ -97,6 +97,7 @@ public class PlaygroundModelTest {
         resolver.addMapping(Aa20ChannelItem.class, Aa20ChannelItemImpl.class);
         resolver.addMapping(Aa20Message.class, Aa20MessageImpl.class);
         resolver.addMapping(Aa20Operation.class, Aa20OperationImpl.class);
+        resolver.addMapping(Aa20Components.class, Aa20ComponentsImpl.class);
 
         module.setAbstractTypes(resolver);
 
@@ -134,67 +135,75 @@ public class PlaygroundModelTest {
 
     private Aa20Object createModel() {
 
-        Aa20ObjectImpl.Builder builder = Aa20ObjectImpl.newBuilder();
 
-        builder.withAsyncApi("2.0.0")
-            .addInfo()
+        Aa20Object model = Aa20ObjectImpl.newBuilder()
+            .withAsyncApi("2.0.0")
+            .withInfo(Aa20InfoImpl.newBuilder()
                 .withTitle("Streetlights API")
                 .withVersion("1.0.0")
-                .addContact()
+                .withContact(Aa20ContactImpl.newBuilder()
                     .withEmail("test@email.com")
-                    .withName("test")
-                .done()
-                .addLicense()
+                    .withName("test").done())
+                .withLicense(Aa20LicenseImpl.newBuilder()
                     .withName("license name")
                     .withUrl("http://testLicense.com")
-                .done()
-            .done()
-            .addServer("production")
+                    .done())
+                .done())
+            .withServer("production", Aa20ServerImpl.newBuilder()
                 .withUrl("https://www.apache.org/licenses/LICENSE-2.0")
                 .withProtocol("mqtt")
                 .withDescription("test broker")
-                .addSecurity()
+                .withSecurity(Aa20SecurityRequirementImpl.newBuilder()
                     .withApiKey()
                     .withOAuth2("streetlights:on").withOAuth2("streetlights:off").withOAuth2("streetlights:dim")
                     .withOpenIdConnect()
-                .done()
-                .addVariable("port").withDescription("Secure connection (TLS) is available through port 8883.").withEnum("1883").withEnum("8883").done()
-                .addBindings().withHttp().done()
-                .addBindings().withWsSchema("test").done()
-            .done()
-            .addChannel("smartylighting/streetlights/1/0/event/{streetlightId}/lighting/measured")
+                    .done())
+                .withVariable("port", Aa20ServerVariableImpl.newBuilder()
+                        .withDescription("Secure connection (TLS) is available through port 8883.")
+                        .withEnum("1883")
+                        .withEnum("8883").done())
+                .withBindings(Aa20ServerBindingsImpl.newBuilder().withHttp().done())
+                .withBindings(Aa20ServerBindingsImpl.newBuilder().withWsSchema("test").done())
+                .done())
+            .withComponents(Aa20ComponentsImpl.newBuilder()
+                .withMessage("test", Aa20MessageImpl.newBuilder().with$ref("#test").done())
+                .withMessage("test2", Aa20MessageImpl.newBuilder()
+                        .withOneOf(Aa20MessageImpl.newBuilder().with$ref("#1").done())
+                        .withOneOf(Aa20MessageImpl.newBuilder().with$ref("#2").done()).done())
+                .done())
+            .withChannel("smartylighting/streetlights/1/0/event/{streetlightId}/lighting/measured", Aa20ChannelItemImpl.newBuilder()
                 .withDescription("The topic on which measured values may be produced and consumed.")
-                .addSubscribe()
+                .withSubscribe(Aa20OperationImpl.newBuilder()
                     .withDescription("Receive information about environmental lighting conditions of a particular streetlight.")
-                    .addMessage()
-                        .with$ref("#/components/messages/lightMeasured")
-                    .done()
-                .done()
-                .addPublish()
+                    .withMessage(Aa20MessageImpl.newBuilder().with$ref("#/components/messages/lightMeasured").done())
+                    .done())
+                .withPublish(Aa20OperationImpl.newBuilder()
                     .withOperationId("turnOn")
-                    .addMessage()
-                        .addOneOfMessage().with$ref("#/components/messages/turnOnOff1").done()
-                        .addOneOfMessage().with$ref("#/components/messages/turnOnOff2").done()
+                    .withMessage(Aa20MessageImpl.newBuilder()
+                        .withOneOf(Aa20MessageImpl.newBuilder().with$ref("#/components/messages/turnOnOff1").done())
+                        .withOneOf(Aa20MessageImpl.newBuilder().with$ref("#/components/messages/turnOnOff2").done())
                         .with$ref("#/components/messages/turnOnOff")
-                    .done()
-                .done()
-            .done();
+                    .done())
+                .done())
+            .done())
+        .done();
 
-        return builder.build();
+
+        return model;
     }
-
-    private Aa20Object createModel2() {
-
-        Aa20OperationImpl.OperationBuilder b = Aa20OperationImpl.newBuilder(null, null)
-                    .withOperationId("turnOn")
-                    .addMessage()
-                        .addOneOfMessage().with$ref("#/components/messages/turnOnOff1").done()
-                        .addOneOfMessage().with$ref("#/components/messages/turnOnOff2").done()
-                        .with$ref("#/components/messages/turnOnOff")
-                    .done();
-Aa20Operation o = b.build();
-        return null;
-    }
+//
+//    private Aa20Object createModel2() {
+//
+//        Aa20OperationImpl.OperationBuilder b = Aa20OperationImpl.newBuilder(null, null)
+//                    .withOperationId("turnOn")
+//                    .addMessage()
+//                        .addOneOfMessage().with$ref("#/components/messages/turnOnOff1").done()
+//                        .addOneOfMessage().with$ref("#/components/messages/turnOnOff2").done()
+//                        .with$ref("#/components/messages/turnOnOff")
+//                    .done();
+//Aa20Operation o = b.build();
+//        return null;
+//    }
 
 //    private Aa20Object createModel() {
 //        Aa20Object doc =  new Aa20Object("2.0.0");

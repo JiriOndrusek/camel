@@ -16,7 +16,6 @@
  */
 package org.apache.camel.asyncapi.model;
 
-import org.apache.camel.asyncApi.Aa20Contact;
 import org.apache.camel.asyncApi.Aa20License;
 
 import java.util.function.Consumer;
@@ -26,11 +25,16 @@ public class Aa20LicenseImpl implements Aa20License {
     String name;
     String url;
 
-    public static Aa20LicenseImpl.Builder newBuilder(Aa20InfoImpl.Builder parent, Consumer<Aa20License> consumer) {
-        return new Aa20LicenseImpl.Builder(parent, consumer);
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     private Aa20LicenseImpl() {
+    }
+
+    private Aa20LicenseImpl(Builder b) {
+        this.name = b.name;
+        this.url = b.url;
     }
 
     @Override
@@ -53,12 +57,11 @@ public class Aa20LicenseImpl implements Aa20License {
 
     // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder extends NestedBuilder<Aa20InfoImpl.Builder, Aa20License> {
+    public static class Builder extends AbstractBuilder<Aa20License> {
         String name;
         String url;
 
-        public Builder(Aa20InfoImpl.Builder parent, Consumer<Aa20License> consumer) {
-            super(parent, consumer);
+        private Builder() {
         }
 
         public String getName() {
@@ -80,11 +83,8 @@ public class Aa20LicenseImpl implements Aa20License {
         }
 
         @Override
-        public Aa20License build() {
-            Aa20LicenseImpl license = new Aa20LicenseImpl();
-            license.setName(this.name);
-            license.setUrl(this.url);
-            return license;
+        public Aa20License done() {
+            return new Aa20LicenseImpl(this);
         }
     }
 }

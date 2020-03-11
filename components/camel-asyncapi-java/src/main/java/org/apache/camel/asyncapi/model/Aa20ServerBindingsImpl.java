@@ -17,10 +17,8 @@
 package org.apache.camel.asyncapi.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.apache.camel.asyncApi.Aa20SecurityRequirement;
 import org.apache.camel.asyncApi.Aa20ServerBindings;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -54,8 +52,17 @@ public class Aa20ServerBindingsImpl implements Aa20ServerBindings {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Map<String, Object> redis;
 
-    public static Aa20ServerBindingsImpl.Builder newBuilder(Aa20ServerImpl.Builder parent, Consumer<Aa20ServerBindings> consumer) {
-        return new Aa20ServerBindingsImpl.Builder(parent, consumer);
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    private Aa20ServerBindingsImpl() {
+    }
+
+    public Aa20ServerBindingsImpl(Builder b) {
+        this.http = b.http;
+        this.ws = b.ws;
+        //todo
     }
 
     @Override
@@ -176,7 +183,7 @@ public class Aa20ServerBindingsImpl implements Aa20ServerBindings {
     }
 // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder extends NestedBuilder<Aa20ServerImpl.Builder, Aa20ServerBindings> {
+    public static class Builder extends AbstractBuilder<Aa20ServerBindings> {
         private Map<String, Object> http;
         private Map<String, Object> ws;
         private Map<String, Object> kafka;
@@ -191,8 +198,7 @@ public class Aa20ServerBindingsImpl implements Aa20ServerBindings {
         private Map<String, Object> stomp;
         private Map<String, Object> redis;
 
-        public Builder(Aa20ServerImpl.Builder parent, Consumer<Aa20ServerBindings> consumer) {
-            super(parent, consumer);
+        public Builder() {
         }
 
         public Builder withHttp() {
@@ -229,11 +235,8 @@ public class Aa20ServerBindingsImpl implements Aa20ServerBindings {
 
 
         @Override
-        public Aa20ServerBindings build() {
-            Aa20ServerBindingsImpl bindings = new Aa20ServerBindingsImpl();
-            bindings.setHttp(this.http);
-            bindings.setWs(this.ws);
-            return bindings;
+        public Aa20ServerBindings done() {
+            return new Aa20ServerBindingsImpl(this);
         }
     }
 }
