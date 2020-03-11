@@ -22,7 +22,7 @@ public abstract class NestedBuilder<T, V> {
 
         if(consumer != null) {
             consumer.accept(build);
-        } else {
+        } else if(parent != null) {
             try {
                 Class<?> parentClass = parent.getClass();
                 String methodname = "with" + build.getClass().getSimpleName();

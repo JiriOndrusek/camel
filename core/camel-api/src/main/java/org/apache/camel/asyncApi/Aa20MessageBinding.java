@@ -23,7 +23,9 @@ import java.util.Map;
  * Map describing protocol-specific definitions for a message.
  * todo
  */
-public class Aa20MessageBinding extends HashMap<Aa20MessageBinding.Field, Object>  implements  Aa20OrReferenceType<Aa20MessageBinding>{
+public interface Aa20MessageBinding {
+
+    String get$ref();
 
     public enum Field{
         http,

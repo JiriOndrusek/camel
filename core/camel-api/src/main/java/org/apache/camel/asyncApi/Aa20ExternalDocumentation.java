@@ -19,32 +19,9 @@ package org.apache.camel.asyncApi;
 /**
  * Allows referencing an external resource for extended documentation.
  */
-public class Aa20ExternalDocumentation {
+public interface Aa20ExternalDocumentation {
 
+    String getDescription();
 
-    String description;
-    final String url;
-
-    /**
-     * @param url Required. The URL for the target documentation. Value MUST be in the format of a URL.
-     */
-    public Aa20ExternalDocumentation(String url) {
-        this.url = url;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * @param description A short description of the target documentation. CommonMark syntax can be used for rich text representation.
-     */
-    public Aa20ExternalDocumentation setDescription(String description) {
-        this.description = description;
-        return this;
-    }
-
-    public String getUrl() {
-        return url;
-    }
+    String getUrl();
 }

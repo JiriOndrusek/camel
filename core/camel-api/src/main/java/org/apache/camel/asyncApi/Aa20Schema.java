@@ -75,53 +75,13 @@ import java.util.LinkedHashMap;
  *
  * todo This object can be extended with Specification Extensions.
  */
-public class Aa20Schema extends LinkedHashMap<String, Object> implements Aa20OrReferenceType<Aa20Schema> {
+public interface Aa20Schema {
 
-    private String discriminator;
-    private Aa20ExternalDocumentation externalDocs;
-    private boolean deprecated;
+    public String getDiscriminator();
 
-    public String getDiscriminator() {
-        return discriminator;
-    }
+    public Aa20ExternalDocumentation getExternalDocs();
 
-    /**
-     * Adds support for polymorphism. The discriminator is the schema property
-     * name that is used to differentiate between other schema that inherit
-     * this schema. The property name used MUST be defined at this schema
-     * and it MUST be in the required property list. When used, the value MUST
-     * be the name of this schema or any schema that inherits it.
-     * See Composition and Inheritance for more details.
-     */
-    public void setDiscriminator(String discriminator) {
-        this.discriminator = discriminator;
-    }
+    boolean isDeprecated();
 
-    public Aa20ExternalDocumentation getExternalDocs() {
-        return externalDocs;
-    }
-
-    /**
-     * @param externalDocs Additional external documentation for this schema.
-     */
-    public void setExternalDocs(Aa20ExternalDocumentation externalDocs) {
-        this.externalDocs = externalDocs;
-    }
-
-    public Aa20ExternalDocumentation createExternalDocs(String url) {
-        Aa20ExternalDocumentation externalDocs = new Aa20ExternalDocumentation(url);
-        this.externalDocs = externalDocs;
-        return externalDocs;
-    }
-
-    public boolean isDeprecated() {
-        return deprecated;
-    }
-
-    /**
-     * @param deprecated Specifies that a schema is deprecated and SHOULD be transitioned out of usage. Default value is false.
-     */
-    public void setDeprecated(boolean deprecated) {
-        this.deprecated = deprecated;
-    }
+    String get$ref();
 }

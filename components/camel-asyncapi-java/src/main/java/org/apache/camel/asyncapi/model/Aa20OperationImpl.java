@@ -31,7 +31,7 @@ public class Aa20OperationImpl implements Aa20Operation {
     private String description;
     private List<Aa20Tag> tags = new LinkedList<>();
     private Aa20ExternalDocumentation externalDocs;
-    private Aa20MessageBinding bindings = new Aa20MessageBinding();
+    private Aa20MessageBinding binding;
     //ref
     private List<Aa20OperationTrait> traits;
     //todo or oneOf
@@ -89,13 +89,12 @@ public class Aa20OperationImpl implements Aa20Operation {
         this.externalDocs = externalDocs;
     }
 
-    @Override
-    public Aa20MessageBinding getBindings() {
-        return bindings;
+    public Aa20MessageBinding getBinding() {
+        return binding;
     }
 
-    public void setBindings(Aa20MessageBinding bindings) {
-        this.bindings = bindings;
+    public void setBinding(Aa20MessageBinding binding) {
+        this.binding = binding;
     }
 
     @Override
@@ -116,6 +115,8 @@ public class Aa20OperationImpl implements Aa20Operation {
         this.message = message;
     }
 
+
+
 // --------------------------------------- builder ---------------------------------------------------------
 
     public static class OperationBuilder extends NestedBuilder<Aa20ChannelItemImpl.Builder, Aa20Operation> {
@@ -125,10 +126,8 @@ public class Aa20OperationImpl implements Aa20Operation {
         String description;
         List<Aa20Tag> tags = new LinkedList<>();
         Aa20ExternalDocumentation externalDocs;
-        Aa20MessageBinding bindings = new Aa20MessageBinding();
-        //ref
+        Aa20MessageBinding binding;
         List<Aa20OperationTrait> traits;
-        //todo or oneOf
         private Aa20Message message;
 
         private OperationBuilder(Aa20ChannelItemImpl.Builder parent, Consumer<Aa20Operation> consumer) {
@@ -158,9 +157,16 @@ public class Aa20OperationImpl implements Aa20Operation {
 //            this.externalDocs = externalDocs;
 //        }
 //
-//        public void setBindings(Aa20MessageBinding bindings) {
-//            this.bindings = bindings;
-//        }
+
+
+        public OperationBuilder withBinding(Aa20MessageBinding binding) {
+            this.binding = binding;
+            return this;
+        }
+
+        public Aa20MessageBindingImpl.Builder addBindings() {
+            return Aa20MessageBindingImpl.newBuilder(this, o -> withBinding(o));
+        }
 //
 //        public void setTraits(List<Aa20OperationTrait> traits) {
 //            this.traits = traits;
@@ -182,6 +188,7 @@ public class Aa20OperationImpl implements Aa20Operation {
             operation.setSummary(this.summary);
             operation.setDescription(this.description);
             operation.setMessage(this.message);
+            operation.setBinding(this.binding);
             return operation;
         }
     }

@@ -16,53 +16,13 @@
  */
 package org.apache.camel.asyncApi;
 
-public class Aa20Tag {
+public interface Aa20Tag {
 
-    final String name;
-    //TODO CommonMark syntax can be used for rich text representation.
-    String description;
-    Aa20ExternalDocumentation externalDocs;
 
-    /**
-     * @param name Required. The name of the tag.
-     */
-    public Aa20Tag(String name) {
-        this.name = name;
-    }
+    String getName();
 
-    public String getName() {
-        return name;
-    }
+    String getDescription();
 
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * A short description for the tag. CommonMark syntax can be used for rich text representation.
-     */
-    public Aa20Tag setDescription(String description) {
-        this.description = description;
-        return this;
-    }
-
-    public Aa20ExternalDocumentation getExternalDocs() {
-        return externalDocs;
-    }
-
-    /**
-     * @param externalDocs Additional external documentation for this tag.
-     */
-    public Aa20Tag setExternalDocs(Aa20ExternalDocumentation externalDocs) {
-        this.externalDocs = externalDocs;
-        return this;
-    }
-
-    public Aa20ExternalDocumentation createExternalDocs(String url) {
-        Aa20ExternalDocumentation externalDocs = new Aa20ExternalDocumentation(url);
-        this.externalDocs = externalDocs;
-        return externalDocs;
-    }
-
+    Aa20ExternalDocumentation getExternalDocs();
 
 }

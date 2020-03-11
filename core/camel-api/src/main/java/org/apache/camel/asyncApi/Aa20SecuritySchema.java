@@ -16,9 +16,22 @@
  */
 package org.apache.camel.asyncApi;
 
-public class Aa20SecuritySchemaAsymetricEncryption extends Aa20AbstractSecuritySchema implements Aa20OrReferenceType<Aa20SecuritySchemaAsymetricEncryption> {
+public interface Aa20SecuritySchema {
 
-    public Aa20SecuritySchemaAsymetricEncryption() {
-        super(Type.asymmetricEncryption);
+    public enum Type {
+        userPassword,
+        apiKey,
+        X509,
+        symmetricEncryption,
+        asymmetricEncryption,
+        httpApiKey,
+        http,
+        oauth2,
+        openIdConnect;
     }
+
+
+    Type getType();
+
+    String getDescription();
 }

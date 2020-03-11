@@ -22,55 +22,14 @@ import java.util.Map;
 /**
  * Configuration details for a supported OAuth Flow
  */
-public class Aa20OAuthFlow {
+public interface Aa20OAuthFlow {
 
-    private String authorizationUrl;
-    private String tokenUrl;
-    private String refreshUrl;
-    private Map<String,String> scopes = new LinkedHashMap<>();
+   String getAuthorizationUrl();
 
+   String getTokenUrl();
 
-    public String getAuthorizationUrl() {
-        return authorizationUrl;
-    }
+   String getRefreshUrl();
 
-    public String getTokenUrl() {
-        return tokenUrl;
-    }
-
-    public String getRefreshUrl() {
-        return refreshUrl;
-    }
-
-    public Aa20OAuthFlow setAuthorizationUrl(String authorizationUrl) {
-        this.authorizationUrl = authorizationUrl;
-        return this;
-    }
-
-    public Aa20OAuthFlow setTokenUrl(String tokenUrl) {
-        this.tokenUrl = tokenUrl;
-        return this;
-    }
-
-    public void setScopes(Map<String, String> scopes) {
-        this.scopes = scopes;
-    }
-
-    /**
-     * @param refreshUrl The URL to be used for obtaining refresh tokens. This MUST be in the form of a URL.
-     */
-    public Aa20OAuthFlow setRefreshUrl(String refreshUrl) {
-        this.refreshUrl = refreshUrl;
-        return this;
-    }
-
-    public Map<String, String> getScopes() {
-        return scopes;
-    }
-
-    public Aa20OAuthFlow createScope(String name, String description) {
-        scopes.put(name, description);
-        return this;
-    }
+   Map<String, String> getScopes();
 
 }

@@ -21,31 +21,11 @@ package org.apache.camel.asyncApi;
  *
  * For specifying and computing the location of a Correlation ID, a runtime expression is used.
  */
-public class Aa20CorellationId implements Aa20OrReferenceType<Aa20CorellationId> {
+public interface Aa20CorellationId {
 
-    String description;
-    final String location;
+    String getDescription();
 
-    /**
-     *
-     * @param location REQUIRED. A runtime expression that specifies the location of the correlation ID.
-     */
-    public Aa20CorellationId(String location) {
-        this.location = location;
-    }
+    String getLocation();
 
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * @param description An optional description of the identifier. CommonMark syntax can be used for rich text representation.
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getLocation() {
-        return location;
-    }
+    String get$ref();
 }

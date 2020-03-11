@@ -18,12 +18,31 @@ package org.apache.camel.asyncApi;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Describes a trait that MAY be applied to a Message Object. This object MAY contain any property from the Message Object, except payload and traits.
  *
  * If you’re looking to apply traits to an operation, see the Operation Trait Object.
  */
-public class Aa20MessageTrait extends AbstractMessage<Aa20MessageTrait>  implements  Aa20OrReferenceType<Aa20MessageTrait> {
+public interface Aa20MessageTrait {
 
-   }
+   Aa20OrReferenceType<Aa20Schema> getHeaders() ;
+
+   Aa20OrReferenceType<Aa20CorellationId> getCorrelationId();
+
+   String getSchemaFormat() ;
+
+   String getContentType();
+
+   String getName();
+
+   String getTitle();
+
+   List<String> getExamples();
+
+   Map<String, Object> getPayload();
+
+   String get$ref();
+}

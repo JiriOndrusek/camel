@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Map describing protocol-specific definitions for an operation.
  */
-public class Aa20OperationBindings extends LinkedHashMap<Aa20OperationBindings.type, Object> {
+public interface Aa20OperationBindings {
 
     public enum type {
         http,

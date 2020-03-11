@@ -16,12 +16,26 @@
  */
 package org.apache.camel.asyncApi;
 
+import java.util.List;
+
 /**
  * Describes a trait that MAY be applied to an Operation Object.
  * This object MAY contain any property from the Operation Object, except message and traits.
  *
  * If you’re looking to apply traits to a message, see the Message Trait Object.
  */
-public class Aa20OperationTrait extends AbstractOperation<Aa20OperationTrait> implements  Aa20OrReferenceType<Aa20OperationTrait> {
+public interface Aa20OperationTrait {
+
+    String getOperationId();
+
+    String getSummary();
+
+    String getDescription();
+
+    List<Aa20Tag> getTags();
+
+    Aa20ExternalDocumentation getExternalDocs();
+
+    Aa20MessageBinding getBindings();
 
 }

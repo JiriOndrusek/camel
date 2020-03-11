@@ -183,6 +183,19 @@ public class PlaygroundModelTest {
         return builder.build();
     }
 
+    private Aa20Object createModel2() {
+
+        Aa20OperationImpl.OperationBuilder b = Aa20OperationImpl.newBuilder(null, null)
+                    .withOperationId("turnOn")
+                    .addMessage()
+                        .addOneOfMessage().with$ref("#/components/messages/turnOnOff1").done()
+                        .addOneOfMessage().with$ref("#/components/messages/turnOnOff2").done()
+                        .with$ref("#/components/messages/turnOnOff")
+                    .done();
+Aa20Operation o = b.build();
+        return null;
+    }
+
 //    private Aa20Object createModel() {
 //        Aa20Object doc =  new Aa20Object("2.0.0");
 //        doc.createInfo("Streetlights API", "1.0.0")
