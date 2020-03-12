@@ -16,29 +16,23 @@
  */
 package org.apache.camel.asyncApi;
 
-import java.util.List;
+import java.util.Set;
 
 /**
- * Describes a publish or a subscribe operation. This provides a place
- * to document how and why messages are sent and received. For example,
- * an operation might describe a chat application use case where a user
- * sends a text message to a group.
+ * While the AsyncAPI Specification tries to accommodate most use cases,
+ * additional data can be added to extend the specification at certain points.
+ *
+ * The extensions properties are implemented as patterned fields that
+ * are always prefixed by "x-".
+ *
+ * ^x-[\w\d\-\_]+$
+ * Allows extensions to the AsyncAPI Schema. The field name MUST begin with x-,
+ * for example, x-internal-id. The value can be null, a primitive, an array
+ * or an object. Can have any valid JSON format value.
  */
-public interface Aa20Operation {
+public interface Aa20SpecificationExtensions {
 
-    String getOperationId();
+    Object getSpecificationExtension(String name);
 
-    String getSummary();
-
-    String getDescription();
-
-    List<Aa20Tag> getTags();
-
-    Aa20ExternalDocumentation getExternalDocs();
-
-    Aa20MessageBindings getBindings();
-
-    List<Aa20OperationTrait> getTraits();
-
-    Aa20Message getMessage();
+    Set<String> getSpecificationExtensionKeys();
 }

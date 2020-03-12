@@ -26,6 +26,8 @@ public interface Aa20Message  {
 
     Aa20Schema getHeaders() ;
 
+    Map<String, Object> getPayload();
+
     Aa20CorellationId getCorrelationId();
 
     String getSchemaFormat() ;
@@ -36,9 +38,17 @@ public interface Aa20Message  {
 
     String getTitle();
 
-    List<String> getExamples();
+    String getSummary();
 
-    Map<String, Object> getPayload();
+    String getDescription();
+
+    List<Aa20Tag> getTags();
+
+    Aa20ExternalDocumentation getExternalDocs();
+
+    Aa20MessageBindings getBindings();
+
+    List<String> getExamples();
 
     List<Aa20MessageTrait> getTraits();
 

@@ -18,38 +18,35 @@ package org.apache.camel.asyncapi.model;
 
 import org.apache.camel.asyncApi.*;
 
-import java.util.LinkedList;
 import java.util.List;
 
-public class Aa20OperationImpl extends AbstractAa20SpecificationExtensionImpl implements Aa20Operation {
+public class Aa20OperationTraitImpl extends AbstractAa20SpecificationExtensionImpl implements Aa20OperationTrait {
 
     private String operationId;
     private String summary;
     private String description;
     private List<Aa20Tag> tags;
     private Aa20ExternalDocumentation externalDocs;
-    private Aa20MessageBindings binding;
-    private List<Aa20OperationTrait> traits;
-    private Aa20Message message;
+    private Aa20OperationBindings bindings;
+    private String $ref;
 
     public static Builder newBuilder() {
         return new Builder();
     }
 
-    private Aa20OperationImpl() {
+    private Aa20OperationTraitImpl() {
         super(null);
     }
 
-    public Aa20OperationImpl(Builder b) {
+    public Aa20OperationTraitImpl(Builder b) {
         super(b);
         this.operationId = b.operationId;
         this.summary = b.summary;
         this.description = b.description;
         this.tags = b.tags;
         this.externalDocs = b.externalDocs;
-        this.binding = b.binding;
-        this.traits = b.traits;
-        this.message = b.message;
+        this.bindings = b.bindings;
+        this.$ref = b.$ref;
     }
 
     @Override
@@ -97,46 +94,35 @@ public class Aa20OperationImpl extends AbstractAa20SpecificationExtensionImpl im
         this.externalDocs = externalDocs;
     }
 
-    public Aa20MessageBindings getBindings() {
-        return binding;
+    @Override
+    public Aa20OperationBindings getBindings() {
+        return bindings;
     }
 
-    public void setBinding(Aa20MessageBindings binding) {
-        this.binding = binding;
+    public void setBindings(Aa20OperationBindings bindings) {
+        this.bindings = bindings;
     }
 
     @Override
-    public List<Aa20OperationTrait> getTraits() {
-        return traits;
+    public String get$ref() {
+        return $ref;
     }
 
-    public void setTraits(List<Aa20OperationTrait> traits) {
-        this.traits = traits;
+    public void set$ref(String $ref) {
+        this.$ref = $ref;
     }
-
-    @Override
-    public Aa20Message getMessage() {
-        return message;
-    }
-
-    public void setMessage(Aa20Message message) {
-        this.message = message;
-    }
-
-
 
 // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder extends AbstractSpecificationExtensionsBuilder<Builder, Aa20Operation> {
+    public static class Builder extends AbstractSpecificationExtensionsBuilder<Builder, Aa20OperationTrait> {
 
         private String operationId;
         String summary;
         String description;
         List<Aa20Tag> tags;
         Aa20ExternalDocumentation externalDocs;
-        Aa20MessageBindings binding;
-        List<Aa20OperationTrait> traits;
-        private Aa20Message message;
+        Aa20OperationBindings bindings;
+        private String $ref;
 
         public Builder() {
         }
@@ -166,27 +152,20 @@ public class Aa20OperationImpl extends AbstractAa20SpecificationExtensionImpl im
             return this;
         }
 
-        public Builder withBinding(Aa20MessageBindings binding) {
-            this.binding = binding;
+        public Builder withBindings(Aa20OperationBindings bindings) {
+            this.bindings = bindings;
             return this;
         }
 
-        public Builder withTrait(Aa20OperationTrait trait) {
-            if(this.traits == null) {
-                this.traits = new LinkedList<>();
-            }
-            this.traits.add(trait);
+        public Builder with$ref(String $ref) {
+            this.$ref = $ref;
             return this;
         }
 
-        public Builder withMessage(Aa20Message message) {
-            this.message = message;
-            return this;
-        }
 
         @Override
-        public Aa20Operation done() {
-            return new Aa20OperationImpl(this);
+        public Aa20OperationTrait done() {
+            return new Aa20OperationTraitImpl(this);
         }
     }
 }

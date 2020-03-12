@@ -40,9 +40,17 @@ public interface Aa20MessageTrait {
 
    String getTitle();
 
-   List<String> getExamples();
+   String getSummary();
 
-   Map<String, Object> getPayload();
+   String getDescription();
+
+   List<Aa20Tag> getTags();
+
+   Aa20ExternalDocumentation getExternalDocs();
+
+   Aa20MessageBindings getBindings();
+
+   List<String> getExamples();
 
    String get$ref();
 }

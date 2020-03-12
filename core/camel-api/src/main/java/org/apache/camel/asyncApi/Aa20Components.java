@@ -24,7 +24,7 @@ public interface Aa20Components {
 
    Map<String, Aa20Schema> getSchemas();
 
-    Map<String, Aa20SecuritySchema> getSecuritySchemes();
+    Map<String, Aa20SecurityScheme> getSecuritySchemes();
 
     Map<String, Aa20Parameter> getParameters();
 
@@ -40,5 +40,5 @@ public interface Aa20Components {
 
     Map<String, Aa20OperationBindings> getOperationBindings();
 
-    Map<String, Aa20MessageBinding> getMessageBindings();
+    Map<String, Aa20MessageBindings> getMessageBindings();
 }

@@ -20,8 +20,6 @@ import java.util.Map;
 
 /**
  * Allows configuration of the supported OAuth Flows.
- *
- * todo This object MAY be extended with Specification Extensions.
  */
 public interface Aa20OAuthFlows {
 

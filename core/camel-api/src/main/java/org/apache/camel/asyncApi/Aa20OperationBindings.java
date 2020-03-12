@@ -23,21 +23,5 @@ import java.util.List;
 /**
  * Map describing protocol-specific definitions for an operation.
  */
-public interface Aa20OperationBindings {
-
-    public enum type {
-        http,
-        ws,
-        kafka,
-        amqp,
-        amqp1,
-        mqtt,
-        mqtt5,
-        nats,
-        jms,
-        sns,
-        sqs,
-        stomp,
-        redis;
-    }
+public interface Aa20OperationBindings extends Aa20AbstractBindings {
 }

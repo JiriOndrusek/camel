@@ -14,32 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.camel.asyncApi;
+package org.apache.camel.asyncapi.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.apache.camel.asyncApi.Aa20OperationBindings;
 
-/**
- * Map describing protocol-specific definitions for a message.
- * todo
- */
-public interface Aa20MessageBinding {
+public class Aa20OperationBindingsImpl extends Aa20AbstractBindingsImpl implements Aa20OperationBindings {
 
-    String get$ref();
 
-    public enum Field{
-        http,
-        ws,
-        kafka,
-        amqp,
-        amqp1,
-        mqtt,
-        mqtt5,
-        nats,
-        jms,
-        sns,
-        sqs,
-        stomp,
-        redis
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    private Aa20OperationBindingsImpl() {
+    }
+
+    public Aa20OperationBindingsImpl(Builder b) {
+        super(b);
+    }
+
+// --------------------------------------- builder ---------------------------------------------------------
+
+    public static class Builder extends AbstractBindingsBuilder<Builder, Aa20OperationBindings> {
+
+        @Override
+        public Aa20OperationBindings done() {
+            return new Aa20OperationBindingsImpl(this);
+        }
     }
 }

@@ -16,22 +16,12 @@
  */
 package org.apache.camel.asyncApi;
 
-public interface Aa20SecuritySchema {
+import java.util.HashMap;
+import java.util.Map;
 
-    public enum Type {
-        userPassword,
-        apiKey,
-        X509,
-        symmetricEncryption,
-        asymmetricEncryption,
-        httpApiKey,
-        http,
-        oauth2,
-        openIdConnect;
-    }
-
-
-    Type getType();
-
-    String getDescription();
+/**
+ * Map describing protocol-specific definitions for a message.
+ * todo
+ */
+public interface Aa20MessageBindings  extends Aa20AbstractBindings {
 }

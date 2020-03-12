@@ -16,13 +16,9 @@
  */
 package org.apache.camel.asyncapi.model;
 
-import org.apache.camel.asyncApi.Aa20MessageBinding;
+import org.apache.camel.asyncApi.Aa20MessageBindings;
 
-import java.util.function.Consumer;
-
-public class Aa20MessageBindingImpl implements Aa20MessageBinding {
-
-    String $ref;
+public class Aa20MessageBindingImpl extends Aa20AbstractBindingsImpl implements Aa20MessageBindings {
 
     public static Builder newBuilder() {
         return new Builder();
@@ -32,33 +28,15 @@ public class Aa20MessageBindingImpl implements Aa20MessageBinding {
     }
 
     private Aa20MessageBindingImpl(Builder b) {
-        this.$ref = b.$ref;
-    }
-
-    @Override
-    public String get$ref() {
-        return $ref;
-    }
-
-    public void set$ref(String $ref) {
-        this.$ref = $ref;
+        super(b);
     }
 
     // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder extends AbstractBuilder<Aa20MessageBinding> {
-        String $ref;
-
-        public Builder() {
-        }
-
-        public Builder with$ref(String $ref) {
-            this.$ref = $ref;
-            return this;
-        }
+    public static class Builder extends AbstractBindingsBuilder<Aa20ChannelBindingsImpl.Builder, Aa20MessageBindings> {
 
         @Override
-        public Aa20MessageBinding done() {
+        public Aa20MessageBindings done() {
             return new Aa20MessageBindingImpl(this);
         }
     }

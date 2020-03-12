@@ -19,9 +19,15 @@ package org.apache.camel.asyncapi.model;
 import org.apache.camel.asyncApi.*;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
+/**
+ * This is the root document object for the API specification. It combines
+ * resource listing and API declaration together into one document.
+ */
 public class Aa20ObjectImpl implements Aa20Object {
 
     private String asyncapi;
@@ -30,6 +36,8 @@ public class Aa20ObjectImpl implements Aa20Object {
     private Map<String, Aa20Server> servers;
     private Map<String, Aa20ChannelItem> channels;
     private Aa20Components components;
+    private List<Aa20Tag> tags;
+    private Aa20ExternalDocumentation externalDocs;
 
     public static Aa20ObjectImpl.Builder newBuilder() {
         return new Aa20ObjectImpl.Builder();
@@ -45,6 +53,8 @@ public class Aa20ObjectImpl implements Aa20Object {
         this.servers = builder.servers;
         this.channels = builder.channels;
         this.components = builder.components;
+        this.tags = builder.tags;
+        this.externalDocs = builder.externalDocs;
     }
 
     public Aa20ObjectImpl(String asyncapi) {
@@ -89,17 +99,6 @@ public class Aa20ObjectImpl implements Aa20Object {
         this.channels = channels;
     }
 
-
-    @Override
-    public List<Aa20Tag> getTags() {
-        return null;
-    }
-
-    @Override
-    public Aa20ExternalDocumentation getExternalDocs() {
-        return null;
-    }
-
     public void setInfo(Aa20Info info) {
         this.info = info;
     }
@@ -113,23 +112,43 @@ public class Aa20ObjectImpl implements Aa20Object {
         this.components = components;
     }
 
+    @Override
+    public List<Aa20Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Aa20Tag> tags) {
+        this.tags = tags;
+    }
+
+    @Override
+    public Aa20ExternalDocumentation getExternalDocs() {
+        return externalDocs;
+    }
+
+    public void setExternalDocs(Aa20ExternalDocumentation externalDocs) {
+        this.externalDocs = externalDocs;
+    }
 
     // --------------------------------------- builder ---------------------------------------------------------
     public static class Builder extends AbstractBuilder<Aa20Object> {
 
-        String asyncapi;
-        String id;
-        Aa20Info info;
-        Map<String, Aa20Server> servers;
-        Map<String, Aa20ChannelItem> channels;
-        Map<String, Aa20ChannelItemImpl.Builder> channelBuilders = new LinkedHashMap<>();
-        Aa20Components components;
+        private String asyncapi;
+        private String id;
+        private Aa20Info info;
+        private Map<String, Aa20Server> servers;
+        private Map<String, Aa20ChannelItem> channels;
+        private Aa20Components components;
+        private List<Aa20Tag> tags;
+        private Aa20ExternalDocumentation externalDocs;
 
         private Builder() {
         }
 
-        public Builder withInfo(Aa20Info info) {
-            this.info = info;
+        public Builder addInfo(Consumer<Aa20InfoImpl.Builder> infoBuilder) {
+            Aa20InfoImpl.Builder builder = Aa20InfoImpl.newBuilder();
+            infoBuilder.accept(builder);
+            this.info = builder.done();
             return this;
         }
 
@@ -162,6 +181,24 @@ public class Aa20ObjectImpl implements Aa20Object {
 
         public Builder withComponents(Aa20Components components) {
             this.components = components;
+            return this;
+        }
+
+        public Builder withTags(Aa20Tag tag) {
+            if(tags == null) {
+                tags = new LinkedList<>();
+            }
+            this.tags.add(tag);
+            return this;
+        }
+
+        public Builder withTags(List<Aa20Tag> tags) {
+            this.tags = tags;
+            return this;
+        }
+
+        public Builder withExternalDocs(Aa20ExternalDocumentation externalDocs) {
+            this.externalDocs = externalDocs;
             return this;
         }
 

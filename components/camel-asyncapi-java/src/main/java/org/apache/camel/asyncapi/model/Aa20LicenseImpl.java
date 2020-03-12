@@ -20,7 +20,7 @@ import org.apache.camel.asyncApi.Aa20License;
 
 import java.util.function.Consumer;
 
-public class Aa20LicenseImpl implements Aa20License {
+public class Aa20LicenseImpl extends AbstractAa20SpecificationExtensionImpl  implements Aa20License {
 
     String name;
     String url;
@@ -30,9 +30,11 @@ public class Aa20LicenseImpl implements Aa20License {
     }
 
     private Aa20LicenseImpl() {
+        super(null);
     }
 
     private Aa20LicenseImpl(Builder b) {
+        super(b);
         this.name = b.name;
         this.url = b.url;
     }
@@ -57,7 +59,7 @@ public class Aa20LicenseImpl implements Aa20License {
 
     // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder extends AbstractBuilder<Aa20License> {
+    public static class Builder extends AbstractSpecificationExtensionsBuilder<Builder, Aa20License> {
         String name;
         String url;
 

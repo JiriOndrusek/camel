@@ -21,7 +21,6 @@ import java.util.Map;
 
 /**
  * Describes the operations available on a single channel.
- * todo This object can be extended with Specification Extensions.
  */
 public interface Aa20ChannelItem {
 

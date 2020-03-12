@@ -22,7 +22,7 @@ import org.apache.camel.asyncApi.*;
 
 import java.util.*;
 
-public class Aa20ServerImpl implements Aa20Server {
+public class Aa20ServerImpl extends AbstractAa20SpecificationExtensionImpl implements Aa20Server {
 
     String url;
     String protocol;
@@ -40,9 +40,11 @@ public class Aa20ServerImpl implements Aa20Server {
     }
 
     private Aa20ServerImpl() {
+        super(null);
     }
 
     private Aa20ServerImpl(Builder b) {
+        super(b);
         this.url = b.url;
         this.protocol = b.protocol;
         this.protocolVersion = b.protocolVersion;
@@ -120,7 +122,7 @@ public class Aa20ServerImpl implements Aa20Server {
 
     // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder extends AbstractBuilder<Aa20Server> {
+    public static class Builder extends AbstractSpecificationExtensionsBuilder<Builder, Aa20Server> {
         private String url;
         private String protocol;
         private String protocolVersion;

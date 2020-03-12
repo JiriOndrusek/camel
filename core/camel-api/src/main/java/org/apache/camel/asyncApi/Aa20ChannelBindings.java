@@ -16,9 +16,6 @@
  */
 package org.apache.camel.asyncApi;
 
-import java.util.LinkedHashMap;
 
-public interface Aa20ChannelBindings  {
-
-    String get$ref();
+public interface Aa20ChannelBindings extends Aa20AbstractBindings {
 }

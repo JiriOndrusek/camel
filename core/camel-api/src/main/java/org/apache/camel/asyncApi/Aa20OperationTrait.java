@@ -36,6 +36,8 @@ public interface Aa20OperationTrait {
 
     Aa20ExternalDocumentation getExternalDocs();
 
-    Aa20MessageBinding getBindings();
+    Aa20OperationBindings getBindings();
+
+    String get$ref();
 
 }

@@ -16,29 +16,35 @@
  */
 package org.apache.camel.asyncApi;
 
-import java.util.List;
+import java.util.Map;
 
-/**
- * Describes a publish or a subscribe operation. This provides a place
- * to document how and why messages are sent and received. For example,
- * an operation might describe a chat application use case where a user
- * sends a text message to a group.
- */
-public interface Aa20Operation {
+public interface Aa20AbstractBindings {
 
-    String getOperationId();
+   Map<String, Object> getHttp();
 
-    String getSummary();
+   Map<String, Object> getWs();
 
-    String getDescription();
+   Map<String, Object> getKafka();
 
-    List<Aa20Tag> getTags();
+   Map<String, Object> getAmqp();
 
-    Aa20ExternalDocumentation getExternalDocs();
+   Map<String, Object> getAmqp1();
 
-    Aa20MessageBindings getBindings();
+   Map<String, Object> getMqtt();
 
-    List<Aa20OperationTrait> getTraits();
+   Map<String, Object> getMqtt5();
 
-    Aa20Message getMessage();
+   Map<String, Object> getNats();
+
+   Map<String, Object> getJms();
+
+   Map<String, Object> getSns();
+
+   Map<String, Object> getSqs();
+
+   Map<String, Object> getStomp();
+
+   Map<String, Object> getRedis();
+
+   String get$ref();
 }

@@ -16,29 +16,37 @@
  */
 package org.apache.camel.asyncApi;
 
-import java.util.List;
+public interface Aa20SecurityScheme {
 
-/**
- * Describes a publish or a subscribe operation. This provides a place
- * to document how and why messages are sent and received. For example,
- * an operation might describe a chat application use case where a user
- * sends a text message to a group.
- */
-public interface Aa20Operation {
+    enum Type {
+        userPassword,
+        apiKey,
+        X509,
+        symmetricEncryption,
+        asymmetricEncryption,
+        httpApiKey,
+        http,
+        oauth2,
+        openIdConnect;
+    }
 
-    String getOperationId();
-
-    String getSummary();
+    Type getType();
 
     String getDescription();
 
-    List<Aa20Tag> getTags();
+    String getName();
 
-    Aa20ExternalDocumentation getExternalDocs();
+    String getIn();
 
-    Aa20MessageBindings getBindings();
+    String getScheme();
 
-    List<Aa20OperationTrait> getTraits();
+    String getBearerFormat();
 
-    Aa20Message getMessage();
+    Aa20OAuthFlows getFlows();
+
+    String getOpenConnectId();
+
+    String get$ref();
+
+
 }

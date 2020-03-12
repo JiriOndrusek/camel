@@ -19,7 +19,7 @@ package org.apache.camel.asyncApi;
 /**
  * The object provides metadata about the API. The metadata can be used by the clients if needed.
  */
-public interface Aa20Info {
+public interface Aa20Info extends Aa20SpecificationExtensions {
 
     String getTitle();
 

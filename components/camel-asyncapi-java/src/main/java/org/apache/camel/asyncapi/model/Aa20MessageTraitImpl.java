@@ -19,12 +19,10 @@ package org.apache.camel.asyncapi.model;
 import org.apache.camel.asyncApi.*;
 
 import java.util.*;
-import java.util.function.Consumer;
 
-public class Aa20MessageImpl extends AbstractAa20SpecificationExtensionImpl implements Aa20Message {
+public class Aa20MessageTraitImpl extends AbstractAa20SpecificationExtensionImpl implements Aa20MessageTrait {
 
     private Aa20Schema headers;
-    private Map<String, Object> payload = new LinkedHashMap();
     private Aa20CorellationId correlationId;
     private String schemaFormat;
     private String contentType;
@@ -36,22 +34,19 @@ public class Aa20MessageImpl extends AbstractAa20SpecificationExtensionImpl impl
     Aa20ExternalDocumentation externalDocs;
     Aa20MessageBindings bindings;
     private List<String> examples;
-    private List<Aa20MessageTrait> traits;
-    private Set<Aa20Message> oneOf;
     private String $ref;
 
     public static Builder newBuilder() {
         return new Builder();
     }
 
-    private Aa20MessageImpl() {
+    private Aa20MessageTraitImpl() {
         super(null);
     }
 
-    public Aa20MessageImpl(Builder b) {
+    public Aa20MessageTraitImpl(Builder b) {
         super(b);
         this.headers = b.headers;
-        this.payload = b.payload;
         this.correlationId = b.correlationId;
         this.schemaFormat = b.schemaFormat;
         this.contentType = b.contentType;
@@ -63,8 +58,6 @@ public class Aa20MessageImpl extends AbstractAa20SpecificationExtensionImpl impl
         this.tags = b.tags;
         this.externalDocs = b.externalDocs;
         this.bindings = b.bindings;
-        this.traits = b.traits;
-        this.oneOf = b.oneOf;
         this.$ref = b.$ref;
     }
 
@@ -132,33 +125,6 @@ public class Aa20MessageImpl extends AbstractAa20SpecificationExtensionImpl impl
     }
 
     @Override
-    public Map<String, Object> getPayload() {
-        return payload;
-    }
-
-    public void setPayload(Map<String, Object> payload) {
-        this.payload = payload;
-    }
-
-    @Override
-    public List<Aa20MessageTrait> getTraits() {
-        return traits;
-    }
-
-    public void setTraits(List<Aa20MessageTrait> traits) {
-        this.traits = traits;
-    }
-
-    @Override
-    public Set<Aa20Message> getOneOf() {
-        return oneOf;
-    }
-
-    public void setOneOf(Set<Aa20Message> oneOf) {
-        this.oneOf = oneOf;
-    }
-
-    @Override
     public String get$ref() {
         return $ref;
     }
@@ -214,13 +180,12 @@ public class Aa20MessageImpl extends AbstractAa20SpecificationExtensionImpl impl
 
     // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder extends AbstractSpecificationExtensionsBuilder<Builder, Aa20Message> {
+    public static class Builder extends AbstractSpecificationExtensionsBuilder<Builder, Aa20MessageTrait> {
 
         public Builder() {
         }
 
         private Aa20Schema headers;
-        private Map<String, Object> payload = new LinkedHashMap();
         private Aa20CorellationId correlationId;
         private String schemaFormat;
         private String contentType;
@@ -232,8 +197,6 @@ public class Aa20MessageImpl extends AbstractAa20SpecificationExtensionImpl impl
         Aa20ExternalDocumentation externalDocs;
         Aa20MessageBindings bindings;
         private List<String> examples;
-        private List<Aa20MessageTrait> traits;
-        private Set<Aa20Message> oneOf;
         private String $ref;
 
         public Builder withHeaders(Aa20Schema headers) {
@@ -271,31 +234,6 @@ public class Aa20MessageImpl extends AbstractAa20SpecificationExtensionImpl impl
             return this;
         }
 
-        public Builder withPayload(Map<String, Object> payload) {
-            if(this.payload == null) {
-                this.payload = new HashMap<>();
-            }
-            this.payload = payload;
-            return this;
-        }
-
-        public Builder withTrait(Aa20MessageTrait trait) {
-            if(this.traits == null) {
-                this.traits = new LinkedList<>();
-            }
-            this.traits.add(trait);
-            return this;
-        }
-
-        public Builder withOneOf(Aa20Message message) {
-            if(this.oneOf == null) {
-                this.oneOf = new HashSet<>();
-            }
-            this.oneOf.add(message);
-            return this;
-        }
-
-
         public Builder with$ref(String $ref) {
             this.$ref = $ref;
             return this;
@@ -329,10 +267,9 @@ public class Aa20MessageImpl extends AbstractAa20SpecificationExtensionImpl impl
             return this;
         }
 
-
         @Override
-        public Aa20Message done() {
-            return new Aa20MessageImpl(this);
+        public Aa20MessageTrait done() {
+            return new Aa20MessageTraitImpl(this);
         }
     }
 }

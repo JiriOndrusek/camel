@@ -18,7 +18,7 @@ package org.apache.camel.asyncapi.model;
 
 import org.apache.camel.asyncApi.Aa20Contact;
 
-public class Aa20ContactImpl implements Aa20Contact {
+public class Aa20ContactImpl extends AbstractAa20SpecificationExtensionImpl implements Aa20Contact {
 
     String name;
     String url;
@@ -29,10 +29,11 @@ public class Aa20ContactImpl implements Aa20Contact {
     }
 
     private Aa20ContactImpl() {
+        super(null);
     }
 
     private Aa20ContactImpl(Builder b) {
-
+        super(b);
         this.name = b.name;
         this.url = b.url;
         this.email = b.email;
@@ -67,7 +68,7 @@ public class Aa20ContactImpl implements Aa20Contact {
 
     // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder extends AbstractBuilder<Aa20Contact> {
+    public static class Builder extends AbstractSpecificationExtensionsBuilder<Builder, Aa20Contact> {
         String name;
         String url;
         String email;

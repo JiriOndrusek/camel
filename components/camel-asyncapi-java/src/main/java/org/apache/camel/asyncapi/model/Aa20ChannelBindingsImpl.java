@@ -14,31 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.camel.asyncApi;
+package org.apache.camel.asyncapi.model;
 
-import java.util.List;
+import org.apache.camel.asyncApi.Aa20ChannelBindings;
 
-/**
- * Describes a publish or a subscribe operation. This provides a place
- * to document how and why messages are sent and received. For example,
- * an operation might describe a chat application use case where a user
- * sends a text message to a group.
- */
-public interface Aa20Operation {
+public class Aa20ChannelBindingsImpl extends Aa20AbstractBindingsImpl implements Aa20ChannelBindings {
 
-    String getOperationId();
 
-    String getSummary();
+    public static Builder newBuilder() {
+        return new Builder();
+    }
 
-    String getDescription();
+    private Aa20ChannelBindingsImpl() {
+    }
 
-    List<Aa20Tag> getTags();
+    public Aa20ChannelBindingsImpl(Builder b) {
+        super(b);
+    }
 
-    Aa20ExternalDocumentation getExternalDocs();
+// --------------------------------------- builder ---------------------------------------------------------
 
-    Aa20MessageBindings getBindings();
+    public static class Builder extends AbstractBindingsBuilder<Builder, Aa20ChannelBindings> {
 
-    List<Aa20OperationTrait> getTraits();
-
-    Aa20Message getMessage();
+        @Override
+        public Aa20ChannelBindings done() {
+            return new Aa20ChannelBindingsImpl(this);
+        }
+    }
 }

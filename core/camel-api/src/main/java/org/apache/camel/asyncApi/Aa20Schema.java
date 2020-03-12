@@ -17,6 +17,7 @@
 package org.apache.camel.asyncApi;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * The Schema Object allows the definition of input and output data types. These types can be objects, but also primitives and arrays.
@@ -73,9 +74,8 @@ import java.util.LinkedHashMap;
  *
  * Fixed Fields
  *
- * todo This object can be extended with Specification Extensions.
  */
-public interface Aa20Schema {
+public interface Aa20Schema  extends Aa20SpecificationExtensions  {
 
     public String getDiscriminator();
 
@@ -84,4 +84,6 @@ public interface Aa20Schema {
     boolean isDeprecated();
 
     String get$ref();
+
+    Map<String, Object> getData();
 }

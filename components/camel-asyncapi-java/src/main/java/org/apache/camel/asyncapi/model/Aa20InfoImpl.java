@@ -19,10 +19,12 @@ package org.apache.camel.asyncapi.model;
 import org.apache.camel.asyncApi.Aa20Contact;
 import org.apache.camel.asyncApi.Aa20Info;
 import org.apache.camel.asyncApi.Aa20License;
+import org.apache.camel.asyncApi.Aa20SpecificationExtensions;
 
+import java.util.LinkedHashMap;
 import java.util.function.Consumer;
 
-public class Aa20InfoImpl implements Aa20Info {
+public class Aa20InfoImpl extends AbstractAa20SpecificationExtensionImpl implements Aa20Info {
 
     private String title;
     private String version;
@@ -36,9 +38,11 @@ public class Aa20InfoImpl implements Aa20Info {
     }
 
     private Aa20InfoImpl() {
-    }
+        super(null)
+;    }
 
     private Aa20InfoImpl(Builder b) {
+        super(b);
         this.title = b.title;
         this.description = b.description;
         this.version = b.version;
@@ -103,7 +107,7 @@ public class Aa20InfoImpl implements Aa20Info {
 
     // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder extends AbstractBuilder<Aa20Info> {
+    public static class Builder extends AbstractSpecificationExtensionsBuilder<Builder, Aa20Info> {
 
         private String title;
         private String version;
@@ -140,8 +144,10 @@ public class Aa20InfoImpl implements Aa20Info {
             return this;
         }
 
-        public Builder withLicense(Aa20License license) {
-            this.license = license;
+        public Builder addLicense(Consumer<Aa20LicenseImpl.Builder> license) {
+            Aa20LicenseImpl.Builder b = Aa20LicenseImpl.newBuilder();
+            license.accept(b);
+            this.license = b.done();
             return this;
         }
 

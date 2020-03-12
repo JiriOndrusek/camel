@@ -18,10 +18,11 @@ package org.apache.camel.asyncapi.model;
 
 import org.apache.camel.asyncApi.*;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class Aa20ChannelItemImpl implements Aa20ChannelItem {
+public class Aa20ChannelItemImpl extends AbstractAa20SpecificationExtensionImpl implements Aa20ChannelItem {
 
     private String $ref;
     private String description;
@@ -35,13 +36,17 @@ public class Aa20ChannelItemImpl implements Aa20ChannelItem {
     }
 
     private Aa20ChannelItemImpl() {
+        super(null);
     }
 
     private Aa20ChannelItemImpl(Builder b) {
+        super(b);
         this.description = b.description;
         this.$ref = b.$ref;
         this.subscribe = b.subscribe;
         this.publish = b.publish;
+        this.parameters = b.parameters;
+        this.bindings = b.bindings;
     }
 
     @Override
@@ -100,14 +105,14 @@ public class Aa20ChannelItemImpl implements Aa20ChannelItem {
 
     // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder extends AbstractBuilder<Aa20ChannelItem> {
+    public static class Builder extends AbstractSpecificationExtensionsBuilder<Builder, Aa20ChannelItem> {
 
         private String $ref;
         private String description;
         private Aa20Operation subscribe;
         private Aa20Operation publish;
-//        private Map<String, Aa20OrReferenceType<Aa20Parameter>> parameters = new LinkedHashMap<>();
-//        private Aa20ChannelBindings bindings = new Aa20ChannelBindings();
+        private Map<String, Aa20Parameter> parameters;
+        private Aa20ChannelBindings bindings;
 
         private Builder() {
 
@@ -130,6 +135,19 @@ public class Aa20ChannelItemImpl implements Aa20ChannelItem {
 
         public Builder withPublish(Aa20Operation publish) {
             this.publish = publish;
+            return this;
+        }
+
+        public Builder withParameters(String name, Aa20Parameter parameter) {
+            if(this.parameters == null) {
+                this.parameters = new LinkedHashMap<>();
+            }
+            this.parameters.put(name, parameter);
+            return this;
+        }
+
+        public Builder withBindings(Aa20ChannelBindings bindings) {
+            this.bindings = bindings;
             return this;
         }
 
