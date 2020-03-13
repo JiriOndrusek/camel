@@ -16,6 +16,8 @@
  */
 package org.apache.camel.asyncapi.model;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.camel.asyncApi.*;
 
 import java.util.*;
@@ -24,8 +26,9 @@ import java.util.function.Consumer;
 public class Aa20MessageImpl extends AbstractAa20SpecificationExtensionImpl implements Aa20Message {
 
     private Aa20Schema headers;
-    private Map<String, Object> payload = new LinkedHashMap();
-    private Aa20CorellationId correlationId;
+    @JsonIgnore
+    private Object payload;
+    private Aa20CorrelationId correlationId;
     private String schemaFormat;
     private String contentType;
     private String name;
@@ -78,11 +81,11 @@ public class Aa20MessageImpl extends AbstractAa20SpecificationExtensionImpl impl
     }
 
     @Override
-    public Aa20CorellationId getCorrelationId() {
+    public Aa20CorrelationId getCorrelationId() {
         return correlationId;
     }
 
-    public void setCorrelationId(Aa20CorellationId correlationId) {
+    public void setCorrelationId(Aa20CorrelationId correlationId) {
         this.correlationId = correlationId;
     }
 
@@ -132,8 +135,8 @@ public class Aa20MessageImpl extends AbstractAa20SpecificationExtensionImpl impl
     }
 
     @Override
-    public Map<String, Object> getPayload() {
-        return payload;
+    public Object getPayload() {
+        return getSpecificationExtension("payload");
     }
 
     public void setPayload(Map<String, Object> payload) {
@@ -212,6 +215,15 @@ public class Aa20MessageImpl extends AbstractAa20SpecificationExtensionImpl impl
         this.bindings = bindings;
     }
 
+    @JsonAnySetter
+    @Override
+    public void addSpecificationExtensions(String propertyKey, Object value) {
+        if(propertyKey.equals("payload")) {
+            payload = value;
+        }
+        super.addSpecificationExtensions(propertyKey, value);
+    }
+
     // --------------------------------------- builder ---------------------------------------------------------
 
     public static class Builder extends AbstractSpecificationExtensionsBuilder<Builder, Aa20Message> {
@@ -220,8 +232,8 @@ public class Aa20MessageImpl extends AbstractAa20SpecificationExtensionImpl impl
         }
 
         private Aa20Schema headers;
-        private Map<String, Object> payload = new LinkedHashMap();
-        private Aa20CorellationId correlationId;
+        private Object payload;
+        private Aa20CorrelationId correlationId;
         private String schemaFormat;
         private String contentType;
         private String name;
@@ -236,13 +248,17 @@ public class Aa20MessageImpl extends AbstractAa20SpecificationExtensionImpl impl
         private Set<Aa20Message> oneOf;
         private String $ref;
 
-        public Builder withHeaders(Aa20Schema headers) {
-            this.headers = headers;
+        public Builder addHeaders(Consumer<Aa20SchemaImpl.Builder> headers) {
+            Aa20SchemaImpl.Builder builder = Aa20SchemaImpl.newBuilder();
+            headers.accept(builder);
+            this.headers = builder.done();
             return this;
         }
 
-        public Builder withCorrelationId(Aa20CorellationId correlationId) {
-            this.correlationId = correlationId;
+        public Builder addCorrelationId(Consumer<Aa20CorrelationIdImpl.Builder> correlationId) {
+            Aa20CorrelationIdImpl.Builder builder = Aa20CorrelationIdImpl.newBuilder();
+            correlationId.accept(builder);
+            this.correlationId = builder.done();
             return this;
         }
 
@@ -271,27 +287,36 @@ public class Aa20MessageImpl extends AbstractAa20SpecificationExtensionImpl impl
             return this;
         }
 
-        public Builder withPayload(Map<String, Object> payload) {
-            if(this.payload == null) {
-                this.payload = new HashMap<>();
-            }
-            this.payload = payload;
+        public Builder withPayloadObject(Object value) {
+            payload = value;
+            this.specificationExtensions.put("payload", value);
             return this;
         }
 
-        public Builder withTrait(Aa20MessageTrait trait) {
+        public Builder addPayload(Consumer<Aa20ObjectBuilder> object) {
+            Aa20ObjectBuilder o = Aa20ObjectBuilder.newBuilder();
+            object.accept(o);
+            Object ob = o.done();
+            return withPayloadObject(ob);
+        }
+
+        public Builder addTrait(Consumer<Aa20MessageTraitImpl.Builder> trait) {
             if(this.traits == null) {
                 this.traits = new LinkedList<>();
             }
-            this.traits.add(trait);
+            Aa20MessageTraitImpl.Builder builder = Aa20MessageTraitImpl.newBuilder();
+            trait.accept(builder);
+            this.traits.add(builder.done());
             return this;
         }
 
-        public Builder withOneOf(Aa20Message message) {
+        public Builder addOneOf(Consumer<Aa20MessageImpl.Builder> message) {
             if(this.oneOf == null) {
                 this.oneOf = new HashSet<>();
             }
-            this.oneOf.add(message);
+            Aa20MessageImpl.Builder builder = Aa20MessageImpl.newBuilder();
+            message.accept(builder);
+            this.oneOf.add(builder.done());
             return this;
         }
 
@@ -311,21 +336,27 @@ public class Aa20MessageImpl extends AbstractAa20SpecificationExtensionImpl impl
             return this;
         }
 
-        public Builder withTags(Aa20Tag tag) {
+        public Builder addTags(Consumer<Aa20TagImpl.Builder> tag) {
             if(this.tags == null) {
                 this.tags = new LinkedList<>();
             }
-            this.tags.add(tag);
+            Aa20TagImpl.Builder builder = Aa20TagImpl.newBuilder();
+            tag.accept(builder);
+            this.tags.add(builder.done());
             return this;
         }
 
-        public Builder withExternalDocs(Aa20ExternalDocumentation externalDocs) {
-            this.externalDocs = externalDocs;
+        public Builder addExternalDocs(Consumer<Aa20ExternalDocumentationImpl.Builder> externalDocs) {
+            Aa20ExternalDocumentationImpl.Builder builder = Aa20ExternalDocumentationImpl.newBuilder();
+            externalDocs.accept(builder);
+            this.externalDocs = builder.done();
             return this;
         }
 
-        public Builder withBindings(Aa20MessageBindings bindings) {
-            this.bindings = bindings;
+        public Builder addBindings(Consumer<Aa20MessageBindingsImpl.Builder> bindings) {
+            Aa20MessageBindingsImpl.Builder builder = Aa20MessageBindingsImpl.newBuilder();
+            bindings.accept(builder);
+            this.bindings = builder.done();
             return this;
         }
 

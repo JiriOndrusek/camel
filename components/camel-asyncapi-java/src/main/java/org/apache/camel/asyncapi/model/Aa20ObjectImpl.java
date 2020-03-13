@@ -162,43 +162,48 @@ public class Aa20ObjectImpl implements Aa20Object {
             return this;
         }
 
-        public Builder withServer(String name, Aa20Server server) {
+        public Builder addhServer(String name, Consumer<Aa20ServerImpl.Builder> server) {
             if(this.servers == null) {
                 this.servers = new LinkedHashMap<>();
             }
-            this.servers.put(name, server);
+            Aa20ServerImpl.Builder builder = Aa20ServerImpl.newBuilder();
+            server.accept(builder);
+            this.servers.put(name, builder.done());
             return this;
         }
 
 
-        public Builder withChannel(String name, Aa20ChannelItem aa20ChannelItem) {
+        public Builder addChannel(String name, Consumer<Aa20ChannelItemImpl.Builder> channel) {
             if(this.channels == null) {
                 this.channels = new LinkedHashMap<>();
             }
-            this.channels.put(name, aa20ChannelItem);
+            Aa20ChannelItemImpl.Builder builder = Aa20ChannelItemImpl.newBuilder();
+            channel.accept(builder);
+            this.channels.put(name, builder.done());
             return this;
         }
 
-        public Builder withComponents(Aa20Components components) {
-            this.components = components;
+        public Builder addComponents(Consumer<Aa20ComponentsImpl.Builder> components) {
+            Aa20ComponentsImpl.Builder builder = Aa20ComponentsImpl.newBuilder();
+            components.accept(builder);
+            this.components = builder.done();
             return this;
         }
 
-        public Builder withTags(Aa20Tag tag) {
+        public Builder addTag(Consumer<Aa20TagImpl.Builder> tag) {
             if(tags == null) {
                 tags = new LinkedList<>();
             }
-            this.tags.add(tag);
+            Aa20TagImpl.Builder builder = Aa20TagImpl.newBuilder();
+            tag.accept(builder);
+            this.tags.add(builder.done());
             return this;
         }
 
-        public Builder withTags(List<Aa20Tag> tags) {
-            this.tags = tags;
-            return this;
-        }
-
-        public Builder withExternalDocs(Aa20ExternalDocumentation externalDocs) {
-            this.externalDocs = externalDocs;
+        public Builder addExternalDocs(Consumer<Aa20ExternalDocumentationImpl.Builder> externalDocs) {
+            Aa20ExternalDocumentationImpl.Builder builder = Aa20ExternalDocumentationImpl.newBuilder();
+            externalDocs.accept(builder);
+            this.externalDocs = builder.done();
             return this;
         }
 

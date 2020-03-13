@@ -36,7 +36,7 @@ public interface Aa20Operation {
 
     Aa20ExternalDocumentation getExternalDocs();
 
-    Aa20MessageBindings getBindings();
+    Aa20OperationBindings getBindings();
 
     List<Aa20OperationTrait> getTraits();
 

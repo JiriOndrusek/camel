@@ -75,6 +75,8 @@ public class Aa20SchemaImpl extends AbstractAa20SpecificationExtensionImpl imple
 
     @Override
     public Map<String, Object> getData() {
+        Map<String, Object> data = new LinkedHashMap<>(getSpecificationExtensions());
+        data.entrySet().removeIf(entry -> entry.getKey().startsWith("x-"));
         return data;
     }
 
@@ -132,53 +134,20 @@ public class Aa20SchemaImpl extends AbstractAa20SpecificationExtensionImpl imple
             return this;
         }
 
-        public Builder withString(String name, String value) {
+        public Builder withObject(String name, Object value) {
             return withData(name, value);
         }
 
-
-        public Builder withInteger(String name, Integer value) {
-            return withData(name, value);
-        }
-
-        public Builder withObject(String name, Consumer<ObjectBuilder> consumer) {
-            ObjectBuilder o = new ObjectBuilder();
-            consumer.accept(o);
-            Object ob = o.build();
+        public Builder addObject(String name, Consumer<Aa20ObjectBuilder> object) {
+            Aa20ObjectBuilder o = Aa20ObjectBuilder.newBuilder();
+            object.accept(o);
+            Object ob = o.done();
             return withData(name, ob);
         }
 
         @Override
         public Aa20Schema done() {
             return new Aa20SchemaImpl(this);
-        }
-    }
-
-    public static class ObjectBuilder {
-
-        private Map<String, Object> data = new LinkedHashMap<>();
-
-        public ObjectBuilder withString(String name, String value) {
-            data.put(name, value);
-            return this;
-        }
-
-
-        public ObjectBuilder withInteger(String name, Integer value) {
-            data.put(name, value);
-            return this;
-        }
-
-        public ObjectBuilder withObject(String name, Consumer<ObjectBuilder> consumer) {
-            ObjectBuilder o = new ObjectBuilder();
-            consumer.accept(o);
-            Object ob = o.build();
-            data.put(name, ob);
-            return this;
-        }
-
-        public Object build() {
-            return data;
         }
     }
 }

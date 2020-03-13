@@ -2,6 +2,8 @@ package org.apache.camel.asyncapi.model;
 
 import org.apache.camel.asyncApi.*;
 
+import java.util.function.Consumer;
+
 public class Aa20SecuritySchemeImpl extends AbstractAa20SpecificationExtensionImpl implements Aa20SecurityScheme {
 
     private Type type;
@@ -200,8 +202,10 @@ public class Aa20SecuritySchemeImpl extends AbstractAa20SpecificationExtensionIm
             super(Type.oauth2);
         }
 
-        public OAuth2Builder withFlows(Aa20OAuthFlows flows) {
-            this.flows = flows;
+        public OAuth2Builder addFlows(Consumer<Aa20OAuthFlowsImpl.Builder> flows) {
+            Aa20OAuthFlowsImpl.Builder builder = Aa20OAuthFlowsImpl.newBuilder();
+            flows.accept(builder);
+            this.flows = builder.done();
             return this;
         }
     }

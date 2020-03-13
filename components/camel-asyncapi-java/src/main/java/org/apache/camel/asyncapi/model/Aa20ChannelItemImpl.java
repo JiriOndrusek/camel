@@ -128,26 +128,34 @@ public class Aa20ChannelItemImpl extends AbstractAa20SpecificationExtensionImpl 
             return this;
         }
 
-        public Builder withSubscribe(Aa20Operation subscribe) {
-            this.subscribe = subscribe;
+        public Builder addSubscribe(Consumer<Aa20OperationImpl.Builder> subscribe) {
+            Aa20OperationImpl.Builder builder = Aa20OperationImpl.newBuilder();
+            subscribe.accept(builder);
+            this.subscribe = builder.done();
             return this;
         }
 
-        public Builder withPublish(Aa20Operation publish) {
-            this.publish = publish;
+        public Builder addPublish(Consumer<Aa20OperationImpl.Builder> publish) {
+            Aa20OperationImpl.Builder builder = Aa20OperationImpl.newBuilder();
+            publish.accept(builder);
+            this.publish = builder.done();
             return this;
         }
 
-        public Builder withParameters(String name, Aa20Parameter parameter) {
+        public Builder addParameter(String name, Consumer<Aa20ParameterImpl.Builder> parameter) {
             if(this.parameters == null) {
                 this.parameters = new LinkedHashMap<>();
             }
-            this.parameters.put(name, parameter);
+            Aa20ParameterImpl.Builder builder = Aa20ParameterImpl.newBuilder();
+            parameter.accept(builder);
+            this.parameters.put(name, builder.done());
             return this;
         }
 
-        public Builder withBindings(Aa20ChannelBindings bindings) {
-            this.bindings = bindings;
+        public Builder addBindings(Consumer<Aa20ChannelBindingsImpl.Builder> bindings) {
+            Aa20ChannelBindingsImpl.Builder builder = Aa20ChannelBindingsImpl.newBuilder();
+            bindings.accept(builder);
+            this.bindings = builder.done();
             return this;
         }
 

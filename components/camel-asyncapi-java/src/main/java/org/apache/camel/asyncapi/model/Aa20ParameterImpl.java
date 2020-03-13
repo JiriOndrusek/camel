@@ -1,9 +1,9 @@
 package org.apache.camel.asyncapi.model;
 
-import org.apache.camel.asyncApi.Aa20ExternalDocumentation;
 import org.apache.camel.asyncApi.Aa20Parameter;
 import org.apache.camel.asyncApi.Aa20Schema;
-import org.apache.camel.asyncApi.Aa20Tag;
+
+import java.util.function.Consumer;
 
 public class Aa20ParameterImpl extends AbstractAa20SpecificationExtensionImpl implements Aa20Parameter {
 
@@ -86,8 +86,10 @@ public class Aa20ParameterImpl extends AbstractAa20SpecificationExtensionImpl im
             return this;
         }
 
-        public Builder withSchema(Aa20Schema schema) {
-            this.schema = schema;
+        public Builder addSchema(Consumer<Aa20SchemaImpl.Builder> schema) {
+            Aa20SchemaImpl.Builder builder = Aa20SchemaImpl.newBuilder();
+            schema.accept(builder);
+            this.schema = builder.done();
             return this;
         }
 

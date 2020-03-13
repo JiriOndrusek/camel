@@ -20,6 +20,7 @@ import org.apache.camel.asyncApi.*;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class Aa20OperationImpl extends AbstractAa20SpecificationExtensionImpl implements Aa20Operation {
 
@@ -28,7 +29,7 @@ public class Aa20OperationImpl extends AbstractAa20SpecificationExtensionImpl im
     private String description;
     private List<Aa20Tag> tags;
     private Aa20ExternalDocumentation externalDocs;
-    private Aa20MessageBindings binding;
+    private Aa20OperationBindings bindings;
     private List<Aa20OperationTrait> traits;
     private Aa20Message message;
 
@@ -47,7 +48,7 @@ public class Aa20OperationImpl extends AbstractAa20SpecificationExtensionImpl im
         this.description = b.description;
         this.tags = b.tags;
         this.externalDocs = b.externalDocs;
-        this.binding = b.binding;
+        this.bindings = b.bindings;
         this.traits = b.traits;
         this.message = b.message;
     }
@@ -97,12 +98,12 @@ public class Aa20OperationImpl extends AbstractAa20SpecificationExtensionImpl im
         this.externalDocs = externalDocs;
     }
 
-    public Aa20MessageBindings getBindings() {
-        return binding;
+    public Aa20OperationBindings getBindings() {
+        return bindings;
     }
 
-    public void setBinding(Aa20MessageBindings binding) {
-        this.binding = binding;
+    public void setBindings(Aa20OperationBindings bindings) {
+        this.bindings = bindings;
     }
 
     @Override
@@ -134,7 +135,7 @@ public class Aa20OperationImpl extends AbstractAa20SpecificationExtensionImpl im
         String description;
         List<Aa20Tag> tags;
         Aa20ExternalDocumentation externalDocs;
-        Aa20MessageBindings binding;
+        Aa20OperationBindings bindings;
         List<Aa20OperationTrait> traits;
         private Aa20Message message;
 
@@ -156,31 +157,44 @@ public class Aa20OperationImpl extends AbstractAa20SpecificationExtensionImpl im
             return this;
         }
 
-        public Builder withTags(List<Aa20Tag> tags) {
-            this.tags = tags;
+        public Builder addTags(Consumer<Aa20TagImpl.Builder> tag) {
+            if(this.tags == null) {
+                this.tags = new LinkedList<>();
+            }
+            Aa20TagImpl.Builder builder = Aa20TagImpl.newBuilder();
+            tag.accept(builder);
+            this.tags.add(builder.done());
             return this;
         }
 
-        public Builder withExternalDocs(Aa20ExternalDocumentation externalDocs) {
-            this.externalDocs = externalDocs;
+        public Builder addExternalDocs(Consumer<Aa20ExternalDocumentationImpl.Builder> externalDocs) {
+            Aa20ExternalDocumentationImpl.Builder builder = Aa20ExternalDocumentationImpl.newBuilder();
+            externalDocs.accept(builder);
+            this.externalDocs = builder.done();
             return this;
         }
 
-        public Builder withBinding(Aa20MessageBindings binding) {
-            this.binding = binding;
+        public Builder addBindings(Consumer<Aa20OperationBindingsImpl.Builder> bindings) {
+            Aa20OperationBindingsImpl.Builder builder = Aa20OperationBindingsImpl.newBuilder();
+            bindings.accept(builder);
+            this.bindings = builder.done();
             return this;
         }
 
-        public Builder withTrait(Aa20OperationTrait trait) {
+        public Builder addTrait(Consumer<Aa20OperationTraitImpl.Builder> tag) {
             if(this.traits == null) {
                 this.traits = new LinkedList<>();
             }
-            this.traits.add(trait);
+            Aa20OperationTraitImpl.Builder builder = Aa20OperationTraitImpl.newBuilder();
+            tag.accept(builder);
+            this.traits.add(builder.done());
             return this;
         }
 
-        public Builder withMessage(Aa20Message message) {
-            this.message = message;
+        public Builder addMessage(Consumer<Aa20MessageImpl.Builder> message) {
+            Aa20MessageImpl.Builder builder = Aa20MessageImpl.newBuilder();
+            message.accept(builder);
+            this.message = builder.done();
             return this;
         }
 

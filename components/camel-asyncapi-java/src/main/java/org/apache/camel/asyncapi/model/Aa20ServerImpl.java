@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.camel.asyncApi.*;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class Aa20ServerImpl extends AbstractAa20SpecificationExtensionImpl implements Aa20Server {
 
@@ -155,22 +156,28 @@ public class Aa20ServerImpl extends AbstractAa20SpecificationExtensionImpl imple
             return this;
         }
 
-        public Builder withVariable(String name, Aa20ServerVariable variable) {
+        public Builder addVariable(String name, Consumer<Aa20ServerVariableImpl.Builder> variable) {
             if(variables == null) {
                 variables = new LinkedHashMap<>();
             }
-            this.variables.put(name, variable);
+            Aa20ServerVariableImpl.Builder builder = Aa20ServerVariableImpl.newBuilder();
+            variable.accept(builder);
+            this.variables.put(name, builder.done());
             return this;
         }
 
 
-        public Builder withSecurity(Aa20SecurityRequirement security) {
-            this.security = security;
+        public Builder addSecurity(Consumer<Aa20SecurityRequirementImpl.Builder> security) {
+            Aa20SecurityRequirementImpl.Builder builder = Aa20SecurityRequirementImpl.newBuilder();
+            security.accept(builder);
+            this.security = builder.done();
             return this;
         }
 
-        public Builder withBindings(Aa20ServerBindings bindings) {
-            this.bindings = bindings;
+        public Builder addBindings(Consumer<Aa20ServerBindingsImpl.Builder> bindings) {
+            Aa20ServerBindingsImpl.Builder builder = Aa20ServerBindingsImpl.newBuilder();
+            bindings.accept(builder);
+            this.bindings = builder.done();
             return this;
         }
 

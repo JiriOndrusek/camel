@@ -7,6 +7,10 @@ public class Aa20ExternalDocumentationImpl extends AbstractAa20SpecificationExte
     private String description;
     private String url;
 
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
     public Aa20ExternalDocumentationImpl() {
         super(null);
     }

@@ -14,30 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.camel.asyncapi.model;
+package org.apache.camel.asyncApi;
 
-import org.apache.camel.asyncApi.Aa20MessageBindings;
+/**
+ * An object that specifies an identifier at design time that can used for message tracing and correlation.
+ *
+ * For specifying and computing the location of a Correlation ID, a runtime expression is used.
+ */
+public interface Aa20CorrelationId {
 
-public class Aa20MessageBindingImpl extends Aa20AbstractBindingsImpl implements Aa20MessageBindings {
+    String getDescription();
 
-    public static Builder newBuilder() {
-        return new Builder();
-    }
+    String getLocation();
 
-    private Aa20MessageBindingImpl() {
-    }
-
-    private Aa20MessageBindingImpl(Builder b) {
-        super(b);
-    }
-
-    // --------------------------------------- builder ---------------------------------------------------------
-
-    public static class Builder extends AbstractBindingsBuilder<Aa20ChannelBindingsImpl.Builder, Aa20MessageBindings> {
-
-        @Override
-        public Aa20MessageBindings done() {
-            return new Aa20MessageBindingImpl(this);
-        }
-    }
+    String get$ref();
 }

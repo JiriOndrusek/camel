@@ -26,9 +26,9 @@ public interface Aa20Message  {
 
     Aa20Schema getHeaders() ;
 
-    Map<String, Object> getPayload();
+    Object getPayload();
 
-    Aa20CorellationId getCorrelationId();
+    Aa20CorrelationId getCorrelationId();
 
     String getSchemaFormat() ;
 

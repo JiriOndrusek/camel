@@ -1,8 +1,8 @@
 package org.apache.camel.asyncapi.model;
 
-import org.apache.camel.asyncApi.Aa20CorellationId;
+import org.apache.camel.asyncApi.Aa20CorrelationId;
 
-public class Aa20CorrelationIdImpl extends AbstractAa20SpecificationExtensionImpl implements Aa20CorellationId {
+public class Aa20CorrelationIdImpl extends AbstractAa20SpecificationExtensionImpl implements Aa20CorrelationId {
 
     private String location;
     private String description;
@@ -52,7 +52,7 @@ public class Aa20CorrelationIdImpl extends AbstractAa20SpecificationExtensionImp
 
     // --------------------------------------- builder ---------------------------------------------------------
 
-    public static class Builder extends AbstractSpecificationExtensionsBuilder<Builder, Aa20CorellationId> {
+    public static class Builder extends AbstractSpecificationExtensionsBuilder<Builder, Aa20CorrelationId> {
 
         private String location;
         private String description;
@@ -77,7 +77,7 @@ public class Aa20CorrelationIdImpl extends AbstractAa20SpecificationExtensionImp
         }
 
         @Override
-        public Aa20CorellationId done() {
+        public Aa20CorrelationId done() {
             return new Aa20CorrelationIdImpl(this);
         }
     }

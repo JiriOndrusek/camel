@@ -21,6 +21,7 @@ import org.apache.camel.asyncApi.Aa20OAuthFlows;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class Aa20OAuthFlowsImpl extends AbstractAa20SpecificationExtensionImpl implements Aa20OAuthFlows {
 
@@ -93,23 +94,31 @@ public class Aa20OAuthFlowsImpl extends AbstractAa20SpecificationExtensionImpl i
         private Builder() {
         }
 
-        public Builder withImplicit(Aa20OAuthFlow implicit) {
-            this.implicit = implicit;
+        public Builder withImplicit(Consumer<Aa20OAuthFlowImpl.Builder> implicit) {
+            Aa20OAuthFlowImpl.Builder builder = Aa20OAuthFlowImpl.newBuilder();
+            implicit.accept(builder);
+            this.implicit = builder.done();
             return this;
         }
 
-        public Builder withPassword(Aa20OAuthFlow password) {
-            this.password = password;
+        public Builder withPassword(Consumer<Aa20OAuthFlowImpl.Builder> password) {
+            Aa20OAuthFlowImpl.Builder builder = Aa20OAuthFlowImpl.newBuilder();
+            password.accept(builder);
+            this.password = builder.done();
             return this;
         }
 
-        public Builder withClientCredentials(Aa20OAuthFlow clientCredentials) {
-            this.clientCredentials = clientCredentials;
+        public Builder withClientCredentials(Consumer<Aa20OAuthFlowImpl.Builder> clientCredentials) {
+            Aa20OAuthFlowImpl.Builder builder = Aa20OAuthFlowImpl.newBuilder();
+            clientCredentials.accept(builder);
+            this.clientCredentials = builder.done();
             return this;
         }
 
-        public Builder withAuthorizationCode(Aa20OAuthFlow authorizationCode) {
-            this.authorizationCode = authorizationCode;
+        public Builder withAuthorizationCode(Consumer<Aa20OAuthFlowImpl.Builder> authorizationCode) {
+            Aa20OAuthFlowImpl.Builder builder = Aa20OAuthFlowImpl.newBuilder();
+            authorizationCode.accept(builder);
+            this.authorizationCode = builder.done();
             return this;
         }
 

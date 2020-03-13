@@ -12,8 +12,6 @@ import org.apache.camel.asyncapi.model.*;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Collections;
-
 public class PlaygroundModelTest {
 
     @Test
@@ -100,159 +98,171 @@ public class PlaygroundModelTest {
 
         Aa20Object model = Aa20ObjectImpl.newBuilder()
             .withAsyncApi("2.0.0")
-            .addInfo(infoBuilder -> infoBuilder
+            .addInfo(info -> info
                 .withTitle("Streetlights API")
                 .withDescription("The Smartylighting Streetlights API allows you to remotely manage the city lights.")
                 .withVersion("1.0.0")
                 .addLicense(license -> license
-                        .withName("Apache 2.0")
-                        .withUrl("https://www.apache.org/licenses/LICENSE-2.0")
+                    .withName("Apache 2.0")
+                    .withUrl("https://www.apache.org/licenses/LICENSE-2.0")
                 )
             )
-            .withServer("production", Aa20ServerImpl.newBuilder()
+            .addhServer("production", server -> server
                 .withUrl("api.streetlights.smartylighting.com:{port}")
                 .withProtocol("mqtt")
                 .withDescription("Test broker")
-                .withVariable("port", Aa20ServerVariableImpl.newBuilder()
+                .addVariable("port", variable -> variable
                     .withDescription("Secure connection (TLS) is available through port 8883.")
                     .withEnum("1883")
-                    .withEnum("8883").done())
-                .withSecurity(Aa20SecurityRequirementImpl.newBuilder()
+                    .withEnum("8883"))
+                .addSecurity(security -> security
                     .withApiKey()
                     .withOAuth2("streetlights:on").withOAuth2("streetlights:off").withOAuth2("streetlights:dim")
-                    .withOpenIdConnect()
-                    .done())
-                .done())
-            .withChannel("smartylighting/streetlights/1/0/event/{streetlightId}/lighting/measured", Aa20ChannelItemImpl.newBuilder()
+                    .withOpenIdConnect())
+                )
+            .addChannel("smartylighting/streetlights/1/0/event/{streetlightId}/lighting/measured",channel -> channel
                 .withDescription("The topic on which measured values may be produced and consumed.")
-                .withParameters("streetlightId",
-                        Aa20ParameterImpl.newBuilder().with$ref("#/components/parameters/streetlightId'").done())
-                .withSubscribe(Aa20OperationImpl.newBuilder()
+                .addParameter("streetlightId", parameter -> parameter
+                        .with$ref("#/components/parameters/streetlightId"))
+                .addSubscribe(subscribe -> subscribe
                     .withDescription("Receive information about environmental lighting conditions of a particular streetlight.")
                     .withOperationId("receiveLightMeasurement")
-                    .withTrait(Aa20OperationTraitImpl.newBuilder().with$ref("#/components/operationTraits/kafka").done())
-                    .withMessage(Aa20MessageImpl.newBuilder().with$ref("#/components/messages/lightMeasured").done())
-                    .done())
-                .withPublish(Aa20OperationImpl.newBuilder()
+                    .addTrait(trait -> trait.with$ref("#/components/operationTraits/kafka"))
+                    .addMessage(message -> message.with$ref("#/components/messages/lightMeasured"))
+                )
+                .addPublish(publish -> publish
                     .withOperationId("turnOn")
-                    .withMessage(Aa20MessageImpl.newBuilder()
-                        .withOneOf(Aa20MessageImpl.newBuilder().with$ref("#/components/messages/turnOnOff1").done())
-                        .withOneOf(Aa20MessageImpl.newBuilder().with$ref("#/components/messages/turnOnOff2").done())
-                        .with$ref("#/components/messages/turnOnOff")
-                    .done())
-                .done())
-            .done())
-            .withChannel("smartylighting/streetlights/1/0/action/{streetlightId}/turn/on", Aa20ChannelItemImpl.newBuilder()
-                .withParameters("streetlightId",
-                        Aa20ParameterImpl.newBuilder().with$ref("#/components/parameters/streetlightId'").done())
-                .withPublish(Aa20OperationImpl.newBuilder()
+                    .addMessage(message -> message.with$ref("#/components/messages/turnOnOff"))
+                )
+            )
+            .addChannel("smartylighting/streetlights/1/0/action/{streetlightId}/turn/on", channel -> channel
+                .addParameter("streetlightId",parameter -> parameter
+                        .with$ref("#/components/parameters/streetlightId"))
+                .addPublish(publish -> publish
                     .withOperationId("turnOn")
-                    .withTrait(Aa20OperationTraitImpl.newBuilder()
-                            .with$ref("#/components/operationTraits/kafka").done())
-                    .withMessage(Aa20MessageImpl.newBuilder()
-                            .with$ref("#/components/messages/turnOnOff").done())
-                .done())
-            .done())
-            .withChannel("smartylighting/streetlights/1/0/action/{streetlightId}/turn/off", Aa20ChannelItemImpl.newBuilder()
-                    .withParameters("streetlightId",
-                            Aa20ParameterImpl.newBuilder().with$ref("#/components/parameters/streetlightId").done())
-                    .withPublish(Aa20OperationImpl.newBuilder()
+                    .addTrait(trait -> trait.with$ref("#/components/operationTraits/kafka"))
+                    .addMessage(message -> message.with$ref("#/components/messages/turnOnOff"))
+                )
+            )
+            .addChannel("smartylighting/streetlights/1/0/action/{streetlightId}/turn/off", channel -> channel
+                    .addParameter("streetlightId", parameter -> parameter
+                            .with$ref("#/components/parameters/streetlightId"))
+                    .addPublish(publish -> publish
                         .withOperationId("turnOff")
-                        .withTrait(Aa20OperationTraitImpl.newBuilder().with$ref("#/components/operationTraits/kafka").done())
-                        .withMessage(Aa20MessageImpl.newBuilder().with$ref("#/components/messages/turnOnOff").done())
-                        .done())
-                .done())
-            .withChannel("smartylighting/streetlights/1/0/action/{streetlightId}/dim", Aa20ChannelItemImpl.newBuilder()
-                        .withParameters("streetlightId", Aa20ParameterImpl.newBuilder()
-                        .with$ref("#/components/parameters/streetlightId").done())
-                .withPublish(Aa20OperationImpl.newBuilder()
+                        .addTrait(trait -> trait.with$ref("#/components/operationTraits/kafka"))
+                        .addMessage(message -> message.with$ref("#/components/messages/turnOnOff"))
+                        )
+                )
+            .addChannel("smartylighting/streetlights/1/0/action/{streetlightId}/dim", channel -> channel
+                        .addParameter("streetlightId", parameter -> parameter
+                            .with$ref("#/components/parameters/streetlightId"))
+                .addPublish(publish -> publish
                     .withOperationId("dimLight")
-                    .withTrait(Aa20OperationTraitImpl.newBuilder().with$ref("#/components/operationTraits/kafka").done())
-                    .withMessage(Aa20MessageImpl.newBuilder().with$ref("#/components/messages/dimLight").done())
-                    .done())
-                .done())
-            .withComponents(Aa20ComponentsImpl.newBuilder()
-                    .withMessage("lightMeasured", Aa20MessageImpl.newBuilder()
+                    .addTrait(trait -> trait.with$ref("#/components/operationTraits/kafka"))
+                    .addMessage(message -> message.with$ref("#/components/messages/dimLight"))
+                    )
+                )
+            .addComponents(components -> components
+                    .addMessage("lightMeasured", message -> message
                             .withName("lightMeasured")
                             .withTitle("Light measured")
                             .withSummary("Inform about environmental lighting conditions for a particular streetlight.")
                             .withContentType("application/json")
-                            .withTrait(Aa20MessageTraitImpl.newBuilder().with$ref("#/components/messageTraits/commonHeaders").done())
-                            .withPayload(Collections.singletonMap("$ref", "#/components/schemas/lightMeasuredPayload")) //todo
-                        .done())
-                    .withMessage("turnOnOff", Aa20MessageImpl.newBuilder()
+                            .addTrait(trait -> trait.with$ref("#/components/messageTraits/commonHeaders"))
+                            .addPayload(o -> o.withObject("$ref","#/components/schemas/lightMeasuredPayload"))
+                        )
+                    .addMessage("turnOnOff", message -> message
                             .withTitle("Turn on/off")
                             .withSummary("Command a particular streetlight to turn the lights on or off.")
-                            .withTrait(Aa20MessageTraitImpl.newBuilder().with$ref("#/components/messageTraits/commonHeaders").done())
-                            .withPayload(Collections.singletonMap("$ref", "#/components/schemas/turnOnOffPayload"))
-                        .done())
-                    .withMessage("dimLight", Aa20MessageImpl.newBuilder()
+                            .addTrait(trait -> trait.with$ref("#/components/messageTraits/commonHeaders"))
+                            .addPayload(o -> o.withObject("$ref","#/components/schemas/turnOnOffPayload"))
+                        )
+                    .addMessage("dimLight", message -> message
                             .withTitle("Dim light")
                             .withSummary("Command a particular streetlight to dim the lights.")
-                            .withTrait(Aa20MessageTraitImpl.newBuilder().with$ref("#/components/messageTraits/commonHeaders").done())
-                            .withPayload(Collections.singletonMap("$ref", "#/components/schemas/dimLightPayload"))
-                        .done())
+                            .addTrait(trait -> trait.with$ref("#/components/messageTraits/commonHeaders"))
+                            .addPayload(o -> o.withObject("$ref","#/components/schemas/dimLightPayload"))
+                        )
                     .addSchema("lightMeasuredPayload", schemaBuilder -> schemaBuilder
-                            .withString("type", "object")
-                            .withObject("properties", o -> o
-                                    .withObject("lumens", o1 -> o1
-                                            .withString("type", "integer")
-                                            .withInteger("minimum", 0)
-                                            .withString("description", "Light intensity measured in lumens."))
-                                    .withObject("sentAt", o2 -> o2
-                                            .withString("$ref", "#/components/schemas/sentAt")))
-                            .done())
-
-//                    .witSchema("schema01", Aa20SchemaImpl.newBuilder() //todo
-//                            .with$ref("#ref")
-//                            .withDeprecated(true)
-//                            .withData("data", "test")
-//                            .withSpecificationExtension("x-schema", "xtest")
-//                            .done())
-//
-//
-//
-                    .withSecurityScheme("apiKey", Aa20SecuritySchemeImpl.newApiKey()
+                            .withObject("type", "object")
+                            .addObject("properties", o -> o
+                                    .addObject("lumens", o1 -> o1
+                                            .withObject("type", "integer")
+                                            .withObject("minimum", new Integer(0))
+                                            .withObject("description", "Light intensity measured in lumens."))
+                                    .addObject("sentAt", o2 -> o2
+                                            .withObject("$ref", "#/components/schemas/sentAt")))
+                            )
+                    .addSchema("turnOnOffPayload",schema -> schema
+                            .withObject("type", "object")
+                            .addObject("properties", o -> o
+                                   .addObject("command", o1 -> o1
+                                           .withObject("type", "string")
+                                           .addList("enum", l -> l
+                                                .withObject("on")
+                                                .withObject("off"))
+                                            .withObject("description", "Whether to turn on or off the light."))
+                            .addObject("sentAt", o3 -> o3
+                                   .withObject("$ref", "#/components/schemas/sentAt")))
+                            )
+                    .addSchema("dimLightPayload",schema -> schema
+                            .withObject("type", "object")
+                            .addObject("properties", o -> o
+                                   .addObject("percentage", o1 -> o1
+                                           .withObject("type", "integer")
+                                           .withObject("description", "Percentage to which the light should be dimmed to.")
+                                           .withObject("minimum", 0)
+                                           .withObject("maximum", 100))
+                            .addObject("sentAt", o3 -> o3
+                                   .withObject("$ref", "#/components/schemas/sentAt")))
+                            )
+                    .addSchema("sentAt", schema -> schema
+                            .addObject("sentAt", o -> o
+                                .withObject("type", "string")
+                                .withObject("format", "date-time")
+                                .withObject("description", "Date and time when the message was sent."))
+                            )
+                    .addSecuritySchemeApiKey("apiKey", apiKey -> apiKey
                             .withIn("user")
-                            .withDescription("Provide your API key as the user and leave the password empty.").done())
-                    .withSecurityScheme("supportedOauthFlows", Aa20SecuritySchemeImpl.newOAuth2()
+                            .withDescription("Provide your API key as the user and leave the password empty."))
+                    .addSecuritySchemeOAuth2("supportedOauthFlows", oauth2 -> oauth2
                             .withDescription(" Flows to support OAuth 2.0")
-                            .withFlows(Aa20OAuthFlowsImpl.newBuilder()
-                                    .withImplicit(Aa20OAuthFlowImpl.newBuilder()
+                            .addFlows(flows -> flows
+                                    .withImplicit(implicit -> implicit
                                         .withAuthorizationUrl("https://authserver.example/auth")
                                         .withScope("streetlights:on", "Ability to switch lights on")
                                         .withScope("streetlights:off", "Ability to switch lights off")
-                                        .withScope("streetlights:dim", "Ability to dim the lights").done())
-                                    .withPassword(Aa20OAuthFlowImpl.newBuilder()
+                                        .withScope("streetlights:dim", "Ability to dim the lights"))
+                                    .withPassword(password -> password
                                         .withAuthorizationUrl("https://authserver.example/auth")
                                         .withScope("streetlights:on", "Ability to switch lights on")
                                         .withScope("streetlights:off", "Ability to switch lights off")
-                                        .withScope("streetlights:dim", "Ability to dim the lights").done())
-                                    .withClientCredentials(Aa20OAuthFlowImpl.newBuilder()
+                                        .withScope("streetlights:dim", "Ability to dim the lights"))
+                                    .withClientCredentials(clientCredentials -> clientCredentials
                                         .withAuthorizationUrl("https://authserver.example/auth")
                                         .withScope("streetlights:on", "Ability to switch lights on")
                                         .withScope("streetlights:off", "Ability to switch lights off")
-                                        .withScope("streetlights:dim", "Ability to dim the lights").done())
-                                    .withAuthorizationCode(Aa20OAuthFlowImpl.newBuilder()
+                                        .withScope("streetlights:dim", "Ability to dim the lights"))
+                                    .withAuthorizationCode(authorizationCode -> authorizationCode
                                         .withAuthorizationUrl("https://authserver.example/auth")
                                         .withTokenUrl("https://authserver.example/token")
                                         .withRefreshUrl("https://authserver.example/refresh")
                                         .withScope("streetlights:on", "Ability to switch lights on")
                                         .withScope("streetlights:off", "Ability to switch lights off")
-                                        .withScope("streetlights:dim", "Ability to dim the lights").done())
-                                    .done())
-                            .done())
-                    .withSecurityScheme("openIdConnectWellKnown", Aa20SecuritySchemeImpl.newOpenIdConnect()
-                            .withOpenConnectId("https://authserver.example/.well-known").done())
-                    .withParameter("streetlightId", Aa20ParameterImpl.newBuilder()
+                                        .withScope("streetlights:dim", "Ability to dim the lights"))
+                                    )
+                            )
+                    .addSecuritySchemeOpenIdConnect("openIdConnectWellKnown", openIdConnect -> openIdConnect
+                            .withOpenConnectId("https://authserver.example/.well-known"))
+                    .addParameter("streetlightId", parameter -> parameter
                             .witDescription("The ID of the streetlight.")
-                            .withSchema(Aa20SchemaImpl.newBuilder().withString("type", "string").done()).done())
-                    .withMessageTrait("commonHeaders", Aa20MessageTraitImpl.newBuilder()
-                            .withHeaders(Aa20SchemaImpl.newBuilder().withString("type", "object").done()).done())
-                    .withOperationTrait("kafka", Aa20OperationTraitImpl.newBuilder()
-                            .withBindings(Aa20OperationBindingsImpl.newBuilder()
-                                    .withKafkaSchema("clientId", "my-app-id").done()).done())
-                    .done())
+                            .addSchema(schema -> schema.withObject("type", "string")))
+                    .addMessageTrait("commonHeaders", messageTrait -> messageTrait
+                            .addHeaders(headers -> headers.withObject("type", "object")))
+                    .addOperationTrait("kafka", operationTrait -> operationTrait
+                            .addBindings(bindings -> bindings
+                                    .withKafkaSchema("clientId", "my-app-id")))
+                    )
             .done();
 
         return model;
@@ -263,10 +273,10 @@ public class PlaygroundModelTest {
 //        Aa20OperationImpl.OperationBuilder b = Aa20OperationImpl.newBuilder(null, null)
 //                    .withOperationId("turnOn")
 //                    .addMessage()
-//                        .addOneOfMessage().with$ref("#/components/messages/turnOnOff1").done()
-//                        .addOneOfMessage().with$ref("#/components/messages/turnOnOff2").done()
+//                        .addOneOfMessage().with$ref("#/components/messages/turnOnOff1")
+//                        .addOneOfMessage().with$ref("#/components/messages/turnOnOff2")
 //                        .with$ref("#/components/messages/turnOnOff")
-//                    .done();
+//                    ;
 //Aa20Operation o = b.build();
 //        return null;
 //    }

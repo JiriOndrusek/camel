@@ -139,8 +139,10 @@ public class Aa20InfoImpl extends AbstractAa20SpecificationExtensionImpl impleme
             return this;
         }
 
-        public Builder withContact(Aa20Contact contact) {
-            this.contact = contact;
+        public Builder addContact(Consumer<Aa20ContactImpl.Builder> contact) {
+            Aa20ContactImpl.Builder builder = Aa20ContactImpl.newBuilder();
+            contact.accept(builder);
+            this.contact = builder.done();
             return this;
         }
 

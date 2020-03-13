@@ -1,16 +1,16 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed add
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
+ * (the "License"); you may not use this file except in compliance add
  * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * addOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -32,7 +32,7 @@ public class Aa20ComponentsImpl extends AbstractAa20SpecificationExtensionImpl i
 
     private Map<String, Aa20Parameter> parameters;
 
-    private Map<String, Aa20CorellationId> correlationIds;
+    private Map<String, Aa20CorrelationId> correlationIds;
 
     private Map<String, Aa20OperationTrait> operationTraits;
 
@@ -106,11 +106,11 @@ public class Aa20ComponentsImpl extends AbstractAa20SpecificationExtensionImpl i
     }
 
     @Override
-    public Map<String, Aa20CorellationId> getCorrelationIds() {
+    public Map<String, Aa20CorrelationId> getCorrelationIds() {
         return correlationIds;
     }
 
-    public void setCorrelationIds(Map<String, Aa20CorellationId> correlationIds) {
+    public void setCorrelationIds(Map<String, Aa20CorrelationId> correlationIds) {
         this.correlationIds = correlationIds;
     }
 
@@ -180,7 +180,7 @@ public class Aa20ComponentsImpl extends AbstractAa20SpecificationExtensionImpl i
 
         private Map<String, Aa20Parameter> parameters;
 
-        private Map<String, Aa20CorellationId> correlationIds;
+        private Map<String, Aa20CorrelationId> correlationIds;
 
         private Map<String, Aa20OperationTrait> operationTraits;
 
@@ -197,93 +197,193 @@ public class Aa20ComponentsImpl extends AbstractAa20SpecificationExtensionImpl i
         private Builder() {
         }
 
-        public Builder withMessage(String name, Aa20Message message) {
+        public Builder addMessage(String name, Consumer<Aa20MessageImpl.Builder> message) {
             if(this.messages == null) {
                 this.messages = new LinkedHashMap<>();
             }
-            this.messages.put(name, message);
+            Aa20MessageImpl.Builder builder = Aa20MessageImpl.newBuilder();
+            message.accept(builder);
+            this.messages.put(name, builder.done());
             return this;
         }
 
-        public Builder addSchema(String name, Consumer<Aa20SchemaImpl.Builder> schemaBuilder) {
+        public Builder addSchema(String name, Consumer<Aa20SchemaImpl.Builder> schema) {
             if(this.schemas == null) {
                 this.schemas = new LinkedHashMap<>();
             }
             Aa20SchemaImpl.Builder builder = Aa20SchemaImpl.newBuilder();
-            schemaBuilder.accept(builder);
+            schema.accept(builder);
             this.schemas.put(name, builder.done());
             return this;
         }
 
-        public Builder withSecurityScheme(String name, Aa20SecurityScheme securityScheme) {
+        public Builder addSecuritySchemeUserPassword(String name, Consumer<Aa20SecuritySchemeImpl.CommonBuilder> securityScheme) {
             if(this.securitySchemes == null) {
                 this.securitySchemes = new LinkedHashMap<>();
             }
-            this.securitySchemes.put(name, securityScheme);
+            Aa20SecuritySchemeImpl.CommonBuilder builder = Aa20SecuritySchemeImpl.newUserPassword();
+            securityScheme.accept(builder);
+            this.securitySchemes.put(name, builder.done());
             return this;
         }
 
-        public Builder withParameter(String name, Aa20Parameter parameter) {
+        public Builder addSecuritySchemeApiKey(String name, Consumer<Aa20SecuritySchemeImpl.ApiKeyBuilder> securityScheme) {
+            if(this.securitySchemes == null) {
+                this.securitySchemes = new LinkedHashMap<>();
+            }
+            Aa20SecuritySchemeImpl.ApiKeyBuilder builder = Aa20SecuritySchemeImpl.newApiKey();
+            securityScheme.accept(builder);
+            this.securitySchemes.put(name, builder.done());
+            return this;
+        }
+
+        public Builder addSecuritySchemeX509(String name, Consumer<Aa20SecuritySchemeImpl.CommonBuilder> securityScheme) {
+            if(this.securitySchemes == null) {
+                this.securitySchemes = new LinkedHashMap<>();
+            }
+            Aa20SecuritySchemeImpl.CommonBuilder builder = Aa20SecuritySchemeImpl.newX509();
+            securityScheme.accept(builder);
+            this.securitySchemes.put(name, builder.done());
+            return this;
+        }
+
+        public Builder addSecuritySchemeSymmetricEncryption(String name, Consumer<Aa20SecuritySchemeImpl.CommonBuilder> securityScheme) {
+            if(this.securitySchemes == null) {
+                this.securitySchemes = new LinkedHashMap<>();
+            }
+            Aa20SecuritySchemeImpl.CommonBuilder builder = Aa20SecuritySchemeImpl.newSymmetricEncryption();
+            securityScheme.accept(builder);
+            this.securitySchemes.put(name, builder.done());
+            return this;
+        }
+
+        public Builder addSecuritySchemeAsymmetricEncryption(String name, Consumer<Aa20SecuritySchemeImpl.CommonBuilder> securityScheme) {
+            if(this.securitySchemes == null) {
+                this.securitySchemes = new LinkedHashMap<>();
+            }
+            Aa20SecuritySchemeImpl.CommonBuilder builder = Aa20SecuritySchemeImpl.newAsymmetricEncryption();
+            securityScheme.accept(builder);
+            this.securitySchemes.put(name, builder.done());
+            return this;
+        }
+
+        public Builder addSecuritySchemeHttp(String name, Consumer<Aa20SecuritySchemeImpl.HttpBuilder> securityScheme) {
+            if(this.securitySchemes == null) {
+                this.securitySchemes = new LinkedHashMap<>();
+            }
+            Aa20SecuritySchemeImpl.HttpBuilder builder = Aa20SecuritySchemeImpl.newHttp();
+            securityScheme.accept(builder);
+            this.securitySchemes.put(name, builder.done());
+            return this;
+        }
+
+        public Builder addSecuritySchemeHttpApiKey(String name, Consumer<Aa20SecuritySchemeImpl.HttpApiKeyBuilder> securityScheme) {
+            if(this.securitySchemes == null) {
+                this.securitySchemes = new LinkedHashMap<>();
+            }
+            Aa20SecuritySchemeImpl.HttpApiKeyBuilder builder = Aa20SecuritySchemeImpl.newHttpApiKey();
+            securityScheme.accept(builder);
+            this.securitySchemes.put(name, builder.done());
+            return this;
+        }
+
+        public Builder addSecuritySchemeOAuth2(String name, Consumer<Aa20SecuritySchemeImpl.OAuth2Builder> securityScheme) {
+            if(this.securitySchemes == null) {
+                this.securitySchemes = new LinkedHashMap<>();
+            }
+            Aa20SecuritySchemeImpl.OAuth2Builder builder = Aa20SecuritySchemeImpl.newOAuth2();
+            securityScheme.accept(builder);
+            this.securitySchemes.put(name, builder.done());
+            return this;
+        }
+
+        public Builder addSecuritySchemeOpenIdConnect(String name, Consumer<Aa20SecuritySchemeImpl.OpenIdConnectBuilder> securityScheme) {
+            if(this.securitySchemes == null) {
+                this.securitySchemes = new LinkedHashMap<>();
+            }
+            Aa20SecuritySchemeImpl.OpenIdConnectBuilder builder = Aa20SecuritySchemeImpl.newOpenIdConnect();
+            securityScheme.accept(builder);
+            this.securitySchemes.put(name, builder.done());
+            return this;
+        }
+
+        public Builder addParameter(String name, Consumer<Aa20ParameterImpl.Builder> parameter) {
             if(this.parameters == null) {
                 this.parameters = new LinkedHashMap<>();
             }
-            this.parameters.put(name, parameter);
+            Aa20ParameterImpl.Builder builder = Aa20ParameterImpl.newBuilder();
+            parameter.accept(builder);
+            this.parameters.put(name, builder.done());
             return this;
         }
 
-        public Builder withCorrelationId(String name, Aa20CorellationId corellationId) {
+        public Builder addCorrelationId(String name, Consumer<Aa20CorrelationIdImpl.Builder> corellationId) {
             if(this.correlationIds == null) {
                 this.correlationIds = new LinkedHashMap<>();
             }
-            this.correlationIds.put(name, corellationId);
+            Aa20CorrelationIdImpl.Builder builder = Aa20CorrelationIdImpl.newBuilder();
+            corellationId.accept(builder);
+            this.correlationIds.put(name, builder.done());
             return this;
         }
 
-        public Builder withOperationTrait(String name, Aa20OperationTrait operationTrait) {
+        public Builder addOperationTrait(String name, Consumer<Aa20OperationTraitImpl.Builder> operationTrait) {
             if(this.operationTraits == null) {
                 this.operationTraits = new LinkedHashMap<>();
             }
-            this.operationTraits.put(name, operationTrait);
+            Aa20OperationTraitImpl.Builder builder = Aa20OperationTraitImpl.newBuilder();
+            operationTrait.accept(builder);
+            this.operationTraits.put(name, builder.done());
             return this;
         }
 
-        public Builder withMessageTrait(String name, Aa20MessageTrait messageTrait) {
+        public Builder addMessageTrait(String name, Consumer< Aa20MessageTraitImpl.Builder> messageTrait) {
             if(this.messageTraits == null) {
                 this.messageTraits = new LinkedHashMap<>();
             }
-            this.messageTraits.put(name, messageTrait);
+            Aa20MessageTraitImpl.Builder builder = Aa20MessageTraitImpl.newBuilder();
+            messageTrait.accept(builder);
+            this.messageTraits.put(name, builder.done());
             return this;
         }
 
-        public Builder withServerBindings(String name, Aa20ServerBindings serverBindings) {
+        public Builder addServerBindings(String name, Consumer< Aa20ServerBindingsImpl.Builder> serverBindings) {
             if(this.serverBindings == null) {
                 this.serverBindings = new LinkedHashMap<>();
             }
-            this.serverBindings.put(name, serverBindings);
+            Aa20ServerBindingsImpl.Builder builder = Aa20ServerBindingsImpl.newBuilder();
+            serverBindings.accept(builder);
+            this.serverBindings.put(name, builder.done());
             return this;
         }
 
-        public Builder withChannelBindings(String name, Aa20ChannelBindings channelBindings) {
+        public Builder addChannelBindings(String name, Consumer< Aa20ChannelBindingsImpl.Builder> channelBindings) {
             if(this.channelBindings == null) {
                 this.channelBindings = new LinkedHashMap<>();
             }
-            this.channelBindings.put(name, channelBindings);
+            Aa20ChannelBindingsImpl.Builder builder = Aa20ChannelBindingsImpl.newBuilder();
+            channelBindings.accept(builder);
+            this.channelBindings.put(name, builder.done());
             return this;
         }
 
-        public Builder withOperationBindings(String name, Aa20OperationBindings operationBindings) {
+        public Builder addOperationBindings(String name, Consumer< Aa20OperationBindingsImpl.Builder> operationBindings) {
             if(this.operationBindings == null) {
                 this.operationBindings = new LinkedHashMap<>();
             }
-            this.operationBindings.put(name, operationBindings);
+            Aa20OperationBindingsImpl.Builder builder = Aa20OperationBindingsImpl.newBuilder();
+            operationBindings.accept(builder);
+            this.operationBindings.put(name, builder.done());
             return this;
         }
 
-        public Builder withMessageBindings(String name, Aa20MessageBindings messageBindings) {
+        public Builder addMessageBindings(String name, Consumer<Aa20MessageBindingsImpl.Builder> messageBindings) {
             if(this.messageBindings == null) {
                 this.messageBindings = new LinkedHashMap<>();
             }
-            this.messageBindings.put(name, messageBindings);
+            Aa20MessageBindingsImpl.Builder builder = Aa20MessageBindingsImpl.newBuilder();
+            messageBindings.accept(builder);
+            this.messageBindings.put(name, builder.done());
             return this;
         }
 

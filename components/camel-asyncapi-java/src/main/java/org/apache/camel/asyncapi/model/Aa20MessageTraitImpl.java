@@ -19,11 +19,12 @@ package org.apache.camel.asyncapi.model;
 import org.apache.camel.asyncApi.*;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class Aa20MessageTraitImpl extends AbstractAa20SpecificationExtensionImpl implements Aa20MessageTrait {
 
     private Aa20Schema headers;
-    private Aa20CorellationId correlationId;
+    private Aa20CorrelationId correlationId;
     private String schemaFormat;
     private String contentType;
     private String name;
@@ -71,11 +72,11 @@ public class Aa20MessageTraitImpl extends AbstractAa20SpecificationExtensionImpl
     }
 
     @Override
-    public Aa20CorellationId getCorrelationId() {
+    public Aa20CorrelationId getCorrelationId() {
         return correlationId;
     }
 
-    public void setCorrelationId(Aa20CorellationId correlationId) {
+    public void setCorrelationId(Aa20CorrelationId correlationId) {
         this.correlationId = correlationId;
     }
 
@@ -186,7 +187,7 @@ public class Aa20MessageTraitImpl extends AbstractAa20SpecificationExtensionImpl
         }
 
         private Aa20Schema headers;
-        private Aa20CorellationId correlationId;
+        private Aa20CorrelationId correlationId;
         private String schemaFormat;
         private String contentType;
         private String name;
@@ -199,13 +200,17 @@ public class Aa20MessageTraitImpl extends AbstractAa20SpecificationExtensionImpl
         private List<String> examples;
         private String $ref;
 
-        public Builder withHeaders(Aa20Schema headers) {
-            this.headers = headers;
+        public Builder addHeaders(Consumer<Aa20SchemaImpl.Builder> headers) {
+            Aa20SchemaImpl.Builder builder = Aa20SchemaImpl.newBuilder();
+            headers.accept(builder);
+            this.headers = builder.done();
             return this;
         }
 
-        public Builder withCorrelationId(Aa20CorellationId correlationId) {
-            this.correlationId = correlationId;
+        public Builder addCorrelationId(Consumer<Aa20CorrelationIdImpl.Builder> correlationId) {
+            Aa20CorrelationIdImpl.Builder builder = Aa20CorrelationIdImpl.newBuilder();
+            correlationId.accept(builder);
+            this.correlationId = builder.done();
             return this;
         }
 
@@ -249,21 +254,27 @@ public class Aa20MessageTraitImpl extends AbstractAa20SpecificationExtensionImpl
             return this;
         }
 
-        public Builder withTags(Aa20Tag tag) {
+        public Builder addTags(Consumer<Aa20TagImpl.Builder> tag) {
             if(this.tags == null) {
                 this.tags = new LinkedList<>();
             }
-            this.tags.add(tag);
+            Aa20TagImpl.Builder builder = Aa20TagImpl.newBuilder();
+            tag.accept(builder);
+            this.tags.add(builder.done());
             return this;
         }
 
-        public Builder withExternalDocs(Aa20ExternalDocumentation externalDocs) {
-            this.externalDocs = externalDocs;
+        public Builder addExternalDocs(Consumer<Aa20ExternalDocumentationImpl.Builder> externalDocs) {
+            Aa20ExternalDocumentationImpl.Builder builder = Aa20ExternalDocumentationImpl.newBuilder();
+            externalDocs.accept(builder);
+            this.externalDocs = builder.done();
             return this;
         }
 
-        public Builder withBindings(Aa20MessageBindings bindings) {
-            this.bindings = bindings;
+        public Builder addBindings(Consumer<Aa20MessageBindingsImpl.Builder> bindings) {
+            Aa20MessageBindingsImpl.Builder builder = Aa20MessageBindingsImpl.newBuilder();
+            bindings.accept(builder);
+            this.bindings = builder.done();
             return this;
         }
 

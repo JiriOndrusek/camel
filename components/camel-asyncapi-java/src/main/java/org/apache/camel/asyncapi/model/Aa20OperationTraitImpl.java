@@ -18,7 +18,9 @@ package org.apache.camel.asyncapi.model;
 
 import org.apache.camel.asyncApi.*;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class Aa20OperationTraitImpl extends AbstractAa20SpecificationExtensionImpl implements Aa20OperationTrait {
 
@@ -142,18 +144,27 @@ public class Aa20OperationTraitImpl extends AbstractAa20SpecificationExtensionIm
             return this;
         }
 
-        public Builder withTags(List<Aa20Tag> tags) {
-            this.tags = tags;
+        public Builder addTags(Consumer<Aa20TagImpl.Builder> tag) {
+            if(this.tags == null) {
+                this.tags = new LinkedList<>();
+            }
+            Aa20TagImpl.Builder builder = Aa20TagImpl.newBuilder();
+            tag.accept(builder);
+            this.tags.add(builder.done());
             return this;
         }
 
-        public Builder withExternalDocs(Aa20ExternalDocumentation externalDocs) {
-            this.externalDocs = externalDocs;
+        public Builder addExternalDocs(Consumer<Aa20ExternalDocumentationImpl.Builder> externalDocs) {
+            Aa20ExternalDocumentationImpl.Builder builder = Aa20ExternalDocumentationImpl.newBuilder();
+            externalDocs.accept(builder);
+            this.externalDocs = builder.done();
             return this;
         }
 
-        public Builder withBindings(Aa20OperationBindings bindings) {
-            this.bindings = bindings;
+        public Builder addBindings(Consumer<Aa20OperationBindingsImpl.Builder> bindings) {
+            Aa20OperationBindingsImpl.Builder builder = Aa20OperationBindingsImpl.newBuilder();
+            bindings.accept(builder);
+            this.bindings = builder.done();
             return this;
         }
 

@@ -28,7 +28,7 @@ public interface Aa20Components {
 
     Map<String, Aa20Parameter> getParameters();
 
-    Map<String, Aa20CorellationId> getCorrelationIds();
+    Map<String, Aa20CorrelationId> getCorrelationIds();
 
     Map<String, Aa20OperationTrait> getOperationTraits();
 
