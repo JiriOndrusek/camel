@@ -17,6 +17,7 @@
 package org.apache.camel.asyncapi.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.camel.asyncApi.Aa20SecurityRequirement;
 
 import java.util.LinkedList;
@@ -41,8 +42,10 @@ public class Aa20SecurityRequirementImpl implements Aa20SecurityRequirement {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<String> http;
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("supportedOauthFlows")
     private List<String> oauth2;
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("openIdConnectWellKnown")
     private List<String> openIdConnect;
 
 

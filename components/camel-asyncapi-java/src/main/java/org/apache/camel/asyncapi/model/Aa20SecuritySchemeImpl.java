@@ -13,7 +13,7 @@ public class Aa20SecuritySchemeImpl extends AbstractAa20SpecificationExtensionIm
     private String scheme;
     private String bearerFormat;
     private Aa20OAuthFlows flows;
-    private String openConnectId;
+    private String openIdConnectUrl;
     private String $ref;
 
 
@@ -58,7 +58,7 @@ public class Aa20SecuritySchemeImpl extends AbstractAa20SpecificationExtensionIm
         this.scheme = b.scheme;
         this.bearerFormat = b.bearerFormat;
         this.flows = b.flows;
-        this.openConnectId = b.openConnectId;
+        this.openIdConnectUrl = b.openIdConnectUrl;
         this.$ref = b.$ref;
     }
 
@@ -126,12 +126,12 @@ public class Aa20SecuritySchemeImpl extends AbstractAa20SpecificationExtensionIm
     }
 
     @Override
-    public String getOpenConnectId() {
-        return openConnectId;
+    public String getOpenIdConnectUrl() {
+        return openIdConnectUrl;
     }
 
-    public void setOpenConnectId(String openConnectId) {
-        this.openConnectId = openConnectId;
+    public void setOpenIdConnectUrl(String openIdConnectUrl) {
+        this.openIdConnectUrl = openIdConnectUrl;
     }
 
     @Override
@@ -217,7 +217,7 @@ public class Aa20SecuritySchemeImpl extends AbstractAa20SpecificationExtensionIm
         }
 
         public OpenIdConnectBuilder withOpenConnectId(String openConnectId) {
-            this.openConnectId = openConnectId;
+            this.openIdConnectUrl = openConnectId;
             return this;
         }
     }
@@ -231,7 +231,7 @@ public class Aa20SecuritySchemeImpl extends AbstractAa20SpecificationExtensionIm
         protected String scheme;
         protected String bearerFormat;
         protected Aa20OAuthFlows flows;
-        protected String openConnectId;
+        protected String openIdConnectUrl;
         private String $ref;
 
         public AbstractBuilder(Type type) {

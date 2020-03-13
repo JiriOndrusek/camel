@@ -34,6 +34,7 @@ public class Aa20ObjectImpl implements Aa20Object {
     private String id;
     private Aa20Info info;
     private Map<String, Aa20Server> servers;
+    private String defaultContentType;
     private Map<String, Aa20ChannelItem> channels;
     private Aa20Components components;
     private List<Aa20Tag> tags;
@@ -51,6 +52,7 @@ public class Aa20ObjectImpl implements Aa20Object {
         this.id = builder.id;
         this.info = builder.info;
         this.servers = builder.servers;
+        this.defaultContentType = builder.defaultContentType;
         this.channels = builder.channels;
         this.components = builder.components;
         this.tags = builder.tags;
@@ -88,6 +90,15 @@ public class Aa20ObjectImpl implements Aa20Object {
 
     public void setServers(Map<String, Aa20Server> servers) {
         this.servers = servers;
+    }
+
+    @Override
+    public String getDefaultContentType() {
+        return defaultContentType;
+    }
+
+    public void setDefaultContentType(String defaultContentType) {
+        this.defaultContentType = defaultContentType;
     }
 
     @Override
@@ -137,6 +148,7 @@ public class Aa20ObjectImpl implements Aa20Object {
         private String id;
         private Aa20Info info;
         private Map<String, Aa20Server> servers;
+        private String defaultContentType;
         private Map<String, Aa20ChannelItem> channels;
         private Aa20Components components;
         private List<Aa20Tag> tags;
@@ -162,7 +174,7 @@ public class Aa20ObjectImpl implements Aa20Object {
             return this;
         }
 
-        public Builder addhServer(String name, Consumer<Aa20ServerImpl.Builder> server) {
+        public Builder addServer(String name, Consumer<Aa20ServerImpl.Builder> server) {
             if(this.servers == null) {
                 this.servers = new LinkedHashMap<>();
             }
@@ -172,6 +184,10 @@ public class Aa20ObjectImpl implements Aa20Object {
             return this;
         }
 
+        public Builder withDefaultContentType(String defaultContentType) {
+            this.defaultContentType = defaultContentType;
+            return this;
+        }
 
         public Builder addChannel(String name, Consumer<Aa20ChannelItemImpl.Builder> channel) {
             if(this.channels == null) {

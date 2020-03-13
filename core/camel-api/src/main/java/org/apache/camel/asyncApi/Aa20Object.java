@@ -33,6 +33,8 @@ public interface Aa20Object {
 
     Map<String, Aa20Server> getServers() ;
 
+    public String getDefaultContentType();
+
     Map<String, Aa20ChannelItem> getChannels();
 
     Aa20Components getComponents();

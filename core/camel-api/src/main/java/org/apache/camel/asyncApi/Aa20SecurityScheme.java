@@ -44,7 +44,7 @@ public interface Aa20SecurityScheme {
 
     Aa20OAuthFlows getFlows();
 
-    String getOpenConnectId();
+    String getOpenIdConnectUrl();
 
     String get$ref();
 

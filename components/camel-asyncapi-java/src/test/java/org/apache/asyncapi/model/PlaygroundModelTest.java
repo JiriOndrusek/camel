@@ -100,19 +100,26 @@ public class PlaygroundModelTest {
             .withAsyncApi("2.0.0")
             .addInfo(info -> info
                 .withTitle("Streetlights API")
-                .withDescription("The Smartylighting Streetlights API allows you to remotely manage the city lights.")
+                .withDescription("The Smartylighting Streetlights API allows you to remotely manage the city lights." +
+                        "" +
+                        "### Check out its awesome features:\n" +
+                        "\n" +
+                        "    * Turn a specific streetlight on/off \uD83C\uDF03\n" +
+                        "    * Dim a specific streetlight \uD83D\uDE0E\n" +
+                        "    * Receive real-time information about environmental lighting conditions \uD83D\uDCC8")
                 .withVersion("1.0.0")
                 .addLicense(license -> license
                     .withName("Apache 2.0")
                     .withUrl("https://www.apache.org/licenses/LICENSE-2.0")
                 )
             )
-            .addhServer("production", server -> server
+            .addServer("production", server -> server
                 .withUrl("api.streetlights.smartylighting.com:{port}")
                 .withProtocol("mqtt")
                 .withDescription("Test broker")
                 .addVariable("port", variable -> variable
                     .withDescription("Secure connection (TLS) is available through port 8883.")
+                    .withDefault("1883")
                     .withEnum("1883")
                     .withEnum("8883"))
                 .addSecurity(security -> security
@@ -120,6 +127,7 @@ public class PlaygroundModelTest {
                     .withOAuth2("streetlights:on").withOAuth2("streetlights:off").withOAuth2("streetlights:dim")
                     .withOpenIdConnect())
                 )
+                .withDefaultContentType("application/json")
             .addChannel("smartylighting/streetlights/1/0/event/{streetlightId}/lighting/measured",channel -> channel
                 .withDescription("The topic on which measured values may be produced and consumed.")
                 .addParameter("streetlightId", parameter -> parameter
@@ -234,12 +242,12 @@ public class PlaygroundModelTest {
                                         .withScope("streetlights:off", "Ability to switch lights off")
                                         .withScope("streetlights:dim", "Ability to dim the lights"))
                                     .withPassword(password -> password
-                                        .withAuthorizationUrl("https://authserver.example/auth")
+                                        .withTokenUrl("https://authserver.example/auth")
                                         .withScope("streetlights:on", "Ability to switch lights on")
                                         .withScope("streetlights:off", "Ability to switch lights off")
                                         .withScope("streetlights:dim", "Ability to dim the lights"))
                                     .withClientCredentials(clientCredentials -> clientCredentials
-                                        .withAuthorizationUrl("https://authserver.example/auth")
+                                        .withTokenUrl("https://authserver.example/auth")
                                         .withScope("streetlights:on", "Ability to switch lights on")
                                         .withScope("streetlights:off", "Ability to switch lights off")
                                         .withScope("streetlights:dim", "Ability to dim the lights"))
