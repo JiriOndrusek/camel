@@ -266,11 +266,21 @@ public class PlaygroundModelTest {
                             .witDescription("The ID of the streetlight.")
                             .addSchema(schema -> schema.withObject("type", "string")))
                     .addMessageTrait("commonHeaders", messageTrait -> messageTrait
-                            .addHeaders(headers -> headers.withObject("type", "object")))
+                            .addHeaders(o -> o
+                                    .withObject("type", "object")
+                                    .addObject("properties", o1 -> o1
+                                        .addObject("my-app-header", o2 -> o2
+                                            .withObject("type", "integer")
+                                            .withObject("minimum", 0)
+                                            .withObject("maximum", 100))
+                                    )
+                            )
+                    )
                     .addOperationTrait("kafka", operationTrait -> operationTrait
                             .addBindings(bindings -> bindings
                                     .withKafkaSchema("clientId", "my-app-id")))
                     )
+
             .done();
 
         return model;
