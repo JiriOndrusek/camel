@@ -17,10 +17,7 @@
 package org.apache.camel.component.undertow;
 
 import java.net.URI;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ServiceLoader;
+import java.util.*;
 
 import javax.net.ssl.SSLContext;
 
@@ -183,7 +180,7 @@ public class UndertowEndpoint extends DefaultEndpoint implements AsyncEndpoint, 
     public Exchange createExchange(HttpServerExchange httpExchange) throws Exception {
         Exchange exchange = createExchange(ExchangePattern.InOut);
         if(getSecurityProvider() != null) {
-            getSecurityProvider().addPropertiesIntoExchange((key, value) -> exchange.getProperties().put(key, value), httpExchange);
+            getSecurityProvider().addProperty((key, value) -> exchange.getProperties().put(key, value), httpExchange);
 
         }
 
@@ -528,11 +525,20 @@ public class UndertowEndpoint extends DefaultEndpoint implements AsyncEndpoint, 
     private void initSecurityProvider() throws Exception {
         if(getSecurityConfig() != null) {
             ServiceLoader<UndertowSecurityProvider> securityProvider = ServiceLoader.load(UndertowSecurityProvider.class);
-            if (securityProvider.iterator().hasNext()) {
-                UndertowSecurityProvider security = securityProvider.iterator().next();
+
+            Iterator<UndertowSecurityProvider> iter = securityProvider.iterator();
+            List<String> providers = new LinkedList();
+            while (iter.hasNext()) {
+                UndertowSecurityProvider security =  iter.next();
                 if (security.acceptConfiguration(getSecurityConfig(), getAllowedRoles(), getEndpointUri())) {
                     this.securityProvider = security;
+                    LOG.info("Security provider found {}", securityProvider.getClass().getName());
+                    break;
                 }
+                providers.add(security.getClass().getName());
+            }
+            if(this.securityProvider == null) {
+                LOG.info("Security provider for configuration {} not found {}", securityConfig, providers);
             }
         }
     }
