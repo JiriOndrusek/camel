@@ -44,7 +44,7 @@ You can append query options to the URI in the following format,
 == Options
 
 // component options: START
-The Undertow component supports 5 options, which are listed below.
+The Undertow component supports 8 options, which are listed below.
 
 
 
@@ -79,7 +79,7 @@ with the following path and query parameters:
 |===
 
 
-=== Query Parameters (22 parameters):
+=== Query Parameters (28 parameters):
 
 
 [width="100%",cols="2,5,^1,2",options="header"]
@@ -103,6 +103,7 @@ with the following path and query parameters:
 | *headerFilterStrategy* (advanced) | To use a custom HeaderFilterStrategy to filter header to and from Camel message. |  | HeaderFilterStrategy
 | *synchronous* (advanced) | Sets whether synchronous processing should be strictly used, or Camel is allowed to use asynchronous processing (if supported). | false | boolean
 | *undertowHttpBinding* (advanced) | To use a custom UndertowHttpBinding to control the mapping between Camel message and undertow. |  | UndertowHttpBinding
+| *sslContextParameters* (security) | To configure security using SSLContextParameters |  | SSLContextParameters
 | *fireWebSocketChannelEvents* (websocket) | if true, the consumer will post notifications to the route when a new WebSocket peer connects, disconnects, etc. See UndertowConstants.EVENT_TYPE and EventType. | false | boolean
 | *sendTimeout* (websocket) | Timeout in milliseconds when sending to a websocket channel. The default timeout is 30000 (30 seconds). | 30000 | Integer
 | *sendToAll* (websocket) | To send to all websocket subscribers. Can be used to configure on endpoint level, instead of having to use the UndertowConstants.SEND_TO_ALL header on the message. |  | Boolean
@@ -226,3 +227,15 @@ xref:latest@manual::faq/how-do-i-let-jetty-match-wildcards.adoc[How do I let Jet
 If you actually want to expose routes by HTTP and already have a
 Servlet, you should instead refer to the
 xref:servlet-component.adoc[Servlet Transport].
+
+== Security provider
+
+To plugin security provider for endpoint authentication, implement SPI interface
+`org.apache.camel.component.undertow.spi.UndertowSecurityProvider`.
+
+Undertow components locates all implementations of `UndertowSecurityProvider` using
+Java SPI (Service Provider Interfaces). If there is an object passed to component
+as parameter `securityConfiguration` and provider accepts it. Provider will be used
+for authentication of all requests.
+
+include::camel-spring-boot::page$undertow-starter.adoc[]
