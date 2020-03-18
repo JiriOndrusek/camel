@@ -7,13 +7,13 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.asyncApi.Aa20Object;
-import org.apache.camel.spi.AsyncApiConfigurationOwner;
+import org.apache.camel.spi.AsyncApiProvider;
 
 public class AsyncApiProcessor implements Processor {
 
-    private final AsyncApiConfigurationOwner configurationOwner;
+    private final AsyncApiProvider configurationOwner;
 
-    public AsyncApiProcessor(AsyncApiConfigurationOwner configurationOwner) {
+    public AsyncApiProcessor(AsyncApiProvider configurationOwner) {
         this.configurationOwner = configurationOwner;
     }
 

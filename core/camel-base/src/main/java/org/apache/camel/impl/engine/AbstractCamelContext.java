@@ -79,72 +79,8 @@ import org.apache.camel.VetoCamelContextStartException;
 import org.apache.camel.catalog.RuntimeCamelCatalog;
 import org.apache.camel.impl.transformer.TransformerKey;
 import org.apache.camel.impl.validator.ValidatorKey;
-import org.apache.camel.spi.AnnotationBasedProcessorFactory;
-import org.apache.camel.spi.AnnotationScanTypeConverters;
-import org.apache.camel.spi.AsyncProcessorAwaitManager;
-import org.apache.camel.spi.BeanIntrospection;
-import org.apache.camel.spi.BeanProcessorFactory;
-import org.apache.camel.spi.BeanProxyFactory;
-import org.apache.camel.spi.CamelBeanPostProcessor;
-import org.apache.camel.spi.CamelContextNameStrategy;
-import org.apache.camel.spi.CamelContextTracker;
-import org.apache.camel.spi.ClassResolver;
-import org.apache.camel.spi.ComponentResolver;
-import org.apache.camel.spi.ConfigurerResolver;
-import org.apache.camel.spi.DataFormat;
-import org.apache.camel.spi.DataFormatResolver;
-import org.apache.camel.spi.DataType;
-import org.apache.camel.spi.Debugger;
-import org.apache.camel.spi.DeferServiceFactory;
-import org.apache.camel.spi.EndpointRegistry;
-import org.apache.camel.spi.EndpointStrategy;
-import org.apache.camel.spi.EventNotifier;
-import org.apache.camel.spi.ExecutorServiceManager;
-import org.apache.camel.spi.FactoryFinder;
-import org.apache.camel.spi.FactoryFinderResolver;
-import org.apache.camel.spi.HeadersMapFactory;
-import org.apache.camel.spi.InflightRepository;
-import org.apache.camel.spi.Injector;
-import org.apache.camel.spi.InterceptSendToEndpoint;
-import org.apache.camel.spi.InterceptStrategy;
-import org.apache.camel.spi.Language;
-import org.apache.camel.spi.LanguageResolver;
-import org.apache.camel.spi.LifecycleStrategy;
-import org.apache.camel.spi.LogListener;
-import org.apache.camel.spi.ManagementMBeanAssembler;
-import org.apache.camel.spi.ManagementNameStrategy;
-import org.apache.camel.spi.ManagementStrategy;
-import org.apache.camel.spi.ManagementStrategyFactory;
-import org.apache.camel.spi.MessageHistoryFactory;
-import org.apache.camel.spi.ModelJAXBContextFactory;
-import org.apache.camel.spi.ModelToXMLDumper;
-import org.apache.camel.spi.NodeIdFactory;
-import org.apache.camel.spi.PackageScanClassResolver;
-import org.apache.camel.spi.PackageScanResourceResolver;
-import org.apache.camel.spi.ProcessorFactory;
-import org.apache.camel.spi.PropertiesComponent;
-import org.apache.camel.spi.ReactiveExecutor;
-import org.apache.camel.spi.Registry;
-import org.apache.camel.spi.ReifierStrategy;
-import org.apache.camel.spi.RestConfiguration;
-import org.apache.camel.spi.RestRegistry;
-import org.apache.camel.spi.RestRegistryFactory;
-import org.apache.camel.spi.RouteController;
+import org.apache.camel.spi.*;
 import org.apache.camel.spi.RouteError.Phase;
-import org.apache.camel.spi.RoutePolicyFactory;
-import org.apache.camel.spi.RouteStartupOrder;
-import org.apache.camel.spi.RuntimeEndpointRegistry;
-import org.apache.camel.spi.ShutdownStrategy;
-import org.apache.camel.spi.StreamCachingStrategy;
-import org.apache.camel.spi.Tracer;
-import org.apache.camel.spi.Transformer;
-import org.apache.camel.spi.TransformerRegistry;
-import org.apache.camel.spi.TypeConverterRegistry;
-import org.apache.camel.spi.UnitOfWorkFactory;
-import org.apache.camel.spi.UuidGenerator;
-import org.apache.camel.spi.Validator;
-import org.apache.camel.spi.ValidatorRegistry;
-import org.apache.camel.spi.XMLRoutesDefinitionLoader;
 import org.apache.camel.support.CamelContextHelper;
 import org.apache.camel.support.EndpointHelper;
 import org.apache.camel.support.EventHelper;
@@ -194,6 +130,7 @@ public abstract class AbstractCamelContext extends ServiceSupport implements Ext
     private final Map<String, Language> languages = new ConcurrentHashMap<>();
     private final List<LifecycleStrategy> lifecycleStrategies = new CopyOnWriteArrayList<>();
     private Map<String, RestConfiguration> restConfigurations = new ConcurrentHashMap<>();
+    private AsyncApiConfiguration asyncApiConfiguration;
     private List<InterceptStrategy> interceptStrategies = new ArrayList<>();
     private List<RoutePolicyFactory> routePolicyFactories = new ArrayList<>();
     private Set<LogListener> logListeners = new LinkedHashSet<>();
@@ -1994,6 +1931,14 @@ public abstract class AbstractCamelContext extends ServiceSupport implements Ext
     @Override
     public Collection<RestConfiguration> getRestConfigurations() {
         return restConfigurations.values();
+    }
+
+    public AsyncApiConfiguration getAsyncApiConfiguration() {
+        return asyncApiConfiguration;
+    }
+
+    public void setAsyncApiConfiguration(AsyncApiConfiguration asyncApiConfiguration) {
+        this.asyncApiConfiguration = asyncApiConfiguration;
     }
 
     @Override

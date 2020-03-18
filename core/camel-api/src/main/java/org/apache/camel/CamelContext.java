@@ -18,36 +18,7 @@ package org.apache.camel;
 
 import java.util.*;
 
-import org.apache.camel.spi.CamelContextNameStrategy;
-import org.apache.camel.spi.ClassResolver;
-import org.apache.camel.spi.DataFormat;
-import org.apache.camel.spi.DataType;
-import org.apache.camel.spi.Debugger;
-import org.apache.camel.spi.EndpointRegistry;
-import org.apache.camel.spi.ExecutorServiceManager;
-import org.apache.camel.spi.InflightRepository;
-import org.apache.camel.spi.Injector;
-import org.apache.camel.spi.Language;
-import org.apache.camel.spi.LifecycleStrategy;
-import org.apache.camel.spi.ManagementNameStrategy;
-import org.apache.camel.spi.ManagementStrategy;
-import org.apache.camel.spi.MessageHistoryFactory;
-import org.apache.camel.spi.PropertiesComponent;
-import org.apache.camel.spi.Registry;
-import org.apache.camel.spi.RestConfiguration;
-import org.apache.camel.spi.RestRegistry;
-import org.apache.camel.spi.RouteController;
-import org.apache.camel.spi.RoutePolicyFactory;
-import org.apache.camel.spi.RuntimeEndpointRegistry;
-import org.apache.camel.spi.ShutdownStrategy;
-import org.apache.camel.spi.StreamCachingStrategy;
-import org.apache.camel.spi.Tracer;
-import org.apache.camel.spi.Transformer;
-import org.apache.camel.spi.TransformerRegistry;
-import org.apache.camel.spi.TypeConverterRegistry;
-import org.apache.camel.spi.UuidGenerator;
-import org.apache.camel.spi.Validator;
-import org.apache.camel.spi.ValidatorRegistry;
+import org.apache.camel.spi.*;
 import org.apache.camel.support.jsse.SSLContextParameters;
 
 /**
@@ -640,6 +611,16 @@ public interface CamelContext extends StatefulService, RuntimeConfiguration {
      * @param restConfiguration the REST configuration
      */
     void setRestConfiguration(RestConfiguration restConfiguration);
+
+    /**
+     * todo
+     */
+    AsyncApiConfiguration getAsyncApiConfiguration();
+
+    /**
+     * todo
+     */
+    void setAsyncApiConfiguration(AsyncApiConfiguration asyncApiConfiguration);
 
     /**
      * Gets the default REST configuration

@@ -23,13 +23,13 @@ import javax.jms.ConnectionFactory;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
-import org.apache.camel.asyncApi.Aa20Message;
 import org.apache.camel.asyncApi.Aa20Object;
+import org.apache.camel.asyncapi.model.Aa20ObjectImpl;
 import org.apache.camel.component.jms.JmsComponent;
 import org.apache.camel.component.jms.JmsConfiguration;
 import org.apache.camel.component.jms.JmsEndpoint;
 import org.apache.camel.spi.AsyncApiConfiguration;
-import org.apache.camel.spi.AsyncApiConfigurationOwner;
+import org.apache.camel.spi.AsyncApiProvider;
 import org.apache.camel.spi.annotations.Component;
 import org.apache.camel.support.component.PropertyConfigurerSupport;
 import org.apache.qpid.jms.JmsConnectionFactory;
@@ -38,7 +38,7 @@ import org.apache.qpid.jms.JmsConnectionFactory;
  * Messaging with AMQP protocol using Apache QPid Client.
  */
 @Component("amqp")
-public class AMQPComponent extends JmsComponent implements AsyncApiConfigurationOwner {
+public class AMQPComponent extends JmsComponent implements AsyncApiProvider {
 
     // Constructors
 
@@ -132,43 +132,37 @@ public class AMQPComponent extends JmsComponent implements AsyncApiConfiguration
 
     @Override
     public AsyncApiConfiguration getAsyncApiConfiguration() {
-        AsyncApiConfiguration conf =  new AsyncApiConfiguration();
-        conf.setPort(8081);
-        return conf;
+//         AsyncApiConfiguration conf =  new AsyncApiConfiguration();
+//         conf.setPort(8081);
+//         return conf;
+return null;
     }
 
     @Override
     public Aa20Object createAsyncAPIDefinition() {
 
-        Aa20Object object = new Aa20Object("2.0.0");
-        object.createInfo("test title", "1.2.3")
-                .setTermsOfService("https://www.test.org/tos")
-                .createContact()
-                    .setName("Test Name")
-                    .setUrl("https://www.test.com/testurl")
-                    .setEmail("test@test.com");
-
-        object.createChannels("hello")
-                .createPublish()
-                    .createMessage()
-                        .addPayload("type", "string")
-                        .addPayload("pattern", "^hello .+$");
-        object.createComponents();
-        object.getComponents().createMessage("testMessage")
-                .addPayload("type", "string")
-                .addPayload("pattern", "test");
-        object.getComponents().createMessageAsReference("testMessageAsReference", "something");
-
-        object.getComponents().createSecuritySchemaUserPassword("userPassword")
-                .setDescription("userPassword Description");
-
-        object.getComponents().createSecuritySchemaApiKey("apiKey", "user")
-                .setDescription("apiKey Description, in user");
+        Aa20Object model = Aa20ObjectImpl.newBuilder()
+                .withAsyncApi("2.0.0")
+                .addInfo(info -> info
+                        .withTitle("Streetlights API")
+                        .withDescription("The Smartylighting Streetlights API allows you to remotely manage the city lights." +
+                                "" +
+                                "### Check out its awesome features:\n" +
+                                "\n" +
+                                "    * Turn a specific streetlight on/off \uD83C\uDF03\n" +
+                                "    * Dim a specific streetlight \uD83D\uDE0E\n" +
+                                "    * Receive real-time information about environmental lighting conditions \uD83D\uDCC8")
+                        .withVersion("1.0.0")
+                        .addLicense(license -> license
+                                .withName("Apache 2.0")
+                                .withUrl("https://www.apache.org/licenses/LICENSE-2.0")
+                        )
+                ).done();
 
 
 
 //object.getComponents().getMessages().get("testMessage").asObject(Aa20Message.class).getPayload();
 //object.getComponents().getMessages().get("testMessage").asReference().get$ref();
-        return object;
+        return model;
     }
 }

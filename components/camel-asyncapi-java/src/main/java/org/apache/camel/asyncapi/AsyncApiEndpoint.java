@@ -24,7 +24,6 @@ import org.apache.camel.util.ObjectHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.text.html.Option;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -100,13 +99,18 @@ public class AsyncApiEndpoint extends DefaultEndpoint {
 
     @Override
     public Producer createProducer() throws Exception {
-        Optional<FoundComponent> asyncApiConfigurationOwner = findComponent(getAsyncApiComponent(), AsyncApiConfigurationOwner.class);
+        Optional<FoundComponent> asyncApiConfigurationOwner = findComponent(getAsyncApiComponent(), AsyncApiProvider.class);
 
         if(!asyncApiConfigurationOwner.isPresent()) {
             throw new IllegalStateException("Cannot find AsyncApiConfigurationOwner");
         }
-        AsyncApiConfiguration config = ((AsyncApiConfigurationOwner)asyncApiConfigurationOwner.get().getFactory()).getAsyncApiConfiguration();
-
+        AsyncApiConfiguration config = ((AsyncApiProvider)asyncApiConfigurationOwner.get().getFactory()).getAsyncApiConfiguration();
+        if(config == null) {
+            config = getCamelContext().getAsyncApiConfiguration();
+        }
+        if(config == null) {
+            throw new IllegalArgumentException("todo no config present");
+        }
 
             // if no explicit port/host configured, then use port from rest configuration
             String host = "";
@@ -151,13 +155,13 @@ public class AsyncApiEndpoint extends DefaultEndpoint {
         //todo
             boolean contextIdListing = false;
 
-            Processor processor = new AsyncApiProcessor((AsyncApiConfigurationOwner)asyncApiConfigurationOwner.get().getFactory());
+            Processor processor = new AsyncApiProcessor((AsyncApiProvider)asyncApiConfigurationOwner.get().getFactory());
             return new AsyncApiProducer(this, processor);
     }
 
     @Override
     public Consumer createConsumer(Processor processor) throws Exception {
-        Optional<FoundComponent> asyncApiConfigurationOwner = findComponent(getAsyncApiComponent(), AsyncApiConfigurationOwner.class);
+        Optional<FoundComponent> asyncApiConfigurationOwner = findComponent(getAsyncApiComponent(), AsyncApiProvider.class);
         Optional<FoundComponent> asyncApiConsumerFactory= findComponent(getConsumerComponentName(), AsyncApiConsumerFactory.class);
 
         if(!asyncApiConsumerFactory.isPresent()) {
@@ -172,8 +176,14 @@ public class AsyncApiEndpoint extends DefaultEndpoint {
             String host = "";
             int port = 80;
 
-            AsyncApiConfigurationOwner owner = (AsyncApiConfigurationOwner)asyncApiConfigurationOwner.get().getFactory();
+            AsyncApiProvider owner = (AsyncApiProvider)asyncApiConfigurationOwner.get().getFactory();
             AsyncApiConfiguration config = owner.getAsyncApiConfiguration();
+            if(config == null) {
+                config = getCamelContext().getAsyncApiConfiguration();
+            }
+            if(config == null) {
+                throw new IllegalArgumentException("todo no config present");
+            }
             if (config.getScheme() != null) {
                 scheme = config.getScheme();
             }

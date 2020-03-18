@@ -41,6 +41,7 @@ import org.apache.camel.model.OnCompletionDefinition;
 import org.apache.camel.model.OnExceptionDefinition;
 import org.apache.camel.model.RouteDefinition;
 import org.apache.camel.model.RoutesDefinition;
+import org.apache.camel.model.rest.AsyncApiConfigurationDefinition;
 import org.apache.camel.model.rest.RestConfigurationDefinition;
 import org.apache.camel.model.rest.RestDefinition;
 import org.apache.camel.model.rest.RestsDefinition;
@@ -48,11 +49,7 @@ import org.apache.camel.model.transformer.TransformerDefinition;
 import org.apache.camel.model.validator.ValidatorDefinition;
 import org.apache.camel.reifier.transformer.TransformerReifier;
 import org.apache.camel.reifier.validator.ValidatorReifier;
-import org.apache.camel.spi.DataType;
-import org.apache.camel.spi.PropertiesComponent;
-import org.apache.camel.spi.RestConfiguration;
-import org.apache.camel.spi.Transformer;
-import org.apache.camel.spi.Validator;
+import org.apache.camel.spi.*;
 import org.apache.camel.util.ObjectHelper;
 import org.apache.camel.util.StringHelper;
 import org.apache.camel.util.function.ThrowingConsumer;
@@ -68,6 +65,7 @@ public abstract class RouteBuilder extends BuilderSupport implements RoutesBuild
     private AtomicBoolean initialized = new AtomicBoolean(false);
     private RestsDefinition restCollection = new RestsDefinition();
     private Map<String, RestConfigurationDefinition> restConfigurations;
+    private AsyncApiConfigurationDefinition asyncApiConfiguration;
     private List<TransformerBuilder> transformerBuilders = new ArrayList<>();
     private List<ValidatorBuilder> validatorBuilders = new ArrayList<>();
     private RoutesDefinition routeCollection = new RoutesDefinition();
@@ -181,6 +179,18 @@ public abstract class RouteBuilder extends BuilderSupport implements RoutesBuild
             restConfigurations.put(component, restConfiguration);
         }
         return restConfiguration;
+    }
+
+    /**
+     * Configures the REST service for the given component
+     *
+     * @return the builder
+     */
+    public AsyncApiConfigurationDefinition asyncApiConfiguration() {
+        if (this.asyncApiConfiguration == null) {
+            this.asyncApiConfiguration = new AsyncApiConfigurationDefinition();
+        }
+        return asyncApiConfiguration;
     }
 
     /**
@@ -432,6 +442,7 @@ public abstract class RouteBuilder extends BuilderSupport implements RoutesBuild
         // but populate rests before routes, as we want to turn rests into
         // routes
         populateRests();
+        populateAsyncApis();
         populateTransformers();
         populateValidators();
         populateRoutes();
@@ -569,6 +580,41 @@ public abstract class RouteBuilder extends BuilderSupport implements RoutesBuild
         getRestCollection().getRests().forEach(rest -> rest.asRouteDefinition(getContext()).forEach(route -> getRouteCollection().route(route)));
     }
 
+    protected void populateAsyncApis() throws Exception {
+        CamelContext camelContext = getContext();
+        if (camelContext == null) {
+            throw new IllegalArgumentException("CamelContext has not been injected!");
+        }
+
+        // convert rests api-doc into routes so they are routes for runtime
+        if(getAsyncApiConfiguration() != null) {
+        AsyncApiConfiguration config = getAsyncApiConfiguration().asAsyncApiConfiguration(camelContext);
+        camelContext.setAsyncApiConfiguration(config);
+            if (config.getApiContextPath() != null) {
+                // avoid adding rest-api multiple times, in case multiple
+                // RouteBuilder classes is added
+                // to the CamelContext, as we only want to setup rest-api once
+                // so we check all existing routes if they have rest-api route
+                // already added
+                boolean hasRestApi = false;
+                for (RouteDefinition route : camelContext.getExtension(Model.class).getRouteDefinitions()) {
+                    FromDefinition from = route.getInput();
+                    if (from.getEndpointUri() != null && from.getEndpointUri().startsWith("async-api:")) {
+                        hasRestApi = true;
+                    }
+                }
+                if (!hasRestApi) {
+                    RouteDefinition route = AsyncApiConfigurationDefinition.asRouteApiDefinition(camelContext, config);
+                    log.debug("Adding routeId: {} as rest-api route", route.getId());
+                    getRouteCollection().route(route);
+                }
+            }
+        }
+//        // add rest as routes and have them prepared as well via
+//        // routeCollection.route method
+//        getRestCollection().getRests().forEach(rest -> rest.asRouteDefinition(getContext()).forEach(route -> getRouteCollection().route(route)));
+    }
+
     protected void populateTransformers() {
         CamelContext camelContext = getContext();
         if (camelContext == null) {
@@ -615,6 +661,10 @@ public abstract class RouteBuilder extends BuilderSupport implements RoutesBuild
 
     public Map<String, RestConfigurationDefinition> getRestConfigurations() {
         return restConfigurations;
+    }
+
+    public AsyncApiConfigurationDefinition getAsyncApiConfiguration() {
+        return asyncApiConfiguration;
     }
 
     public void setRestCollection(RestsDefinition restCollection) {

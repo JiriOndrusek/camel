@@ -21,7 +21,7 @@ import org.apache.camel.asyncApi.Aa20Object;
 /**
  * todo
  */
-public interface AsyncApiConfigurationOwner  {
+public interface AsyncApiProvider {
 
     AsyncApiConfiguration getAsyncApiConfiguration();
 
