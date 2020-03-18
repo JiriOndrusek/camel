@@ -23,13 +23,14 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 /**
- * SPI interface. Camel-undertow component will locate all available providers and will use first of then who
- * returns true from method acceptConfiguration.
+ * SPI interface. Camel-undertow component will locate all available providers and will use first of then which
+ * returns true in method acceptConfiguration.
  *
- * Instance of that provider is initialized by previous call of acceptConfiguration and then will be used to authenticate requests.
+ * To implement this interface you have to advertise SPI class of type UndertowSecurityProvider.
+ *
+ * Instance of that provider is initialized by call of acceptConfiguration and then will be used to authenticate requests.
  */
 public interface UndertowSecurityProvider {
-
 
     /**
      * Provider can add properties into Camel's exchange. Method is called right after creation of Camel's exchange.

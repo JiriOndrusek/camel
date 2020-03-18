@@ -120,6 +120,7 @@ public class UndertowConsumer extends DefaultConsumer implements HttpHandler, Su
     @Override
     public void handleRequest(HttpServerExchange httpExchange) throws Exception {
         if (getEndpoint().getSecurityProvider() != null) {
+            //security provider decides, whether endpoint is accessible
             boolean authenticated = getEndpoint().getSecurityProvider().authenticate(httpExchange, this);
             if(!authenticated) {
                 LOG.debug("Access to endpoint {} is forbidden.", getEndpoint().getEndpointUri());

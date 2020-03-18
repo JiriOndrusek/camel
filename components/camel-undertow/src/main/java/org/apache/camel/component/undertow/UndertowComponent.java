@@ -31,7 +31,6 @@ import org.apache.camel.Processor;
 import org.apache.camel.Producer;
 import org.apache.camel.SSLContextParametersAware;
 import org.apache.camel.component.extension.ComponentVerifierExtension;
-import org.apache.camel.component.undertow.spi.UndertowSecurityProvider;
 import org.apache.camel.spi.Metadata;
 import org.apache.camel.spi.RestApiConsumerFactory;
 import org.apache.camel.spi.RestConfiguration;
@@ -70,7 +69,7 @@ public class UndertowComponent extends DefaultComponent implements RestConsumerF
     @Metadata(label = "consumer", defaultValue = "false")
     private boolean muteException;
     @Metadata(label = "security")
-    private Object securityConfig;
+    private Object securityConfiguration;
     @Metadata(label = "security")
     private List<String> allowedRoles;
 
@@ -409,15 +408,16 @@ public class UndertowComponent extends DefaultComponent implements RestConsumerF
         return handlers;
     }
 
-    public Object getSecurityConfig() {
-        return securityConfig;
+    public Object getSecurityConfiguration() {
+        return securityConfiguration;
     }
 
     /**
-     * Security config for possible implementation of UndertowSecurityProvider
+     * Configuration used by UndertowSecurityProvider. Security configuration object for use from UndertowSecurityProvider.
+     * Configuration is UndertowSecurityProvider specific. Each provider decides, whether it accepts configuration.
      */
-    public void setSecurityConfig(Object securityConfig) {
-        this.securityConfig = securityConfig;
+    public void setSecurityConfiguration(Object securityConfiguration) {
+        this.securityConfiguration = securityConfiguration;
     }
 
     public List<String> getAllowedRoles() {
@@ -425,7 +425,7 @@ public class UndertowComponent extends DefaultComponent implements RestConsumerF
     }
 
     /**
-     * List of roles for security reasons.
+     * Configuration used by UndertowSecurityProvider. List of roles which has allowed access to endpoint.
      */
     public void setAllowedRoles(List<String> allowedRoles) {
         this.allowedRoles = allowedRoles;

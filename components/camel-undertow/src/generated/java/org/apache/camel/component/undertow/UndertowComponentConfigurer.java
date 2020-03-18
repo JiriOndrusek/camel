@@ -30,7 +30,7 @@ public class UndertowComponentConfigurer extends PropertyConfigurerSupport imple
         case "allowedroles":
         case "allowedRoles": target.setAllowedRoles(property(camelContext, java.util.List.class, value)); return true;
         case "securityconfig":
-        case "securityConfig": target.setSecurityConfig(property(camelContext, java.lang.Object.class, value)); return true;
+        case "securityConfig": target.setSecurityConfiguration(property(camelContext, java.lang.Object.class, value)); return true;
         case "sslcontextparameters":
         case "sslContextParameters": target.setSslContextParameters(property(camelContext, org.apache.camel.support.jsse.SSLContextParameters.class, value)); return true;
         case "useglobalsslcontextparameters":

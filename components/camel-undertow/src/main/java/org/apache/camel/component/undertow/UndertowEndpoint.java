@@ -179,6 +179,8 @@ public class UndertowEndpoint extends DefaultEndpoint implements AsyncEndpoint, 
 
     public Exchange createExchange(HttpServerExchange httpExchange) throws Exception {
         Exchange exchange = createExchange(ExchangePattern.InOut);
+
+        //securityProvider could add its own parameter into result exchange
         if(getSecurityProvider() != null) {
             getSecurityProvider().addProperty((key, value) -> exchange.getProperties().put(key, value), httpExchange);
 
@@ -530,6 +532,7 @@ public class UndertowEndpoint extends DefaultEndpoint implements AsyncEndpoint, 
             List<String> providers = new LinkedList();
             while (iter.hasNext()) {
                 UndertowSecurityProvider security =  iter.next();
+                //only securityProvider, who accepts security configuration, could be used
                 if (security.acceptConfiguration(getSecurityConfig(), getAllowedRoles(), getEndpointUri())) {
                     this.securityProvider = security;
                     LOG.info("Security provider found {}", securityProvider.getClass().getName());
