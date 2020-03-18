@@ -16,6 +16,7 @@
  */
 package org.apache.camel.builder.endpoint.dsl;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Generated;
@@ -44,17 +45,6 @@ public interface ElytronEndpointBuilderFactory {
                 EndpointConsumerBuilder {
         default AdvancedElytronEndpointConsumerBuilder advanced() {
             return (AdvancedElytronEndpointConsumerBuilder) this;
-        }
-        /**
-         * Comma separated list of allowed roles.
-         * 
-         * The option is a: <code>java.lang.String</code> type.
-         * 
-         * Group: common
-         */
-        default ElytronEndpointConsumerBuilder allowedRoles(String allowedRoles) {
-            doSetProperty("allowedRoles", allowedRoles);
-            return this;
         }
         /**
          * For HTTP endpoint: if true, text and binary messages will be wrapped
@@ -252,6 +242,73 @@ public interface ElytronEndpointBuilderFactory {
         default ElytronEndpointConsumerBuilder optionsEnabled(
                 String optionsEnabled) {
             doSetProperty("optionsEnabled", optionsEnabled);
+            return this;
+        }
+        /**
+         * List of roles used by security provider to restrict access to
+         * endpoint.
+         * 
+         * The option is a: <code>java.util.List&lt;java.lang.String&gt;</code>
+         * type.
+         * 
+         * Group: security
+         */
+        default ElytronEndpointConsumerBuilder allowedRoles(
+                List<String> allowedRoles) {
+            doSetProperty("allowedRoles", allowedRoles);
+            return this;
+        }
+        /**
+         * List of roles used by security provider to restrict access to
+         * endpoint.
+         * 
+         * The option will be converted to a
+         * <code>java.util.List&lt;java.lang.String&gt;</code> type.
+         * 
+         * Group: security
+         */
+        default ElytronEndpointConsumerBuilder allowedRoles(String allowedRoles) {
+            doSetProperty("allowedRoles", allowedRoles);
+            return this;
+        }
+        /**
+         * List of allowed roles in String format.
+         * 
+         * The option is a: <code>java.lang.String</code> type.
+         * 
+         * Group: security
+         */
+        default ElytronEndpointConsumerBuilder allowedRolesString(
+                String allowedRolesString) {
+            doSetProperty("allowedRolesString", allowedRolesString);
+            return this;
+        }
+        /**
+         * Object which is passed to UndertowSecurityProvider. Only of
+         * securityConfiguration is accepted by security provider the security
+         * provider will be used.
+         * 
+         * The option is a: <code>java.lang.Object</code> type.
+         * 
+         * Group: security
+         */
+        default ElytronEndpointConsumerBuilder securityConfiguration(
+                Object securityConfiguration) {
+            doSetProperty("securityConfiguration", securityConfiguration);
+            return this;
+        }
+        /**
+         * Object which is passed to UndertowSecurityProvider. Only of
+         * securityConfiguration is accepted by security provider the security
+         * provider will be used.
+         * 
+         * The option will be converted to a <code>java.lang.Object</code> type.
+         * 
+         * Group: security
+         */
+        default ElytronEndpointConsumerBuilder securityConfiguration(
+                String securityConfiguration) {
+            doSetProperty("securityConfiguration", securityConfiguration);
             return this;
         }
         /**
@@ -569,17 +626,6 @@ public interface ElytronEndpointBuilderFactory {
                 EndpointProducerBuilder {
         default AdvancedElytronEndpointProducerBuilder advanced() {
             return (AdvancedElytronEndpointProducerBuilder) this;
-        }
-        /**
-         * Comma separated list of allowed roles.
-         * 
-         * The option is a: <code>java.lang.String</code> type.
-         * 
-         * Group: common
-         */
-        default ElytronEndpointProducerBuilder allowedRoles(String allowedRoles) {
-            doSetProperty("allowedRoles", allowedRoles);
-            return this;
         }
         /**
          * For HTTP endpoint: if true, text and binary messages will be wrapped
@@ -903,6 +949,73 @@ public interface ElytronEndpointBuilderFactory {
             return this;
         }
         /**
+         * List of roles used by security provider to restrict access to
+         * endpoint.
+         * 
+         * The option is a: <code>java.util.List&lt;java.lang.String&gt;</code>
+         * type.
+         * 
+         * Group: security
+         */
+        default ElytronEndpointProducerBuilder allowedRoles(
+                List<String> allowedRoles) {
+            doSetProperty("allowedRoles", allowedRoles);
+            return this;
+        }
+        /**
+         * List of roles used by security provider to restrict access to
+         * endpoint.
+         * 
+         * The option will be converted to a
+         * <code>java.util.List&lt;java.lang.String&gt;</code> type.
+         * 
+         * Group: security
+         */
+        default ElytronEndpointProducerBuilder allowedRoles(String allowedRoles) {
+            doSetProperty("allowedRoles", allowedRoles);
+            return this;
+        }
+        /**
+         * List of allowed roles in String format.
+         * 
+         * The option is a: <code>java.lang.String</code> type.
+         * 
+         * Group: security
+         */
+        default ElytronEndpointProducerBuilder allowedRolesString(
+                String allowedRolesString) {
+            doSetProperty("allowedRolesString", allowedRolesString);
+            return this;
+        }
+        /**
+         * Object which is passed to UndertowSecurityProvider. Only of
+         * securityConfiguration is accepted by security provider the security
+         * provider will be used.
+         * 
+         * The option is a: <code>java.lang.Object</code> type.
+         * 
+         * Group: security
+         */
+        default ElytronEndpointProducerBuilder securityConfiguration(
+                Object securityConfiguration) {
+            doSetProperty("securityConfiguration", securityConfiguration);
+            return this;
+        }
+        /**
+         * Object which is passed to UndertowSecurityProvider. Only of
+         * securityConfiguration is accepted by security provider the security
+         * provider will be used.
+         * 
+         * The option will be converted to a <code>java.lang.Object</code> type.
+         * 
+         * Group: security
+         */
+        default ElytronEndpointProducerBuilder securityConfiguration(
+                String securityConfiguration) {
+            doSetProperty("securityConfiguration", securityConfiguration);
+            return this;
+        }
+        /**
          * To configure security using SSLContextParameters.
          * 
          * The option is a:
@@ -1150,17 +1263,6 @@ public interface ElytronEndpointBuilderFactory {
             return (AdvancedElytronEndpointBuilder) this;
         }
         /**
-         * Comma separated list of allowed roles.
-         * 
-         * The option is a: <code>java.lang.String</code> type.
-         * 
-         * Group: common
-         */
-        default ElytronEndpointBuilder allowedRoles(String allowedRoles) {
-            doSetProperty("allowedRoles", allowedRoles);
-            return this;
-        }
-        /**
          * For HTTP endpoint: if true, text and binary messages will be wrapped
          * as java.io.InputStream before they are passed to an Exchange;
          * otherwise they will be passed as byte. For WebSocket endpoint: if
@@ -1194,6 +1296,72 @@ public interface ElytronEndpointBuilderFactory {
          */
         default ElytronEndpointBuilder useStreaming(String useStreaming) {
             doSetProperty("useStreaming", useStreaming);
+            return this;
+        }
+        /**
+         * List of roles used by security provider to restrict access to
+         * endpoint.
+         * 
+         * The option is a: <code>java.util.List&lt;java.lang.String&gt;</code>
+         * type.
+         * 
+         * Group: security
+         */
+        default ElytronEndpointBuilder allowedRoles(List<String> allowedRoles) {
+            doSetProperty("allowedRoles", allowedRoles);
+            return this;
+        }
+        /**
+         * List of roles used by security provider to restrict access to
+         * endpoint.
+         * 
+         * The option will be converted to a
+         * <code>java.util.List&lt;java.lang.String&gt;</code> type.
+         * 
+         * Group: security
+         */
+        default ElytronEndpointBuilder allowedRoles(String allowedRoles) {
+            doSetProperty("allowedRoles", allowedRoles);
+            return this;
+        }
+        /**
+         * List of allowed roles in String format.
+         * 
+         * The option is a: <code>java.lang.String</code> type.
+         * 
+         * Group: security
+         */
+        default ElytronEndpointBuilder allowedRolesString(
+                String allowedRolesString) {
+            doSetProperty("allowedRolesString", allowedRolesString);
+            return this;
+        }
+        /**
+         * Object which is passed to UndertowSecurityProvider. Only of
+         * securityConfiguration is accepted by security provider the security
+         * provider will be used.
+         * 
+         * The option is a: <code>java.lang.Object</code> type.
+         * 
+         * Group: security
+         */
+        default ElytronEndpointBuilder securityConfiguration(
+                Object securityConfiguration) {
+            doSetProperty("securityConfiguration", securityConfiguration);
+            return this;
+        }
+        /**
+         * Object which is passed to UndertowSecurityProvider. Only of
+         * securityConfiguration is accepted by security provider the security
+         * provider will be used.
+         * 
+         * The option will be converted to a <code>java.lang.Object</code> type.
+         * 
+         * Group: security
+         */
+        default ElytronEndpointBuilder securityConfiguration(
+                String securityConfiguration) {
+            doSetProperty("securityConfiguration", securityConfiguration);
             return this;
         }
         /**

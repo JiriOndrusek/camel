@@ -15,8 +15,8 @@ public class ElytronEndpointConfigurer extends UndertowEndpointConfigurer implem
     public boolean configure(CamelContext camelContext, Object obj, String name, Object value, boolean ignoreCase) {
         ElytronEndpoint target = (ElytronEndpoint) obj;
         switch (ignoreCase ? name.toLowerCase() : name) {
-        case "allowedroles":
-        case "allowedRoles": target.setAllowedRoles(property(camelContext, java.lang.String.class, value)); return true;
+        case "allowedrolesstring":
+        case "allowedRolesString": target.setAllowedRolesString(property(camelContext, java.lang.String.class, value)); return true;
         default: return super.configure(camelContext, obj, name, value, ignoreCase);
         }
     }

@@ -90,7 +90,7 @@ public class ElytronBearerTokenTest extends BaseElytronTest {
     protected RouteBuilder createRouteBuilder() throws Exception {
         return new RouteBuilder() {
             public void configure() {
-                from("elytron:http://localhost:{{port}}/myapp?allowedRoles=user")
+                from("elytron:http://localhost:{{port}}/myapp?allowedRolesString=user")
                         .transform(simple("Hello ${in.header.securityIdentity.principal}!"));
             }
         };

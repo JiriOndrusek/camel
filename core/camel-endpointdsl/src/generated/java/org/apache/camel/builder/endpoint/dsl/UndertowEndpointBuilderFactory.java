@@ -16,6 +16,7 @@
  */
 package org.apache.camel.builder.endpoint.dsl;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Generated;
@@ -242,6 +243,61 @@ public interface UndertowEndpointBuilderFactory {
         default UndertowEndpointConsumerBuilder optionsEnabled(
                 String optionsEnabled) {
             doSetProperty("optionsEnabled", optionsEnabled);
+            return this;
+        }
+        /**
+         * List of roles used by security provider to restrict access to
+         * endpoint.
+         * 
+         * The option is a: <code>java.util.List&lt;java.lang.String&gt;</code>
+         * type.
+         * 
+         * Group: security
+         */
+        default UndertowEndpointConsumerBuilder allowedRoles(
+                List<String> allowedRoles) {
+            doSetProperty("allowedRoles", allowedRoles);
+            return this;
+        }
+        /**
+         * List of roles used by security provider to restrict access to
+         * endpoint.
+         * 
+         * The option will be converted to a
+         * <code>java.util.List&lt;java.lang.String&gt;</code> type.
+         * 
+         * Group: security
+         */
+        default UndertowEndpointConsumerBuilder allowedRoles(String allowedRoles) {
+            doSetProperty("allowedRoles", allowedRoles);
+            return this;
+        }
+        /**
+         * Object which is passed to UndertowSecurityProvider. Only of
+         * securityConfiguration is accepted by security provider the security
+         * provider will be used.
+         * 
+         * The option is a: <code>java.lang.Object</code> type.
+         * 
+         * Group: security
+         */
+        default UndertowEndpointConsumerBuilder securityConfiguration(
+                Object securityConfiguration) {
+            doSetProperty("securityConfiguration", securityConfiguration);
+            return this;
+        }
+        /**
+         * Object which is passed to UndertowSecurityProvider. Only of
+         * securityConfiguration is accepted by security provider the security
+         * provider will be used.
+         * 
+         * The option will be converted to a <code>java.lang.Object</code> type.
+         * 
+         * Group: security
+         */
+        default UndertowEndpointConsumerBuilder securityConfiguration(
+                String securityConfiguration) {
+            doSetProperty("securityConfiguration", securityConfiguration);
             return this;
         }
         /**
@@ -883,6 +939,61 @@ public interface UndertowEndpointBuilderFactory {
             return this;
         }
         /**
+         * List of roles used by security provider to restrict access to
+         * endpoint.
+         * 
+         * The option is a: <code>java.util.List&lt;java.lang.String&gt;</code>
+         * type.
+         * 
+         * Group: security
+         */
+        default UndertowEndpointProducerBuilder allowedRoles(
+                List<String> allowedRoles) {
+            doSetProperty("allowedRoles", allowedRoles);
+            return this;
+        }
+        /**
+         * List of roles used by security provider to restrict access to
+         * endpoint.
+         * 
+         * The option will be converted to a
+         * <code>java.util.List&lt;java.lang.String&gt;</code> type.
+         * 
+         * Group: security
+         */
+        default UndertowEndpointProducerBuilder allowedRoles(String allowedRoles) {
+            doSetProperty("allowedRoles", allowedRoles);
+            return this;
+        }
+        /**
+         * Object which is passed to UndertowSecurityProvider. Only of
+         * securityConfiguration is accepted by security provider the security
+         * provider will be used.
+         * 
+         * The option is a: <code>java.lang.Object</code> type.
+         * 
+         * Group: security
+         */
+        default UndertowEndpointProducerBuilder securityConfiguration(
+                Object securityConfiguration) {
+            doSetProperty("securityConfiguration", securityConfiguration);
+            return this;
+        }
+        /**
+         * Object which is passed to UndertowSecurityProvider. Only of
+         * securityConfiguration is accepted by security provider the security
+         * provider will be used.
+         * 
+         * The option will be converted to a <code>java.lang.Object</code> type.
+         * 
+         * Group: security
+         */
+        default UndertowEndpointProducerBuilder securityConfiguration(
+                String securityConfiguration) {
+            doSetProperty("securityConfiguration", securityConfiguration);
+            return this;
+        }
+        /**
          * To configure security using SSLContextParameters.
          * 
          * The option is a:
@@ -1163,6 +1274,60 @@ public interface UndertowEndpointBuilderFactory {
          */
         default UndertowEndpointBuilder useStreaming(String useStreaming) {
             doSetProperty("useStreaming", useStreaming);
+            return this;
+        }
+        /**
+         * List of roles used by security provider to restrict access to
+         * endpoint.
+         * 
+         * The option is a: <code>java.util.List&lt;java.lang.String&gt;</code>
+         * type.
+         * 
+         * Group: security
+         */
+        default UndertowEndpointBuilder allowedRoles(List<String> allowedRoles) {
+            doSetProperty("allowedRoles", allowedRoles);
+            return this;
+        }
+        /**
+         * List of roles used by security provider to restrict access to
+         * endpoint.
+         * 
+         * The option will be converted to a
+         * <code>java.util.List&lt;java.lang.String&gt;</code> type.
+         * 
+         * Group: security
+         */
+        default UndertowEndpointBuilder allowedRoles(String allowedRoles) {
+            doSetProperty("allowedRoles", allowedRoles);
+            return this;
+        }
+        /**
+         * Object which is passed to UndertowSecurityProvider. Only of
+         * securityConfiguration is accepted by security provider the security
+         * provider will be used.
+         * 
+         * The option is a: <code>java.lang.Object</code> type.
+         * 
+         * Group: security
+         */
+        default UndertowEndpointBuilder securityConfiguration(
+                Object securityConfiguration) {
+            doSetProperty("securityConfiguration", securityConfiguration);
+            return this;
+        }
+        /**
+         * Object which is passed to UndertowSecurityProvider. Only of
+         * securityConfiguration is accepted by security provider the security
+         * provider will be used.
+         * 
+         * The option will be converted to a <code>java.lang.Object</code> type.
+         * 
+         * Group: security
+         */
+        default UndertowEndpointBuilder securityConfiguration(
+                String securityConfiguration) {
+            doSetProperty("securityConfiguration", securityConfiguration);
             return this;
         }
         /**

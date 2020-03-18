@@ -50,7 +50,7 @@ You can append query options to the URI in the following format,
 == Options
 
 // component options: START
-The Elytron component supports 11 options, which are listed below.
+The Elytron component supports 12 options, which are listed below.
 
 
 
@@ -66,6 +66,7 @@ The Elytron component supports 11 options, which are listed below.
 | *mechanismName* (advanced) | Name of the mechanism, which will be used for selection of authentication mechanism. | BEARER_TOKEN | String
 | *securityDomainBuilder* (advanced) | *Required* Definition of Builder, which will be used for creation of security domain. |  | Builder
 | *undertowHttpBinding* (advanced) | To use a custom HttpBinding to control the mapping between Camel message and HttpClient. |  | UndertowHttpBinding
+| *keycloakEnabled* (security) | If enabled and Keycloak security options are defined, endpoints will be secured by Keycloak. | false | boolean
 | *sslContextParameters* (security) | To configure security using SSLContextParameters |  | SSLContextParameters
 | *useGlobalSslContextParameters* (security) | Enable usage of global SSL context parameters. | false | boolean
 |===
