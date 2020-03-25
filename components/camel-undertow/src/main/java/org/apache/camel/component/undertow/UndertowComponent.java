@@ -20,8 +20,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -37,6 +41,7 @@ import org.apache.camel.Producer;
 import org.apache.camel.SSLContextParametersAware;
 import org.apache.camel.VerifiableComponent;
 import org.apache.camel.component.extension.ComponentVerifierExtension;
+import org.apache.camel.component.undertow.spi.UndertowSecurityProvider;
 import org.apache.camel.impl.DefaultComponent;
 import org.apache.camel.spi.Metadata;
 import org.apache.camel.spi.RestApiConsumerFactory;
@@ -77,6 +82,8 @@ public class UndertowComponent extends DefaultComponent implements RestConsumerF
     private Object securityConfiguration;
     @Metadata(label = "security")
     private String allowedRoles;
+    @Metadata(label = "security")
+    private UndertowSecurityProvider securityProvider;
 
     public UndertowComponent() {
         this(null);
@@ -150,6 +157,29 @@ public class UndertowComponent extends DefaultComponent implements RestConsumerF
                                       RestConfiguration configuration, Map<String, Object> parameters) throws Exception {
         // reuse the createConsumer method we already have. The api need to use GET and match on uri prefix
         return doCreateConsumer(camelContext, processor, "GET", contextPath, null, null, null, configuration, parameters, true);
+    }
+
+    private void initSecurityProvider() throws Exception {
+        Object securityConfiguration = getSecurityConfiguration();
+        if (securityConfiguration != null) {
+            ServiceLoader<UndertowSecurityProvider> securityProvider = ServiceLoader.load(UndertowSecurityProvider.class);
+
+            Iterator<UndertowSecurityProvider> iter = securityProvider.iterator();
+            List<String> providers = new LinkedList();
+            while (iter.hasNext()) {
+                UndertowSecurityProvider security =  iter.next();
+                //only securityProvider, who accepts security configuration, could be used
+                if (security.acceptConfiguration(securityConfiguration, null)) {
+                    this.securityProvider = security;
+                    LOG.info("Security provider found {}", securityProvider.getClass().getName());
+                    break;
+                }
+                providers.add(security.getClass().getName());
+            }
+            if (this.securityProvider == null) {
+                LOG.info("Security provider for configuration {} not found {}", securityConfiguration, providers);
+            }
+        }
     }
 
     Consumer doCreateConsumer(CamelContext camelContext, Processor processor, String verb, String basePath, String uriTemplate,
@@ -325,6 +355,10 @@ public class UndertowComponent extends DefaultComponent implements RestConsumerF
     protected void doStart() throws Exception {
         super.doStart();
 
+        if (this.securityProvider == null) {
+            initSecurityProvider();
+        }
+
         RestConfiguration config = getCamelContext().getRestConfiguration(getComponentName(), true);
         // configure additional options on undertow configuration
         if (config.getComponentProperties() != null && !config.getComponentProperties().isEmpty()) {
@@ -339,7 +373,7 @@ public class UndertowComponent extends DefaultComponent implements RestConsumerF
 
         host.validateEndpointURI(uri);
         handlers.add(registrationInfo);
-        return host.registerHandler(registrationInfo, handler, get);
+        return host.registerHandler(registrationInfo, handler, getSecurityProvider());
     }
 
     public void unregisterEndpoint(HttpHandlerRegistrationInfo registrationInfo, SSLContext sslContext) {
@@ -347,7 +381,7 @@ public class UndertowComponent extends DefaultComponent implements RestConsumerF
         final UndertowHostKey key = new UndertowHostKey(uri.getHost(), uri.getPort(), sslContext);
         final UndertowHost host = undertowRegistry.get(key);
         handlers.remove(registrationInfo);
-        host.unregisterHandler(registrationInfo);
+        host.unregisterHandler(registrationInfo, getSecurityProvider());
     }
 
     protected UndertowHost createUndertowHost(UndertowHostKey key) {
@@ -434,5 +468,17 @@ public class UndertowComponent extends DefaultComponent implements RestConsumerF
      */
     public void setAllowedRoles(String allowedRoles) {
         this.allowedRoles = allowedRoles;
+    }
+
+    /**
+     * Security provider allows plug in the provider, which will be used to secure requests.
+     * SPI approach could be used too (component then finds security provider using SPI).
+     */
+    public void setSecurityProvider(UndertowSecurityProvider securityProvider) {
+        this.securityProvider = securityProvider;
+    }
+
+    public UndertowSecurityProvider getSecurityProvider() {
+        return securityProvider;
     }
 }

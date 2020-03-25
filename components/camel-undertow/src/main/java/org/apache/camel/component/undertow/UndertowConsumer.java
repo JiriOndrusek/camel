@@ -70,8 +70,11 @@ public class UndertowConsumer extends DefaultConsumer implements HttpHandler, Su
         return (UndertowEndpoint) super.getEndpoint();
     }
 
-    public List<String> getAllowedRoles() {
+    public List<String> computeAllowedRoles() {
         String allowedRolesString = getEndpoint().getAllowedRoles();
+        if (allowedRolesString == null) {
+            allowedRolesString = getEndpoint().getComponent().getAllowedRoles();
+        }
         return allowedRolesString == null ? null : Arrays.asList(allowedRolesString.split("\\s*,\\s*"));
     }
 
@@ -150,7 +153,7 @@ public class UndertowConsumer extends DefaultConsumer implements HttpHandler, Su
 
         if (getEndpoint().getSecurityProvider() != null) {
             //security provider decides, whether endpoint is accessible
-            int statusCode = getEndpoint().getSecurityProvider().authenticate(httpExchange, getAllowedRoles());
+            int statusCode = getEndpoint().getSecurityProvider().authenticate(httpExchange, computeAllowedRoles());
             if (statusCode != StatusCodes.OK) {
                 httpExchange.setStatusCode(statusCode);
                 httpExchange.endExchange();
