@@ -6313,7 +6313,7 @@
     "firstVersion": "2.19.0",
     "groupId": "org.apache.camel",
     "artifactId": "camel-tika",
-    "version": "3.1.0-SNAPSHOT"
+    "version": "3.1.0"
   },
   "TimerComponentBuilderFactory": {
     "kind": "component",

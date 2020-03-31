@@ -17,14 +17,6 @@ public class TikaEndpointConfigurer extends PropertyConfigurerSupport implements
         switch (ignoreCase ? name.toLowerCase() : name) {
         case "lazystartproducer":
         case "lazyStartProducer": target.setLazyStartProducer(property(camelContext, boolean.class, value)); return true;
-        case "tikaconfig":
-        case "tikaConfig": target.getTikaConfiguration().setTikaConfig(property(camelContext, org.apache.tika.config.TikaConfig.class, value)); return true;
-        case "tikaconfiguri":
-        case "tikaConfigUri": target.getTikaConfiguration().setTikaConfigUri(property(camelContext, java.lang.String.class, value)); return true;
-        case "tikaparseoutputencoding":
-        case "tikaParseOutputEncoding": target.getTikaConfiguration().setTikaParseOutputEncoding(property(camelContext, java.lang.String.class, value)); return true;
-        case "tikaparseoutputformat":
-        case "tikaParseOutputFormat": target.getTikaConfiguration().setTikaParseOutputFormat(property(camelContext, org.apache.camel.component.tika.TikaParseOutputFormat.class, value)); return true;
         case "basicpropertybinding":
         case "basicPropertyBinding": target.setBasicPropertyBinding(property(camelContext, boolean.class, value)); return true;
         case "synchronous": target.setSynchronous(property(camelContext, boolean.class, value)); return true;

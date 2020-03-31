@@ -179,11 +179,11 @@ public class TikaParseTest extends CamelTestSupport {
         return new RouteBuilder() {
             @Override
             public void configure() throws Exception {
-                from("direct:start").to("tika:parse").to("mock:result");
+                from("direct:start").log("body: ${body}").to("tika:parse").log("${body}").to("mock:result");
                 from("direct:start2").to("tika:parse?tikaConfigUri=src/test/resources/tika-empty.xml")
                         .to("mock:result");
                 from("direct:start3").to("tika:parse?tikaConfig=#testConfig").to("mock:result");
-                from("direct:start4").to("tika:parse?tikaParseOutputEncoding=" + StandardCharsets.UTF_16.name()).to("mock:result");
+                from("direct:start4").log("body:").to("tika:parse?tikaParseOutputEncoding=" + StandardCharsets.UTF_16.name()).to("mock:result");
             }
         };
     }
