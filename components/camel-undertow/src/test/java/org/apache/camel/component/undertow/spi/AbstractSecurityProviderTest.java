@@ -76,13 +76,13 @@ public abstract class  AbstractSecurityProviderTest extends BaseUndertowTest {
             return false;
         }
 
-        @Override
-        public HttpHandler wrapHttpHandler(HttpHandler httpHandler) throws Exception {
-            if (configuration.getWrapHttpHandler() != null) {
-                return configuration.getWrapHttpHandler().apply(httpHandler);
-            }
-            return httpHandler;
-        }
+//        @Override
+//        public HttpHandler wrapHttpHandler(HttpHandler httpHandler) throws Exception {
+//            if (configuration.getWrapHttpHandler() != null) {
+//                return configuration.getWrapHttpHandler().apply(httpHandler);
+//            }
+//            return httpHandler;
+//        }
     }
 
     public static final class MockSecurityConfiguration {

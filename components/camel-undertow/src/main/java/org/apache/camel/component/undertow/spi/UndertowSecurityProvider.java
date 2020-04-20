@@ -19,8 +19,12 @@ package org.apache.camel.component.undertow.spi;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import io.undertow.security.api.SecurityContext;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.servlet.core.DeploymentImpl;
+
+import javax.servlet.ServletContext;
 
 /**
  * SPI interface. Camel-undertow component will locate all available providers and will use first of then which
@@ -69,7 +73,7 @@ public interface UndertowSecurityProvider {
      * @param httpHandler Original httpHandler
      * @return New httpHandler (default behavior is to return the same handler)
      */
-    default HttpHandler wrapHttpHandler(HttpHandler httpHandler) throws Exception {
+    default HttpHandler wrapHttpHandler(HttpHandler httpHandler, DeploymentImpl deployment)  {
         return  httpHandler;
     }
 }

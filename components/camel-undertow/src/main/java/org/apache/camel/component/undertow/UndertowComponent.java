@@ -360,12 +360,12 @@ public class UndertowComponent extends DefaultComponent implements RestConsumerF
         handlers.add(registrationInfo);
 
 
-        HttpHandler handlerWrapped = handler;
-        if (this.securityProvider != null) {
-            handlerWrapped = this.securityProvider.wrapHttpHandler(handler);
-        }
+//        HttpHandler handlerWrapped = handler;
+//        if (this.securityProvider != null) {
+//            handlerWrapped = this.securityProvider.wrapHttpHandler(handler);
+//        }
 
-        return host.registerHandler(consumer, registrationInfo, handlerWrapped);
+        return host.registerHandler(consumer, registrationInfo, this.securityProvider == null ? (h, d) -> (h) : (h, d) -> this.securityProvider.wrapHttpHandler(h, d));
     }
 
     public void unregisterEndpoint(UndertowConsumer consumer, HttpHandlerRegistrationInfo registrationInfo, SSLContext sslContext) {
