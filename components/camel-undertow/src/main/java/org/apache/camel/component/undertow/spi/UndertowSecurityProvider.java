@@ -24,6 +24,7 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.servlet.core.DeploymentImpl;
 
+import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 
 /**
@@ -73,7 +74,12 @@ public interface UndertowSecurityProvider {
      * @param httpHandler Original httpHandler
      * @return New httpHandler (default behavior is to return the same handler)
      */
-    default HttpHandler wrapHttpHandler(HttpHandler httpHandler, DeploymentImpl deployment)  {
+    default HttpHandler wrapHttpHandler(HttpHandler httpHandler)  {
         return  httpHandler;
+    }
+
+
+    default Filter securityFilter() {
+        return null;
     }
 }

@@ -23,7 +23,9 @@ import java.util.function.Function;
 import io.undertow.server.HttpHandler;
 import io.undertow.servlet.core.DeploymentImpl;
 import org.apache.camel.component.undertow.handlers.CamelWebSocketHandler;
+import org.apache.camel.component.undertow.spi.UndertowSecurityProvider;
 
+import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 
 /**
@@ -51,7 +53,7 @@ public interface UndertowHost {
      * @return the given {@code handler} or a different {@link HttpHandler} that has been registered with the given
      *         {@link HttpHandlerRegistrationInfo} earlier.
      */
-    HttpHandler registerHandler(UndertowConsumer consumer, HttpHandlerRegistrationInfo registrationInfo, BiFunction<HttpHandler, DeploymentImpl, HttpHandler> wrap);
+    HttpHandler registerHandler(UndertowConsumer consumer, HttpHandlerRegistrationInfo registrationInfo, HttpHandler handler, UndertowSecurityProvider securityProvider);
 
     /**
      * Unregister a handler with the given {@link HttpHandlerRegistrationInfo}. Note that if

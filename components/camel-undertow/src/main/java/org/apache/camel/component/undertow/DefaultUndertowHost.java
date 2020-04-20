@@ -18,13 +18,17 @@ package org.apache.camel.component.undertow;
 
 import java.net.URI;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.UndertowOptions;
 import io.undertow.server.HandlerWrapper;
+import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.PathTemplateHandler;
 import io.undertow.server.handlers.sse.ServerSentEventConnectionCallback;
 import io.undertow.server.handlers.sse.ServerSentEventHandler;
@@ -32,14 +36,22 @@ import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.server.HttpHandler;
+import io.undertow.servlet.api.ServletContainerInitializerInfo;
 import io.undertow.servlet.core.DeploymentImpl;
+import io.undertow.servlet.util.ImmediateInstanceFactory;
 import org.apache.camel.component.undertow.handlers.CamelRootHandler;
 import org.apache.camel.component.undertow.handlers.NotFoundHandler;
 import org.apache.camel.component.undertow.handlers.RestRootHandler;
+import org.apache.camel.component.undertow.spi.UndertowSecurityProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.DispatcherType;
+import javax.servlet.Filter;
+import javax.servlet.FilterRegistration;
+import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 /**
  * The default UndertowHost which manages standalone Undertow server.
@@ -72,7 +84,7 @@ public class DefaultUndertowHost implements UndertowHost {
     }
 
     @Override
-    public synchronized HttpHandler registerHandler(UndertowConsumer consumer, HttpHandlerRegistrationInfo registrationInfo, BiFunction<HttpHandler, DeploymentImpl, HttpHandler> wrap) {
+    public synchronized HttpHandler registerHandler(UndertowConsumer consumer, HttpHandlerRegistrationInfo registrationInfo, HttpHandler handler, UndertowSecurityProvider securityProvider) {
         if (undertow == null) {
             Undertow.Builder builder = Undertow.builder();
             if (key.getSslContext() != null) {
@@ -104,29 +116,34 @@ public class DefaultUndertowHost implements UndertowHost {
                 undertow = builder.setHandler(restHandler).build();
             } else {
 
-                DeploymentInfo deployment = Servlets.deployment();
-                deployment.setDeploymentName("camel-undertow");
-                deployment.setContextPath("/");
-                deployment.setDisplayName("camel-undertow");
-                deployment.setClassLoader(getClass().getClassLoader());
+                if(securityProvider.securityFilter() != null) {
 
+                    DeploymentInfo deployment = Servlets.deployment();
+                    deployment.setDeploymentName("camel-undertow");
+                    deployment.setContextPath("/");
+                    deployment.setDisplayName("camel-undertow");
+                    deployment.setClassLoader(getClass().getClassLoader());
 
-//                deployment.addInnerHandlerChainWrapper(new HandlerWrapper() {
-//                    @Override
-//                    public HttpHandler wrap(HttpHandler handler) {
-//                        HttpHandler wrapped = wrap.apply(handler, (DeploymentImpl)manager.getDeployment());
-//                        return wrapped;
-//                    }
-//                });
+                    Initializer initializer = new Initializer(securityProvider.securityFilter());
+                    deployment.addServletContainerInitializers(new ServletContainerInitializerInfo(
+                            Initializer.class,
+                            new ImmediateInstanceFactory<ServletContainerInitializer>(initializer),
+                            Collections.emptySet()));
 
-                DeploymentManager manager = Servlets.newContainer().addDeployment(deployment);
+                    DeploymentManager manager = Servlets.newContainer().addDeployment(deployment);
 
+                    manager.deploy();
+                    try {
+                        manager.start();
+                    } catch (ServletException e) {
+                        e.printStackTrace();
+                    }
 
+                    undertow = builder.setHandler(manager.getDeployment().getHandler()).build();
+                } else {
+                    undertow = builder.setHandler(handler).build();
+                }
 
-                manager.deploy();
-
-
-                undertow = builder.setHandler(manager.getDeployment().getHandler()).build();
             }
             LOG.info("Starting Undertow server on {}://{}:{}", key.getSslContext() != null ? "https" : "http", key.getHost(), key.getPort());
 
@@ -152,7 +169,26 @@ public class DefaultUndertowHost implements UndertowHost {
             restHandler.addConsumer(consumer);
             return restHandler;
         } else {
-            return rootHandler.add(registrationInfo.getUri().getPath(), registrationInfo.getMethodRestrict(), registrationInfo.isMatchOnUriPrefix(), wrap.apply(null, null));
+            return rootHandler.add(registrationInfo.getUri().getPath(), registrationInfo.getMethodRestrict(), registrationInfo.isMatchOnUriPrefix(), handler);
+        }
+    }
+
+
+    /**
+     * todo
+     */
+    private static class Initializer implements ServletContainerInitializer {
+
+        private final Filter delegatingFilterProxy;
+
+        Initializer(Filter delegatingFilterProxy) {
+            this.delegatingFilterProxy = delegatingFilterProxy;
+        }
+
+        @Override
+        public void onStartup(Set<Class<?>> classes, ServletContext servletContext) {
+            FilterRegistration f = servletContext.addFilter("springSecurityFilterChain", delegatingFilterProxy);
+            f.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/*");;
         }
     }
 

@@ -112,7 +112,7 @@ public class ElytronSecurityProvider implements UndertowSecurityProvider {
      * Elytron hook into undertow is by creation of wrapping httpHandler.
      */
     @Override
-    public HttpHandler wrapHttpHandler(HttpHandler httpHandler) throws Exception {
+    public HttpHandler wrapHttpHandler(HttpHandler httpHandler) {
         HttpAuthenticationFactory httpAuthenticationFactory = createHttpAuthenticationFactory(securityDomain);
 
         HttpHandler rootHandler = new ElytronRunAsHandler(httpHandler);
