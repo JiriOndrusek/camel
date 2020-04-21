@@ -115,16 +115,24 @@ public class DefaultUndertowHost implements UndertowHost {
                 // use the rest handler as its a rest consumer
                 undertow = builder.setHandler(restHandler).build();
             } else {
+                UndertowSecurityProvider provider = securityProvider == null ? consumer.getEndpoint().getSecurityProvider() : securityProvider;
+                if (provider != null && provider.securityFilter() != null) {
 
-                if(securityProvider.securityFilter() != null) {
 
-                    DeploymentInfo deployment = Servlets.deployment();
-                    deployment.setDeploymentName("camel-undertow");
-                    deployment.setContextPath("/");
-                    deployment.setDisplayName("camel-undertow");
-                    deployment.setClassLoader(getClass().getClassLoader());
+                    DeploymentInfo deployment = Servlets.deployment()
+                            .setContextPath("")
+                            .setDisplayName("application")
+                            .setDeploymentName("spring-boot")
+                            .setClassLoader(getClass().getClassLoader());
 
-                    Initializer initializer = new Initializer(securityProvider.securityFilter());
+                    deployment.addInitialHandlerChainWrapper(new HandlerWrapper() {
+                        @Override
+                        public HttpHandler wrap(final HttpHandler handler) {
+                            return new CamelRootHandler(handler);
+                        }
+                    });
+
+                    Initializer initializer = new Initializer(provider.securityFilter());
                     deployment.addServletContainerInitializers(new ServletContainerInitializerInfo(
                             Initializer.class,
                             new ImmediateInstanceFactory<ServletContainerInitializer>(initializer),
@@ -133,17 +141,26 @@ public class DefaultUndertowHost implements UndertowHost {
                     DeploymentManager manager = Servlets.newContainer().addDeployment(deployment);
 
                     manager.deploy();
+                    PathHandler path = null;
                     try {
-                        manager.start();
+                        HttpHandler h = manager.start();
+                        path = Handlers.path(Handlers.redirect("/"))
+                                .addPrefixPath("/",h);
+                        System.out.println("");
                     } catch (ServletException e) {
                         e.printStackTrace();
                     }
 
-                    undertow = builder.setHandler(manager.getDeployment().getHandler()).build();
-                } else {
-                    undertow = builder.setHandler(handler).build();
-                }
 
+
+//                    consumer.setAuthenticationHandler(path);
+
+                    undertow = builder.setHandler(path).build();
+
+                } else {
+
+                    undertow = builder.setHandler(rootHandler).build();
+                }
             }
             LOG.info("Starting Undertow server on {}://{}:{}", key.getSslContext() != null ? "https" : "http", key.getHost(), key.getPort());
 
