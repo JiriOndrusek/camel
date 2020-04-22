@@ -72,4 +72,11 @@ public interface UndertowSecurityProvider {
     default HttpHandler wrapHttpHandler(HttpHandler httpHandler) throws Exception {
         return  httpHandler;
     }
+
+    /**
+     * Security provider may need for its functionality also working servlet context. (e.g. to run ServletFilters)
+     */
+    default boolean requireServletContext() {
+        return false;
+    }
 }

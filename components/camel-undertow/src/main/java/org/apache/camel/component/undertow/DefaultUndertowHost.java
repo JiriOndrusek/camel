@@ -20,12 +20,18 @@ import java.net.URI;
 
 import io.undertow.Undertow;
 import io.undertow.UndertowOptions;
+import io.undertow.servlet.Servlets;
+import io.undertow.servlet.api.DeploymentInfo;
+import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.server.HttpHandler;
 import org.apache.camel.component.undertow.handlers.CamelRootHandler;
 import org.apache.camel.component.undertow.handlers.NotFoundHandler;
 import org.apache.camel.component.undertow.handlers.RestRootHandler;
+import org.apache.camel.component.undertow.spi.UndertowSecurityProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.ServletException;
 
 /**
  * The default UndertowHost which manages standalone Undertow server.
@@ -89,7 +95,30 @@ public class DefaultUndertowHost implements UndertowHost {
                 // use the rest handler as its a rest consumer
                 undertow = builder.setHandler(restHandler).build();
             } else {
-                undertow = builder.setHandler(rootHandler).build();
+                UndertowSecurityProvider securityProvider = consumer.getEndpoint().getComponent().getSecurityProvider() != null ?
+                        consumer.getEndpoint().getComponent().getSecurityProvider() : consumer.getEndpoint().getSecurityProvider();
+                //if security provider needs servlet context, start empty servlet
+                if (securityProvider != null && securityProvider.requireServletContext()) {
+                    DeploymentInfo deployment = Servlets.deployment()
+                            .setContextPath("")
+                            .setDisplayName("application")
+                            .setDeploymentName("camel-undertow")
+                            .setClassLoader(getClass().getClassLoader())
+                            //httpHandler for servlet is ignored, camel handler is used instead of it
+                            .addOuterHandlerChainWrapper(h -> rootHandler);
+
+                    DeploymentManager manager = Servlets.newContainer().addDeployment(deployment);
+                    manager.deploy();
+                    try {
+                        undertow = builder.setHandler(manager.start()).build();
+                    } catch (ServletException e) {
+                        LOG.warn("Failed to start Undertow server on {}://{}:{}, reason: {}", key.getSslContext() != null ? "https" : "http", key.getHost(), key.getPort(), e.getMessage());
+
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    undertow = builder.setHandler(rootHandler).build();
+                }
             }
             LOG.info("Starting Undertow server on {}://{}:{}", key.getSslContext() != null ? "https" : "http", key.getHost(), key.getPort());
 
