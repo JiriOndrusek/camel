@@ -64,19 +64,6 @@ public interface UndertowSecurityProvider {
      */
     boolean acceptConfiguration(Object configuration, String endpointUri) throws Exception;
 
-//    default Undertow registerHandler(Undertow.Builder builder, HttpHandler handler) throws Exception{
-//        DeploymentInfo deployment = Servlets.deployment()
-//                .setContextPath("")
-//                .setDisplayName("application")
-//                .setDeploymentName("camel-undertow")
-//                .setClassLoader(getClass().getClassLoader())
-//                //httpHandler for servlet is ignored, camel handler is used instead of it
-//                .addOuterHandlerChainWrapper(h -> handler);
-//
-//        DeploymentManager deploymentManager = Servlets.newContainer().addDeployment(deployment);
-//        deploymentManager.deploy();
-//        return builder.setHandler(deploymentManager.start()).build();
-//    }
 
     default Undertow registerHandler(Undertow.Builder builder, HttpHandler handler) throws Exception {
         return builder.setHandler(handler).build();
