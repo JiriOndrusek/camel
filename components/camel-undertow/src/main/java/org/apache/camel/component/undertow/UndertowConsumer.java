@@ -24,6 +24,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import io.undertow.Handlers;
 import io.undertow.server.HttpHandler;
@@ -32,6 +33,7 @@ import io.undertow.server.handlers.accesslog.AccessLogHandler;
 import io.undertow.server.handlers.accesslog.AccessLogReceiver;
 import io.undertow.server.handlers.accesslog.JBossLoggingAccessLogReceiver;
 import io.undertow.server.handlers.form.EagerFormParsingHandler;
+import io.undertow.servlet.handlers.ServletRequestContext;
 import io.undertow.util.Headers;
 import io.undertow.util.HttpString;
 import io.undertow.util.Methods;
@@ -56,6 +58,11 @@ import org.apache.camel.util.IOHelper;
 import org.apache.camel.util.ObjectHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 /**
  * The Undertow consumer which is also an Undertow HttpHandler implementation to handle incoming request.
@@ -183,11 +190,14 @@ public class UndertowConsumer extends DefaultConsumer implements HttpHandler, Su
         if (getEndpoint().getSecurityProvider() != null) {
             //security provider decides, whether endpoint is accessible
             int statusCode = getEndpoint().getSecurityProvider().authenticate(httpExchange, computeAllowedRoles());
+
+
             if (statusCode != StatusCodes.OK) {
                 httpExchange.setStatusCode(statusCode);
                 httpExchange.endExchange();
                 return;
             }
+
         }
 
         //create new Exchange
@@ -310,5 +320,4 @@ public class UndertowConsumer extends DefaultConsumer implements HttpHandler, Su
         }
         return nextHandler;
     }
-
 }

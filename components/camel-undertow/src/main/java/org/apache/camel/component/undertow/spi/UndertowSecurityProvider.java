@@ -79,7 +79,7 @@ public interface UndertowSecurityProvider {
     }
 
 
-    default Filter securityFilter() {
-        return null;
+    default boolean needsServletContext() {
+        return false;
     }
 }
