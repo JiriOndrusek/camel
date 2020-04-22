@@ -339,7 +339,7 @@ public class UndertowComponent extends DefaultComponent implements RestConsumerF
 
         host.validateEndpointURI(uri);
         handlers.add(registrationInfo);
-        return host.registerHandler(registrationInfo, handler);
+        return host.registerHandler(registrationInfo, handler, get);
     }
 
     public void unregisterEndpoint(HttpHandlerRegistrationInfo registrationInfo, SSLContext sslContext) {

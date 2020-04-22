@@ -19,6 +19,8 @@ package org.apache.camel.component.undertow.spi;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import io.undertow.Undertow;
+import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 
 /**
@@ -61,4 +63,24 @@ public interface UndertowSecurityProvider {
      * @return True if securityProvider is initialized from data and is able to authenticate requests.
      */
     boolean acceptConfiguration(Object configuration, String endpointUri) throws Exception;
+
+//    default Undertow registerHandler(Undertow.Builder builder, HttpHandler handler) throws Exception{
+//        DeploymentInfo deployment = Servlets.deployment()
+//                .setContextPath("")
+//                .setDisplayName("application")
+//                .setDeploymentName("camel-undertow")
+//                .setClassLoader(getClass().getClassLoader())
+//                //httpHandler for servlet is ignored, camel handler is used instead of it
+//                .addOuterHandlerChainWrapper(h -> handler);
+//
+//        DeploymentManager deploymentManager = Servlets.newContainer().addDeployment(deployment);
+//        deploymentManager.deploy();
+//        return builder.setHandler(deploymentManager.start()).build();
+//    }
+
+    default Undertow registerHandler(Undertow.Builder builder, HttpHandler handler) throws Exception {
+        return builder.setHandler(handler).build();
+    }
+
+    default void unregisterHandler(Undertow undertow) {};
 }

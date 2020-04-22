@@ -20,6 +20,7 @@ import java.net.URI;
 
 import io.undertow.server.HttpHandler;
 import org.apache.camel.component.undertow.handlers.CamelWebSocketHandler;
+import org.apache.camel.component.undertow.spi.UndertowSecurityProvider;
 
 /**
  * An undertow host abstraction
@@ -46,7 +47,7 @@ public interface UndertowHost {
      * @return the given {@code handler} or a different {@link HttpHandler} that has been registered with the given
      *         {@link HttpHandlerRegistrationInfo} earlier.
      */
-    HttpHandler registerHandler(HttpHandlerRegistrationInfo registrationInfo, HttpHandler handler);
+    HttpHandler registerHandler(HttpHandlerRegistrationInfo registrationInfo, HttpHandler handler, UndertowSecurityProvider securityProvider);
 
     /**
      * Unregister a handler with the given {@link HttpHandlerRegistrationInfo}. Note that if
@@ -54,6 +55,6 @@ public interface UndertowHost {
      * equivalent {@link HttpHandlerRegistrationInfo} then {@link #unregisterHandler(HttpHandlerRegistrationInfo)} must
      * be called the same number of times to unregister the associated handler completely.
      */
-    void unregisterHandler(HttpHandlerRegistrationInfo registrationInfo);
+    void unregisterHandler(HttpHandlerRegistrationInfo registrationInfo, UndertowSecurityProvider securityProvider);
 
 }
