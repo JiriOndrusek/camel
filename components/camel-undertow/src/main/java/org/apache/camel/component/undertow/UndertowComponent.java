@@ -366,14 +366,14 @@ public class UndertowComponent extends DefaultComponent implements RestConsumerF
         }
     }
 
-    public HttpHandler registerEndpoint(HttpHandlerRegistrationInfo registrationInfo, SSLContext sslContext, HttpHandler handler) {
+    public HttpHandler registerEndpoint(HttpHandlerRegistrationInfo registrationInfo, SSLContext sslContext, HttpHandler handler, UndertowSecurityProvider securityProvider) {
         final URI uri = registrationInfo.getUri();
         final UndertowHostKey key = new UndertowHostKey(uri.getHost(), uri.getPort(), sslContext);
         final UndertowHost host = undertowRegistry.computeIfAbsent(key, k -> createUndertowHost(k));
 
         host.validateEndpointURI(uri);
         handlers.add(registrationInfo);
-        return host.registerHandler(registrationInfo, handler, getSecurityProvider());
+        return host.registerHandler(registrationInfo, handler, securityProvider == null ? getSecurityProvider() : securityProvider);
     }
 
     public void unregisterEndpoint(HttpHandlerRegistrationInfo registrationInfo, SSLContext sslContext) {

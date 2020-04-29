@@ -87,13 +87,13 @@ public class UndertowConsumer extends DefaultConsumer implements HttpHandler, Su
              * note that the new CamelWebSocketHandler() we pass to registerEndpoint() does not necessarily have to be
              * the same instance that is returned from there
              */
-            this.webSocketHandler = (CamelWebSocketHandler) endpoint.getComponent().registerEndpoint(endpoint.getHttpHandlerRegistrationInfo(), endpoint.getSslContext(), new CamelWebSocketHandler());
+            this.webSocketHandler = (CamelWebSocketHandler) endpoint.getComponent().registerEndpoint(endpoint.getHttpHandlerRegistrationInfo(), endpoint.getSslContext(), new CamelWebSocketHandler(), endpoint.getSecurityProvider());
             this.webSocketHandler.setConsumer(this);
         } else {
             // allow for HTTP 1.1 continue
             endpoint.getComponent().registerEndpoint(endpoint.getHttpHandlerRegistrationInfo(), endpoint.getSslContext(), Handlers.httpContinueRead(
                     // wrap with EagerFormParsingHandler to enable undertow form parsers
-                    new EagerFormParsingHandler().setNext(UndertowConsumer.this)));
+                    new EagerFormParsingHandler().setNext(UndertowConsumer.this)), endpoint.getSecurityProvider());
         }
     }
 
