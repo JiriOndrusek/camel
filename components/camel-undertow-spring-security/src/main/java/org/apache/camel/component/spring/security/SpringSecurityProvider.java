@@ -114,8 +114,8 @@ public class SpringSecurityProvider implements UndertowSecurityProvider {
 
         DeploymentManager deploymentManager = Servlets.newContainer().addDeployment(deployment);
         deploymentManager.deploy();
-        Undertow undertow = builder.setHandler(deploymentManager.start()).build();
-        //save into cache for future undeployment
+        Undertow undertow = UndertowSecurityProvider.super.registerHandler(builder, deploymentManager.start());
+        //save into cache for future unregistration
         deploymenMap.put(undertow, deploymentManager);
         return undertow;
     }

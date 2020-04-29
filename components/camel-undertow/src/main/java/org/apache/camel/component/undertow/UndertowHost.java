@@ -49,6 +49,10 @@ public interface UndertowHost {
      */
     HttpHandler registerHandler(HttpHandlerRegistrationInfo registrationInfo, HttpHandler handler, UndertowSecurityProvider securityProvider);
 
+    default HttpHandler registerHandler(HttpHandlerRegistrationInfo registrationInfo, HttpHandler handler) {
+        return registerHandler(registrationInfo, handler, null);
+    };
+
     /**
      * Unregister a handler with the given {@link HttpHandlerRegistrationInfo}. Note that if
      * {@link #registerHandler(HttpHandlerRegistrationInfo, HttpHandler)} was successfully invoked multiple times for an
@@ -56,5 +60,12 @@ public interface UndertowHost {
      * be called the same number of times to unregister the associated handler completely.
      */
     void unregisterHandler(HttpHandlerRegistrationInfo registrationInfo, UndertowSecurityProvider securityProvider);
+
+    default void unregisterHandler(HttpHandlerRegistrationInfo registrationInfo) {
+        unregisterHandler(registrationInfo, null);
+    }
+
+
+
 
 }
