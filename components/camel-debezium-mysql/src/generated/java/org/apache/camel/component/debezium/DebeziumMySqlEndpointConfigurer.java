@@ -25,12 +25,20 @@ public class DebeziumMySqlEndpointConfigurer extends PropertyConfigurerSupport i
         case "basicPropertyBinding": target.setBasicPropertyBinding(property(camelContext, boolean.class, value)); return true;
         case "bigintunsignedhandlingmode":
         case "bigintUnsignedHandlingMode": target.getConfiguration().setBigintUnsignedHandlingMode(property(camelContext, java.lang.String.class, value)); return true;
+        case "binaryhandlingmode":
+        case "binaryHandlingMode": target.getConfiguration().setBinaryHandlingMode(property(camelContext, java.lang.String.class, value)); return true;
         case "binlogbuffersize":
         case "binlogBufferSize": target.getConfiguration().setBinlogBufferSize(property(camelContext, int.class, value)); return true;
         case "bridgeerrorhandler":
         case "bridgeErrorHandler": target.setBridgeErrorHandler(property(camelContext, boolean.class, value)); return true;
         case "columnblacklist":
         case "columnBlacklist": target.getConfiguration().setColumnBlacklist(property(camelContext, java.lang.String.class, value)); return true;
+        case "columnmaskhashwithsalt":
+        case "columnMaskHashWithSalt": target.getConfiguration().setColumnMaskHashWithSalt(property(camelContext, java.lang.String.class, value)); return true;
+        case "columnmaskwithdchars":
+        case "columnMaskWithdChars": target.getConfiguration().setColumnMaskWithdChars(property(camelContext, java.lang.String.class, value)); return true;
+        case "columntruncatetodchars":
+        case "columnTruncateTodChars": target.getConfiguration().setColumnTruncateTodChars(property(camelContext, java.lang.String.class, value)); return true;
         case "connectkeepalive":
         case "connectKeepAlive": target.getConfiguration().setConnectKeepAlive(property(camelContext, boolean.class, value)); return true;
         case "connectkeepaliveintervalms":
@@ -143,6 +151,8 @@ public class DebeziumMySqlEndpointConfigurer extends PropertyConfigurerSupport i
         case "offsetStorageTopic": target.getConfiguration().setOffsetStorageTopic(property(camelContext, java.lang.String.class, value)); return true;
         case "pollintervalms":
         case "pollIntervalMs": target.getConfiguration().setPollIntervalMs(property(camelContext, java.time.Duration.class, value).toMillis()); return true;
+        case "skippedoperations":
+        case "skippedOperations": target.getConfiguration().setSkippedOperations(property(camelContext, java.lang.String.class, value)); return true;
         case "snapshotdelayms":
         case "snapshotDelayMs": target.getConfiguration().setSnapshotDelayMs(property(camelContext, java.time.Duration.class, value).toMillis()); return true;
         case "snapshotfetchsize":
@@ -178,9 +188,13 @@ public class DebeziumMySqlEndpointConfigurer extends PropertyConfigurerSupport i
         answer.put("additionalProperties", java.util.Map.class);
         answer.put("basicPropertyBinding", boolean.class);
         answer.put("bigintUnsignedHandlingMode", java.lang.String.class);
+        answer.put("binaryHandlingMode", java.lang.String.class);
         answer.put("binlogBufferSize", int.class);
         answer.put("bridgeErrorHandler", boolean.class);
         answer.put("columnBlacklist", java.lang.String.class);
+        answer.put("columnMaskHashWithSalt", java.lang.String.class);
+        answer.put("columnMaskWithdChars", java.lang.String.class);
+        answer.put("columnTruncateTodChars", java.lang.String.class);
         answer.put("connectKeepAlive", boolean.class);
         answer.put("connectKeepAliveIntervalMs", long.class);
         answer.put("connectTimeoutMs", int.class);
@@ -237,6 +251,7 @@ public class DebeziumMySqlEndpointConfigurer extends PropertyConfigurerSupport i
         answer.put("offsetStorageReplicationFactor", int.class);
         answer.put("offsetStorageTopic", java.lang.String.class);
         answer.put("pollIntervalMs", long.class);
+        answer.put("skippedOperations", java.lang.String.class);
         answer.put("snapshotDelayMs", long.class);
         answer.put("snapshotFetchSize", int.class);
         answer.put("snapshotLockingMode", java.lang.String.class);
@@ -263,12 +278,20 @@ public class DebeziumMySqlEndpointConfigurer extends PropertyConfigurerSupport i
         case "basicPropertyBinding": return target.isBasicPropertyBinding();
         case "bigintunsignedhandlingmode":
         case "bigintUnsignedHandlingMode": return target.getConfiguration().getBigintUnsignedHandlingMode();
+        case "binaryhandlingmode":
+        case "binaryHandlingMode": return target.getConfiguration().getBinaryHandlingMode();
         case "binlogbuffersize":
         case "binlogBufferSize": return target.getConfiguration().getBinlogBufferSize();
         case "bridgeerrorhandler":
         case "bridgeErrorHandler": return target.isBridgeErrorHandler();
         case "columnblacklist":
         case "columnBlacklist": return target.getConfiguration().getColumnBlacklist();
+        case "columnmaskhashwithsalt":
+        case "columnMaskHashWithSalt": return target.getConfiguration().getColumnMaskHashWithSalt();
+        case "columnmaskwithdchars":
+        case "columnMaskWithdChars": return target.getConfiguration().getColumnMaskWithdChars();
+        case "columntruncatetodchars":
+        case "columnTruncateTodChars": return target.getConfiguration().getColumnTruncateTodChars();
         case "connectkeepalive":
         case "connectKeepAlive": return target.getConfiguration().isConnectKeepAlive();
         case "connectkeepaliveintervalms":
@@ -381,6 +404,8 @@ public class DebeziumMySqlEndpointConfigurer extends PropertyConfigurerSupport i
         case "offsetStorageTopic": return target.getConfiguration().getOffsetStorageTopic();
         case "pollintervalms":
         case "pollIntervalMs": return target.getConfiguration().getPollIntervalMs();
+        case "skippedoperations":
+        case "skippedOperations": return target.getConfiguration().getSkippedOperations();
         case "snapshotdelayms":
         case "snapshotDelayMs": return target.getConfiguration().getSnapshotDelayMs();
         case "snapshotfetchsize":

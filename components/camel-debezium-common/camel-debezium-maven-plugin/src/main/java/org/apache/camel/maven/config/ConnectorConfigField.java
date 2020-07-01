@@ -45,15 +45,23 @@ public class ConnectorConfigField {
     }
 
     public String getFieldName() {
-        return getCamelCase(fieldDef.name);
+        //since debezium 1.2.0.Final name could contain unsuppoirted characters (for example ' columnTruncateTo(d+)Chars', 'columnMaskHash([^]+)WithSalt(+)')
+        //name will be only prefix until the special character
+        return removeSpecialCharacters(getCamelCase(fieldDef.name));
     }
 
     public String getFieldSetterMethodName() {
-        return getSetterMethodName(fieldDef.name);
+        return removeSpecialCharacters(getSetterMethodName(fieldDef.name));
     }
 
     public String getFieldGetterMethodName() {
-        return getGetterMethodName(fieldDef.name, fieldDef.type);
+        return removeSpecialCharacters(getGetterMethodName(fieldDef.name, fieldDef.type));
+    }
+
+    private String removeSpecialCharacters(String name) {
+        //since debezium 1.2.0.Final name could contain unsuppoirted characters (for example ' columnTruncateTo(d+)Chars', 'columnMaskHash([^]+)WithSalt(+)')
+        //name will be only parts without special characters
+        return name.replaceAll("\\W", "");
     }
 
     public Class<?> getRawType() {

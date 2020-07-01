@@ -17,6 +17,8 @@ public class MySqlConnectorEmbeddedDebeziumConfiguration
     @UriParam(label = LABEL_NAME)
     private String messageKeyColumns;
     @UriParam(label = LABEL_NAME)
+    private String columnTruncateTodChars;
+    @UriParam(label = LABEL_NAME)
     private String columnBlacklist;
     @UriParam(label = LABEL_NAME)
     private String tableBlacklist;
@@ -69,6 +71,8 @@ public class MySqlConnectorEmbeddedDebeziumConfiguration
     private boolean gtidSourceFilterDmlEvents = true;
     @UriParam(label = LABEL_NAME)
     private String databaseBlacklist;
+    @UriParam(label = LABEL_NAME)
+    private String skippedOperations;
     @UriParam(label = LABEL_NAME, defaultValue = "2048")
     private int maxBatchSize = 2048;
     @UriParam(label = LABEL_NAME, defaultValue = "true")
@@ -88,11 +92,17 @@ public class MySqlConnectorEmbeddedDebeziumConfiguration
     @UriParam(label = LABEL_NAME, defaultValue = "100")
     private int databaseHistoryKafkaRecoveryAttempts = 100;
     @UriParam(label = LABEL_NAME)
+    private String columnMaskHashWithSalt;
+    @UriParam(label = LABEL_NAME)
     private String tableWhitelist;
     @UriParam(label = LABEL_NAME, defaultValue = "false")
     private boolean tombstonesOnDelete = false;
     @UriParam(label = LABEL_NAME, defaultValue = "precise")
     private String decimalHandlingMode = "precise";
+    @UriParam(label = LABEL_NAME, defaultValue = "bytes")
+    private String binaryHandlingMode = "bytes";
+    @UriParam(label = LABEL_NAME)
+    private String columnMaskWithdChars;
     @UriParam(label = LABEL_NAME, defaultValue = "off")
     private String snapshotNewTables = "off";
     @UriParam(label = LABEL_NAME, defaultValue = "false")
@@ -178,8 +188,20 @@ public class MySqlConnectorEmbeddedDebeziumConfiguration
     }
 
     /**
-     * Description is not available here, please check Debezium website for
-     * corresponding key 'column.blacklist' description.
+     * A comma-separated list of regular expressions matching fully-qualified
+     * names of columns that should be truncated to the configured amount of
+     * characters.
+     */
+    public void setColumnTruncateTodChars(String columnTruncateTodChars) {
+        this.columnTruncateTodChars = columnTruncateTodChars;
+    }
+
+    public String getColumnTruncateTodChars() {
+        return columnTruncateTodChars;
+    }
+
+    /**
+     * Regular expressions matching columns to exclude from change events
      */
     public void setColumnBlacklist(String columnBlacklist) {
         this.columnBlacklist = columnBlacklist;
@@ -205,8 +227,9 @@ public class MySqlConnectorEmbeddedDebeziumConfiguration
      * Whether the connector should publish changes in the database schema to a
      * Kafka topic with the same name as the database server ID. Each schema
      * change will be recorded using a key that contains the database name and
-     * whose value includes the DDL statement(s).The default is 'true'. This is
-     * independent of how the connector internally records database history.
+     * whose value include logical description of the new schema and optionally
+     * the DDL statement(s).The default is 'true'. This is independent of how
+     * the connector internally records database history.
      */
     public void setIncludeSchemaChanges(boolean includeSchemaChanges) {
         this.includeSchemaChanges = includeSchemaChanges;
@@ -531,6 +554,19 @@ public class MySqlConnectorEmbeddedDebeziumConfiguration
     }
 
     /**
+     * The comma-separated list of operations to skip during streaming, defined
+     * as: 'i' for inserts; 'u' for updates; 'd' for deletes. By default, no
+     * operations will be skipped.
+     */
+    public void setSkippedOperations(String skippedOperations) {
+        this.skippedOperations = skippedOperations;
+    }
+
+    public String getSkippedOperations() {
+        return skippedOperations;
+    }
+
+    /**
      * Maximum size of each batch of source records. Defaults to 2048.
      */
     public void setMaxBatchSize(int maxBatchSize) {
@@ -569,15 +605,16 @@ public class MySqlConnectorEmbeddedDebeziumConfiguration
     /**
      * The criteria for running a snapshot upon startup of the connector.
      * Options include: 'when_needed' to specify that the connector run a
-     * snapshot upon startup whenever it deems it necessary; 'initial' (the
-     * default) to specify the connector can run a snapshot only when no offsets
-     * are available for the logical server name; 'initial_only' same as
-     * 'initial' except the connector should stop after completing the snapshot
-     * and before it would normally read the binlog; and'never' to specify the
-     * connector should never run a snapshot and that upon first startup the
-     * connector should read from the beginning of the binlog. The 'never' mode
-     * should be used with care, and only when the binlog is known to contain
-     * all history.
+     * snapshot upon startup whenever it deems it necessary; 'schema_only' to
+     * only take a snapshot of the schema (table structures) but no actual data;
+     * 'initial' (the default) to specify the connector can run a snapshot only
+     * when no offsets are available for the logical server name; 'initial_only'
+     * same as 'initial' except the connector should stop after completing the
+     * snapshot and before it would normally read the binlog; and'never' to
+     * specify the connector should never run a snapshot and that upon first
+     * startup the connector should read from the beginning of the binlog. The
+     * 'never' mode should be used with care, and only when the binlog is known
+     * to contain all history.
      */
     public void setSnapshotMode(String snapshotMode) {
         this.snapshotMode = snapshotMode;
@@ -649,6 +686,19 @@ public class MySqlConnectorEmbeddedDebeziumConfiguration
     }
 
     /**
+     * A comma-separated list of regular expressions matching fully-qualified
+     * names of columns that should be masked by hashing the input. Using the
+     * specified hash algorithms and salt.
+     */
+    public void setColumnMaskHashWithSalt(String columnMaskHashWithSalt) {
+        this.columnMaskHashWithSalt = columnMaskHashWithSalt;
+    }
+
+    public String getColumnMaskHashWithSalt() {
+        return columnMaskHashWithSalt;
+    }
+
+    /**
      * The tables for which changes are to be captured
      */
     public void setTableWhitelist(String tableWhitelist) {
@@ -689,6 +739,33 @@ public class MySqlConnectorEmbeddedDebeziumConfiguration
 
     public String getDecimalHandlingMode() {
         return decimalHandlingMode;
+    }
+
+    /**
+     * Specify how binary (blob, binary, etc.) columns should be represented in
+     * change events, including:'bytes' represents binary data as byte array
+     * (default)'base64' represents binary data as base64-encoded string'hex'
+     * represents binary data as hex-encoded (base16) string
+     */
+    public void setBinaryHandlingMode(String binaryHandlingMode) {
+        this.binaryHandlingMode = binaryHandlingMode;
+    }
+
+    public String getBinaryHandlingMode() {
+        return binaryHandlingMode;
+    }
+
+    /**
+     * A comma-separated list of regular expressions matching fully-qualified
+     * names of columns that should be masked with configured amount of asterisk
+     * ('*') characters.
+     */
+    public void setColumnMaskWithdChars(String columnMaskWithdChars) {
+        this.columnMaskWithdChars = columnMaskWithdChars;
+    }
+
+    public String getColumnMaskWithdChars() {
+        return columnMaskWithdChars;
     }
 
     /**
@@ -978,6 +1055,7 @@ public class MySqlConnectorEmbeddedDebeziumConfiguration
         
         addPropertyIfNotNull(configBuilder, "snapshot.locking.mode", snapshotLockingMode);
         addPropertyIfNotNull(configBuilder, "message.key.columns", messageKeyColumns);
+        addPropertyIfNotNull(configBuilder, "column.truncate.to.(d+).chars", columnTruncateTodChars);
         addPropertyIfNotNull(configBuilder, "column.blacklist", columnBlacklist);
         addPropertyIfNotNull(configBuilder, "table.blacklist", tableBlacklist);
         addPropertyIfNotNull(configBuilder, "include.schema.changes", includeSchemaChanges);
@@ -1004,6 +1082,7 @@ public class MySqlConnectorEmbeddedDebeziumConfiguration
         addPropertyIfNotNull(configBuilder, "database.history.store.only.monitored.tables.ddl", databaseHistoryStoreOnlyMonitoredTablesDdl);
         addPropertyIfNotNull(configBuilder, "gtid.source.filter.dml.events", gtidSourceFilterDmlEvents);
         addPropertyIfNotNull(configBuilder, "database.blacklist", databaseBlacklist);
+        addPropertyIfNotNull(configBuilder, "skipped.operations", skippedOperations);
         addPropertyIfNotNull(configBuilder, "max.batch.size", maxBatchSize);
         addPropertyIfNotNull(configBuilder, "connect.keep.alive", connectKeepAlive);
         addPropertyIfNotNull(configBuilder, "database.history", databaseHistory);
@@ -1013,9 +1092,12 @@ public class MySqlConnectorEmbeddedDebeziumConfiguration
         addPropertyIfNotNull(configBuilder, "database.history.kafka.topic", databaseHistoryKafkaTopic);
         addPropertyIfNotNull(configBuilder, "snapshot.delay.ms", snapshotDelayMs);
         addPropertyIfNotNull(configBuilder, "database.history.kafka.recovery.attempts", databaseHistoryKafkaRecoveryAttempts);
+        addPropertyIfNotNull(configBuilder, "column.mask.hash.([^.]+).with.salt.(.+)", columnMaskHashWithSalt);
         addPropertyIfNotNull(configBuilder, "table.whitelist", tableWhitelist);
         addPropertyIfNotNull(configBuilder, "tombstones.on.delete", tombstonesOnDelete);
         addPropertyIfNotNull(configBuilder, "decimal.handling.mode", decimalHandlingMode);
+        addPropertyIfNotNull(configBuilder, "binary.handling.mode", binaryHandlingMode);
+        addPropertyIfNotNull(configBuilder, "column.mask.with.(d+).chars", columnMaskWithdChars);
         addPropertyIfNotNull(configBuilder, "snapshot.new.tables", snapshotNewTables);
         addPropertyIfNotNull(configBuilder, "database.history.skip.unparseable.ddl", databaseHistorySkipUnparseableDdl);
         addPropertyIfNotNull(configBuilder, "table.ignore.builtin", tableIgnoreBuiltin);

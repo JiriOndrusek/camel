@@ -64,6 +64,23 @@ public class ConnectorConfigFieldTest {
     }
 
     @Test
+    void testIfHandlesSpecialCharactersCorrectly() {
+        final ConfigDef.ConfigKey configKey = new ConfigDef.ConfigKey("field.test([^]+)WithSalt(+)", ConfigDef.Type.STRING, "empty",
+                null, ConfigDef.Importance.MEDIUM, "testing", "testGroup", 1, ConfigDef.Width.MEDIUM, "displayName", Collections.emptyList(),
+                null, false);
+
+        final ConnectorConfigField connectorConfigField = new ConnectorConfigField(configKey, false, true, null);
+
+        assertEquals("fieldTest", connectorConfigField.getFieldName());
+        assertEquals("setFieldTest", connectorConfigField.getFieldSetterMethodName());
+        assertEquals("getFieldTest", connectorConfigField.getFieldGetterMethodName());
+        assertEquals(String.class, connectorConfigField.getRawType());
+        assertFalse(connectorConfigField.isDeprecated());
+        assertTrue(connectorConfigField.isRequired());
+        assertFalse(connectorConfigField.isTimeField());
+    }
+
+    @Test
     public void testIfDiscoversDurationFieldCorrectly() {
         final ConfigDef.ConfigKey configKey = new ConfigDef.ConfigKey("field.test_underscore.Ms", ConfigDef.Type.LONG, "100",
                 null, ConfigDef.Importance.MEDIUM, "testing", "testGroup", 1, ConfigDef.Width.MEDIUM, "displayName", Collections.emptyList(),
