@@ -16,12 +16,8 @@
  */
 package org.apache.camel.utils.cassandra;
 
-import com.datastax.driver.core.policies.DCAwareRoundRobinPolicy;
-import com.datastax.driver.core.policies.ErrorAwarePolicy;
-import com.datastax.driver.core.policies.LatencyAwarePolicy;
-import com.datastax.driver.core.policies.LoadBalancingPolicy;
-import com.datastax.driver.core.policies.RoundRobinPolicy;
-import com.datastax.driver.core.policies.TokenAwarePolicy;
+
+import com.datastax.oss.driver.api.core.loadbalancing.LoadBalancingPolicy;
 
 public class CassandraLoadBalancingPolicies {
 

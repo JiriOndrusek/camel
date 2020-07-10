@@ -18,10 +18,10 @@ package org.apache.camel.component.cassandra;
 
 import java.util.Collection;
 
-import com.datastax.driver.core.PreparedStatement;
-import com.datastax.driver.core.RegularStatement;
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Session;
+import com.datastax.oss.driver.api.core.cql.PreparedStatement;
+import com.datastax.oss.driver.api.core.cql.ResultSet;
+import com.datastax.oss.driver.api.core.cql.SyncCqlSession;
+import com.datastax.oss.driver.api.core.session.Session;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.support.DefaultProducer;
@@ -99,7 +99,7 @@ public class CassandraProducer extends DefaultProducer {
         Object[] cqlParams = getCqlParams(message);
 
         ResultSet resultSet;
-        Session session = getEndpoint().getSessionHolder().getSession();
+        SyncCqlSession session = getEndpoint().getSessionHolder().getSession();
         if (isPrepareStatements()) {
             resultSet = executePreparedStatement(session, messageCql, cqlParams);
         } else {
@@ -111,18 +111,19 @@ public class CassandraProducer extends DefaultProducer {
     /**
      * Execute CQL as PreparedStatement
      */
-    private ResultSet executePreparedStatement(Session session, Object messageCql, Object[] cqlParams) {
+    private ResultSet executePreparedStatement(SyncCqlSession session, Object messageCql, Object[] cqlParams) {
         ResultSet resultSet;
         PreparedStatement lPreparedStatement;
         if (messageCql == null) {
             // URI CQL
             lPreparedStatement = this.preparedStatement;
-        } else if (messageCql instanceof String) {
-            // Message CQL
-            lPreparedStatement = getEndpoint().prepareStatement((String)messageCql);
-        } else if (messageCql instanceof RegularStatement) {
-            // Message Statement
-            lPreparedStatement = getEndpoint().getSession().prepare((RegularStatement)messageCql);
+            //  todo jondruse
+//        } else if (messageCql instanceof String) {
+//            // Message CQL
+//            lPreparedStatement = getEndpoint().prepareStatement((String)messageCql);
+//        } else if (messageCql instanceof RegularStatement) {
+//            // Message Statement
+//            lPreparedStatement = getEndpoint().getSession().prepare((RegularStatement)messageCql);
         } else {
             throw new IllegalArgumentException("Invalid " + CassandraConstants.CQL_QUERY + " header");
         }
@@ -137,29 +138,30 @@ public class CassandraProducer extends DefaultProducer {
     /**
      * Execute CQL as is
      */
-    private ResultSet executeStatement(Session session, Object messageCql, Object[] cqlParams) {
-        ResultSet resultSet;
+    private ResultSet executeStatement(SyncCqlSession session, Object messageCql, Object[] cqlParams) {
+        ResultSet resultSet = null;
         String cql = null;
-        RegularStatement statement = null;
+        //todo jondruse
+//        RegularStatement statement = null;
         if (messageCql == null) {
             // URI CQL
             cql = getEndpoint().getCql();
         } else if (messageCql instanceof String) {
             // Message CQL
             cql = (String)messageCql;
-        } else if (messageCql instanceof RegularStatement) {
-            // Message Statement
-            statement = (RegularStatement)messageCql;
+//        } else if (messageCql instanceof RegularStatement) {
+//            // Message Statement
+//            statement = (RegularStatement)messageCql;
         } else {
             throw new IllegalArgumentException("Invalid " + CassandraConstants.CQL_QUERY + " header");
         }
-        if (statement != null) {
+        /*if (statement != null) {
             resultSet = session.execute(statement);
-        } else if (isEmpty(cqlParams)) {
+        } else */if (isEmpty(cqlParams)) {
             resultSet = session.execute(cql);
-        } else {
+        } /*else {
             resultSet = session.execute(cql, cqlParams);
-        }
+        }*/
         return resultSet;
     }
 

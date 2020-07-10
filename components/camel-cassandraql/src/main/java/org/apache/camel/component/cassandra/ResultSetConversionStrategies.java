@@ -16,14 +16,15 @@
  */
 package org.apache.camel.component.cassandra;
 
+import com.datastax.oss.driver.api.core.cql.ResultSet;
+import com.datastax.oss.driver.api.core.cql.Row;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
 
 /**
  * Implementations of {@link ResultSetConversionStrategy}

@@ -19,18 +19,14 @@ package org.apache.camel.processor.aggregate.cassandra;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.ConsistencyLevel;
-import com.datastax.driver.core.PreparedStatement;
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
-import com.datastax.driver.core.querybuilder.Delete;
-import com.datastax.driver.core.querybuilder.Insert;
-import com.datastax.driver.core.querybuilder.Select;
+import com.datastax.oss.driver.api.core.ConsistencyLevel;
+import com.datastax.oss.driver.api.core.CqlIdentifier;
+import com.datastax.oss.driver.api.core.cql.PreparedStatement;
+import com.datastax.oss.driver.api.core.cql.SyncCqlSession;
+import com.datastax.oss.driver.api.core.session.Session;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.spi.AggregationRepository;
@@ -40,8 +36,6 @@ import org.apache.camel.utils.cassandra.CassandraSessionHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.datastax.driver.core.querybuilder.QueryBuilder.bindMarker;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static org.apache.camel.utils.cassandra.CassandraUtils.append;
 import static org.apache.camel.utils.cassandra.CassandraUtils.applyConsistencyLevel;
 import static org.apache.camel.utils.cassandra.CassandraUtils.concat;
@@ -126,13 +120,13 @@ public class CassandraAggregationRepository extends ServiceSupport implements Re
 
     public CassandraAggregationRepository() {
     }
+//  todo jondruse
+//    public CassandraAggregationRepository(SyncCqlSession session) {
+//        this.sessionHolder = new CassandraSessionHolder(session);
+//    }
 
-    public CassandraAggregationRepository(Session session) {
+    public CassandraAggregationRepository(SyncCqlSession session) {
         this.sessionHolder = new CassandraSessionHolder(session);
-    }
-
-    public CassandraAggregationRepository(Cluster cluster, String keyspace) {
-        this.sessionHolder = new CassandraSessionHolder(cluster, keyspace);
     }
 
     /**

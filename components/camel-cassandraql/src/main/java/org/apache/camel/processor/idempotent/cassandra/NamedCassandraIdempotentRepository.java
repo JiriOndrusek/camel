@@ -16,8 +16,8 @@
  */
 package org.apache.camel.processor.idempotent.cassandra;
 
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Session;
+
+import com.datastax.oss.driver.api.core.session.Session;
 
 /**
  * Concrete implementation of {@link CassandraIdempotentRepository} using 2

@@ -19,11 +19,19 @@ package org.apache.camel.component.cassandra;
 import org.apache.camel.test.junit5.CamelTestSupport;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
+import java.net.URL;
+
 public abstract class BaseCassandraTest extends CamelTestSupport {
 
     public static boolean canTest() {
         // we cannot test on CI
-        return System.getenv("BUILD_ID") == null;
+        //todo do not commit
+        URL url = Thread.currentThread().getContextClassLoader().getResource("camel-cassandra.yaml");
+        System.setProperty("cassandra.config", "file://"+url.getFile());
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("-------------------------------------------------------------");
+        return true;
     }
 
     @Override
