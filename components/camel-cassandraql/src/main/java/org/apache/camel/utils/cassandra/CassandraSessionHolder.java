@@ -18,7 +18,7 @@ package org.apache.camel.utils.cassandra;
 
 
 import com.datastax.oss.driver.api.core.CqlIdentifier;
-import com.datastax.oss.driver.api.core.cql.SyncCqlSession;
+import com.datastax.oss.driver.api.core.CqlSession;
 
 import java.util.Optional;
 
@@ -29,19 +29,23 @@ public class CassandraSessionHolder {
     /**
      * Session
      */
-    private SyncCqlSession session;
+    private CqlSession session;
     /**
      * Keyspace name
      */
-    private Optional<CqlIdentifier> keyspace;
+    private String keyspace;
     /**
      * Indicates whether Session is externally managed
      */
     private final boolean managedSession;
 
-    public CassandraSessionHolder(SyncCqlSession session) {
+    public CassandraSessionHolder(CqlSession session) {
+        this(session, session.getKeyspace().isPresent() ? session.getKeyspace().get().toString() : null);
+    }
+
+    public CassandraSessionHolder(CqlSession session, String keyspace) {
         this.session = session;
-        this.keyspace = session.getKeyspace();
+        this.keyspace = keyspace;
         this.managedSession = false;
     }
 
@@ -63,11 +67,11 @@ public class CassandraSessionHolder {
         }
     }
 
-    public SyncCqlSession getSession() {
+    public CqlSession getSession() {
         return session;
     }
 
-    public Optional<CqlIdentifier> getKeyspace() {
+    public String getKeyspace() {
         return keyspace;
     }
 

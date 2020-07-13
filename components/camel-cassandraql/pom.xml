@@ -48,6 +48,11 @@
             <groupId>com.datastax.oss</groupId>
             <artifactId>java-driver-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.datastax.oss</groupId>
+            <artifactId>java-driver-query-builder</artifactId>
+            <version>4.7.2</version>
+        </dependency>
         <!-- logging -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>

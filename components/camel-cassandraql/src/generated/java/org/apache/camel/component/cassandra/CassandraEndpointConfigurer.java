@@ -29,11 +29,10 @@ public class CassandraEndpointConfigurer extends PropertyConfigurerSupport imple
         case "basicPropertyBinding": target.setBasicPropertyBinding(property(camelContext, boolean.class, value)); return true;
         case "bridgeerrorhandler":
         case "bridgeErrorHandler": target.setBridgeErrorHandler(property(camelContext, boolean.class, value)); return true;
-        case "cluster": target.setCluster(property(camelContext, com.datastax.driver.core.Cluster.class, value)); return true;
         case "clustername":
         case "clusterName": target.setClusterName(property(camelContext, java.lang.String.class, value)); return true;
         case "consistencylevel":
-        case "consistencyLevel": target.setConsistencyLevel(property(camelContext, com.datastax.driver.core.ConsistencyLevel.class, value)); return true;
+        case "consistencyLevel": target.setConsistencyLevel(property(camelContext, com.datastax.oss.driver.api.core.ConsistencyLevel.class, value)); return true;
         case "cql": target.setCql(property(camelContext, java.lang.String.class, value)); return true;
         case "delay": target.setDelay(property(camelContext, long.class, value)); return true;
         case "exceptionhandler":
@@ -65,7 +64,7 @@ public class CassandraEndpointConfigurer extends PropertyConfigurerSupport imple
         case "schedulerProperties": target.setSchedulerProperties(property(camelContext, java.util.Map.class, value)); return true;
         case "sendemptymessagewhenidle":
         case "sendEmptyMessageWhenIdle": target.setSendEmptyMessageWhenIdle(property(camelContext, boolean.class, value)); return true;
-        case "session": target.setSession(property(camelContext, com.datastax.driver.core.Session.class, value)); return true;
+        case "session": target.setSession(property(camelContext, com.datastax.oss.driver.api.core.CqlSession.class, value)); return true;
         case "startscheduler":
         case "startScheduler": target.setStartScheduler(property(camelContext, boolean.class, value)); return true;
         case "synchronous": target.setSynchronous(property(camelContext, boolean.class, value)); return true;
@@ -86,9 +85,8 @@ public class CassandraEndpointConfigurer extends PropertyConfigurerSupport imple
         answer.put("backoffMultiplier", int.class);
         answer.put("basicPropertyBinding", boolean.class);
         answer.put("bridgeErrorHandler", boolean.class);
-        answer.put("cluster", com.datastax.driver.core.Cluster.class);
         answer.put("clusterName", java.lang.String.class);
-        answer.put("consistencyLevel", com.datastax.driver.core.ConsistencyLevel.class);
+        answer.put("consistencyLevel", com.datastax.oss.driver.api.core.ConsistencyLevel.class);
         answer.put("cql", java.lang.String.class);
         answer.put("delay", long.class);
         answer.put("exceptionHandler", org.apache.camel.spi.ExceptionHandler.class);
@@ -107,7 +105,7 @@ public class CassandraEndpointConfigurer extends PropertyConfigurerSupport imple
         answer.put("scheduler", java.lang.String.class);
         answer.put("schedulerProperties", java.util.Map.class);
         answer.put("sendEmptyMessageWhenIdle", boolean.class);
-        answer.put("session", com.datastax.driver.core.Session.class);
+        answer.put("session", com.datastax.oss.driver.api.core.CqlSession.class);
         answer.put("startScheduler", boolean.class);
         answer.put("synchronous", boolean.class);
         answer.put("timeUnit", java.util.concurrent.TimeUnit.class);
@@ -130,7 +128,6 @@ public class CassandraEndpointConfigurer extends PropertyConfigurerSupport imple
         case "basicPropertyBinding": return target.isBasicPropertyBinding();
         case "bridgeerrorhandler":
         case "bridgeErrorHandler": return target.isBridgeErrorHandler();
-        case "cluster": return target.getCluster();
         case "clustername":
         case "clusterName": return target.getClusterName();
         case "consistencylevel":

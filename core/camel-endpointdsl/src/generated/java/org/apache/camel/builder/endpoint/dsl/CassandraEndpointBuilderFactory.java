@@ -47,29 +47,6 @@ public interface CassandraEndpointBuilderFactory {
             return (AdvancedCassandraEndpointConsumerBuilder) this;
         }
         /**
-         * To use the Cluster instance (you would normally not use this option).
-         * 
-         * The option is a: <code>com.datastax.driver.core.Cluster</code> type.
-         * 
-         * Group: common
-         */
-        default CassandraEndpointConsumerBuilder cluster(Object cluster) {
-            doSetProperty("cluster", cluster);
-            return this;
-        }
-        /**
-         * To use the Cluster instance (you would normally not use this option).
-         * 
-         * The option will be converted to a
-         * <code>com.datastax.driver.core.Cluster</code> type.
-         * 
-         * Group: common
-         */
-        default CassandraEndpointConsumerBuilder cluster(String cluster) {
-            doSetProperty("cluster", cluster);
-            return this;
-        }
-        /**
          * Cluster name.
          * 
          * The option is a: <code>java.lang.String</code> type.
@@ -84,12 +61,12 @@ public interface CassandraEndpointBuilderFactory {
          * Consistency level to use.
          * 
          * The option is a:
-         * <code>com.datastax.driver.core.ConsistencyLevel</code> type.
+         * <code>com.datastax.oss.driver.api.core.ConsistencyLevel</code> type.
          * 
          * Group: common
          */
         default CassandraEndpointConsumerBuilder consistencyLevel(
-                ConsistencyLevel consistencyLevel) {
+                Object consistencyLevel) {
             doSetProperty("consistencyLevel", consistencyLevel);
             return this;
         }
@@ -97,7 +74,7 @@ public interface CassandraEndpointBuilderFactory {
          * Consistency level to use.
          * 
          * The option will be converted to a
-         * <code>com.datastax.driver.core.ConsistencyLevel</code> type.
+         * <code>com.datastax.oss.driver.api.core.ConsistencyLevel</code> type.
          * 
          * Group: common
          */
@@ -198,7 +175,8 @@ public interface CassandraEndpointBuilderFactory {
         /**
          * To use the Session instance (you would normally not use this option).
          * 
-         * The option is a: <code>com.datastax.driver.core.Session</code> type.
+         * The option is a:
+         * <code>com.datastax.oss.driver.api.core.CqlSession</code> type.
          * 
          * Group: common
          */
@@ -210,7 +188,7 @@ public interface CassandraEndpointBuilderFactory {
          * To use the Session instance (you would normally not use this option).
          * 
          * The option will be converted to a
-         * <code>com.datastax.driver.core.Session</code> type.
+         * <code>com.datastax.oss.driver.api.core.CqlSession</code> type.
          * 
          * Group: common
          */
@@ -837,29 +815,6 @@ public interface CassandraEndpointBuilderFactory {
             return (AdvancedCassandraEndpointProducerBuilder) this;
         }
         /**
-         * To use the Cluster instance (you would normally not use this option).
-         * 
-         * The option is a: <code>com.datastax.driver.core.Cluster</code> type.
-         * 
-         * Group: common
-         */
-        default CassandraEndpointProducerBuilder cluster(Object cluster) {
-            doSetProperty("cluster", cluster);
-            return this;
-        }
-        /**
-         * To use the Cluster instance (you would normally not use this option).
-         * 
-         * The option will be converted to a
-         * <code>com.datastax.driver.core.Cluster</code> type.
-         * 
-         * Group: common
-         */
-        default CassandraEndpointProducerBuilder cluster(String cluster) {
-            doSetProperty("cluster", cluster);
-            return this;
-        }
-        /**
          * Cluster name.
          * 
          * The option is a: <code>java.lang.String</code> type.
@@ -874,12 +829,12 @@ public interface CassandraEndpointBuilderFactory {
          * Consistency level to use.
          * 
          * The option is a:
-         * <code>com.datastax.driver.core.ConsistencyLevel</code> type.
+         * <code>com.datastax.oss.driver.api.core.ConsistencyLevel</code> type.
          * 
          * Group: common
          */
         default CassandraEndpointProducerBuilder consistencyLevel(
-                ConsistencyLevel consistencyLevel) {
+                Object consistencyLevel) {
             doSetProperty("consistencyLevel", consistencyLevel);
             return this;
         }
@@ -887,7 +842,7 @@ public interface CassandraEndpointBuilderFactory {
          * Consistency level to use.
          * 
          * The option will be converted to a
-         * <code>com.datastax.driver.core.ConsistencyLevel</code> type.
+         * <code>com.datastax.oss.driver.api.core.ConsistencyLevel</code> type.
          * 
          * Group: common
          */
@@ -988,7 +943,8 @@ public interface CassandraEndpointBuilderFactory {
         /**
          * To use the Session instance (you would normally not use this option).
          * 
-         * The option is a: <code>com.datastax.driver.core.Session</code> type.
+         * The option is a:
+         * <code>com.datastax.oss.driver.api.core.CqlSession</code> type.
          * 
          * Group: common
          */
@@ -1000,7 +956,7 @@ public interface CassandraEndpointBuilderFactory {
          * To use the Session instance (you would normally not use this option).
          * 
          * The option will be converted to a
-         * <code>com.datastax.driver.core.Session</code> type.
+         * <code>com.datastax.oss.driver.api.core.CqlSession</code> type.
          * 
          * Group: common
          */
@@ -1141,29 +1097,6 @@ public interface CassandraEndpointBuilderFactory {
             return (AdvancedCassandraEndpointBuilder) this;
         }
         /**
-         * To use the Cluster instance (you would normally not use this option).
-         * 
-         * The option is a: <code>com.datastax.driver.core.Cluster</code> type.
-         * 
-         * Group: common
-         */
-        default CassandraEndpointBuilder cluster(Object cluster) {
-            doSetProperty("cluster", cluster);
-            return this;
-        }
-        /**
-         * To use the Cluster instance (you would normally not use this option).
-         * 
-         * The option will be converted to a
-         * <code>com.datastax.driver.core.Cluster</code> type.
-         * 
-         * Group: common
-         */
-        default CassandraEndpointBuilder cluster(String cluster) {
-            doSetProperty("cluster", cluster);
-            return this;
-        }
-        /**
          * Cluster name.
          * 
          * The option is a: <code>java.lang.String</code> type.
@@ -1178,12 +1111,12 @@ public interface CassandraEndpointBuilderFactory {
          * Consistency level to use.
          * 
          * The option is a:
-         * <code>com.datastax.driver.core.ConsistencyLevel</code> type.
+         * <code>com.datastax.oss.driver.api.core.ConsistencyLevel</code> type.
          * 
          * Group: common
          */
         default CassandraEndpointBuilder consistencyLevel(
-                ConsistencyLevel consistencyLevel) {
+                Object consistencyLevel) {
             doSetProperty("consistencyLevel", consistencyLevel);
             return this;
         }
@@ -1191,7 +1124,7 @@ public interface CassandraEndpointBuilderFactory {
          * Consistency level to use.
          * 
          * The option will be converted to a
-         * <code>com.datastax.driver.core.ConsistencyLevel</code> type.
+         * <code>com.datastax.oss.driver.api.core.ConsistencyLevel</code> type.
          * 
          * Group: common
          */
@@ -1292,7 +1225,8 @@ public interface CassandraEndpointBuilderFactory {
         /**
          * To use the Session instance (you would normally not use this option).
          * 
-         * The option is a: <code>com.datastax.driver.core.Session</code> type.
+         * The option is a:
+         * <code>com.datastax.oss.driver.api.core.CqlSession</code> type.
          * 
          * Group: common
          */
@@ -1304,7 +1238,7 @@ public interface CassandraEndpointBuilderFactory {
          * To use the Session instance (you would normally not use this option).
          * 
          * The option will be converted to a
-         * <code>com.datastax.driver.core.Session</code> type.
+         * <code>com.datastax.oss.driver.api.core.CqlSession</code> type.
          * 
          * Group: common
          */
@@ -1389,24 +1323,6 @@ public interface CassandraEndpointBuilderFactory {
             doSetProperty("synchronous", synchronous);
             return this;
         }
-    }
-
-    /**
-     * Proxy enum for <code>com.datastax.driver.core.ConsistencyLevel</code>
-     * enum.
-     */
-    enum ConsistencyLevel {
-        ANY,
-        ONE,
-        TWO,
-        THREE,
-        QUORUM,
-        ALL,
-        LOCAL_QUORUM,
-        EACH_QUORUM,
-        SERIAL,
-        LOCAL_SERIAL,
-        LOCAL_ONE;
     }
 
     public interface CassandraBuilders {

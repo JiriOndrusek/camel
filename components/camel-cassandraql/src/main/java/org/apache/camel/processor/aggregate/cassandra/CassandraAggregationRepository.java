@@ -19,14 +19,21 @@ package org.apache.camel.processor.aggregate.cassandra;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import com.datastax.oss.driver.api.core.ConsistencyLevel;
 import com.datastax.oss.driver.api.core.CqlIdentifier;
+import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
-import com.datastax.oss.driver.api.core.cql.SyncCqlSession;
+import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.core.cql.SimpleStatement;
 import com.datastax.oss.driver.api.core.session.Session;
+import com.datastax.oss.driver.api.querybuilder.insert.Insert;
+import com.datastax.oss.driver.api.querybuilder.insert.InsertInto;
+import com.datastax.oss.driver.api.querybuilder.delete.Delete;
+import com.datastax.oss.driver.api.querybuilder.select.Select;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.spi.AggregationRepository;
@@ -36,9 +43,12 @@ import org.apache.camel.utils.cassandra.CassandraSessionHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.datastax.oss.driver.api.querybuilder.QueryBuilder.bindMarker;
 import static org.apache.camel.utils.cassandra.CassandraUtils.append;
+//import static org.apache.camel.utils.cassandra.CassandraUtils.applyConsistencyLevel;
 import static org.apache.camel.utils.cassandra.CassandraUtils.applyConsistencyLevel;
 import static org.apache.camel.utils.cassandra.CassandraUtils.concat;
+//import static org.apache.camel.utils.cassandra.CassandraUtils.generateDelete;
 import static org.apache.camel.utils.cassandra.CassandraUtils.generateDelete;
 import static org.apache.camel.utils.cassandra.CassandraUtils.generateInsert;
 import static org.apache.camel.utils.cassandra.CassandraUtils.generateSelect;
@@ -120,13 +130,13 @@ public class CassandraAggregationRepository extends ServiceSupport implements Re
 
     public CassandraAggregationRepository() {
     }
-//  todo jondruse
-//    public CassandraAggregationRepository(SyncCqlSession session) {
-//        this.sessionHolder = new CassandraSessionHolder(session);
-//    }
 
-    public CassandraAggregationRepository(SyncCqlSession session) {
+    public CassandraAggregationRepository(CqlSession session) {
         this.sessionHolder = new CassandraSessionHolder(session);
+    }
+
+    public CassandraAggregationRepository(CqlSession session, String keyspace) {
+        this.sessionHolder = new CassandraSessionHolder(session, keyspace);
     }
 
     /**
@@ -169,9 +179,9 @@ public class CassandraAggregationRepository extends ServiceSupport implements Re
 
     private void initInsertStatement() {
         Insert insert = generateInsert(table, getAllColumns(), false, ttl);
-        insert = applyConsistencyLevel(insert, writeConsistencyLevel);
-        LOGGER.debug("Generated Insert {}", insert);
-        insertStatement = getSession().prepare(insert);
+        SimpleStatement statement = applyConsistencyLevel(insert.build(), writeConsistencyLevel);
+        LOGGER.debug("Generated Insert {}", statement);
+        insertStatement = getSession().prepare(statement);
     }
 
     /**
@@ -195,10 +205,11 @@ public class CassandraAggregationRepository extends ServiceSupport implements Re
     // Get exchange from repository
 
     protected void initSelectStatement() {
-        Select select = generateSelect(table, getAllColumns(), pkColumns);
-        select = applyConsistencyLevel(select, readConsistencyLevel);
-        LOGGER.debug("Generated Select {}", select);
-        selectStatement = getSession().prepare(select);
+//        todo jondruse
+//        SelectF select = generateSelect(table, getAllColumns(), pkColumns);
+//        select = applyConsistencyLevel(select, readConsistencyLevel);
+//        LOGGER.debug("Generated Select {}", select);
+//        selectStatement = getSession().prepare(select);
     }
 
     /**
@@ -212,7 +223,7 @@ public class CassandraAggregationRepository extends ServiceSupport implements Re
         Exchange exchange = null;
         if (row != null) {
             try {
-                exchange = exchangeCodec.unmarshallExchange(camelContext, row.getBytes(exchangeColumn));
+                exchange = exchangeCodec.unmarshallExchange(camelContext, row.getByteBuffer(exchangeColumn));
             } catch (IOException iOException) {
                 throw new CassandraAggregationException("Failed to read exchange", exchange, iOException);
             } catch (ClassNotFoundException classNotFoundException) {
@@ -226,10 +237,10 @@ public class CassandraAggregationRepository extends ServiceSupport implements Re
     // Confirm exchange in repository
     private void initDeleteIfIdStatement() {
         Delete delete = generateDelete(table, pkColumns, false);
-        Delete.Conditions deleteIf = delete.onlyIf(eq(exchangeIdColumn, bindMarker()));
-        deleteIf = applyConsistencyLevel(deleteIf, writeConsistencyLevel);
-        LOGGER.debug("Generated Delete If Id {}", deleteIf);
-        deleteIfIdStatement = getSession().prepare(deleteIf);
+        Delete deleteIf = delete.ifColumn(exchangeIdColumn).isEqualTo(bindMarker());
+        SimpleStatement statement = applyConsistencyLevel(deleteIf.build(), writeConsistencyLevel);
+        LOGGER.debug("Generated Delete If Id {}", statement);
+        deleteIfIdStatement = getSession().prepare(statement);
     }
 
     /**
@@ -255,9 +266,9 @@ public class CassandraAggregationRepository extends ServiceSupport implements Re
 
     private void initDeleteStatement() {
         Delete delete = generateDelete(table, pkColumns, false);
-        delete = applyConsistencyLevel(delete, writeConsistencyLevel);
-        LOGGER.debug("Generated Delete {}", delete);
-        deleteStatement = getSession().prepare(delete);
+        SimpleStatement statement = applyConsistencyLevel(delete.build(), writeConsistencyLevel);
+        LOGGER.debug("Generated Delete {}", statement);
+        deleteStatement = getSession().prepare(statement);
     }
 
     /**
@@ -281,9 +292,9 @@ public class CassandraAggregationRepository extends ServiceSupport implements Re
                                                                          // fixed
                                                                          // PK
                                                                          // columns
-        select = applyConsistencyLevel(select, readConsistencyLevel);
-        LOGGER.debug("Generated Select keys {}", select);
-        selectKeyIdStatement = getSession().prepare(select);
+        SimpleStatement statement = applyConsistencyLevel(select.build(), readConsistencyLevel);
+        LOGGER.debug("Generated Select keys {}", statement);
+        selectKeyIdStatement = getSession().prepare(statement);
     }
 
     protected List<Row> selectKeyIds() {
@@ -341,11 +352,11 @@ public class CassandraAggregationRepository extends ServiceSupport implements Re
     // -------------------------------------------------------------------------
     // Getters and Setters
 
-    public Session getSession() {
+    public CqlSession getSession() {
         return sessionHolder.getSession();
     }
 
-    public void setSession(Session session) {
+    public void setSession(CqlSession session) {
         this.sessionHolder = new CassandraSessionHolder(session);
     }
 

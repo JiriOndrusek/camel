@@ -1334,7 +1334,7 @@ public class StaticEndpointBuilders {
      * 
      * @param path label
      */
-    static org.apache.camel.builder.endpoint.dsl.MSK2EndpointBuilderFactory.MSK2EndpointBuilder aws2Msk(
+    public static org.apache.camel.builder.endpoint.dsl.MSK2EndpointBuilderFactory.MSK2EndpointBuilder aws2Msk(
             String path) {
         return org.apache.camel.builder.endpoint.dsl.MSK2EndpointBuilderFactory.endpointBuilder("aws2-msk", path);
     }
@@ -1355,7 +1355,7 @@ public class StaticEndpointBuilders {
      * instead of the default name
      * @param path label
      */
-    static org.apache.camel.builder.endpoint.dsl.MSK2EndpointBuilderFactory.MSK2EndpointBuilder aws2Msk(
+    public static org.apache.camel.builder.endpoint.dsl.MSK2EndpointBuilderFactory.MSK2EndpointBuilder aws2Msk(
             String componentName,
             String path) {
         return org.apache.camel.builder.endpoint.dsl.MSK2EndpointBuilderFactory.endpointBuilder(componentName, path);
@@ -3589,7 +3589,7 @@ public class StaticEndpointBuilders {
      * 
      * @param path beanRef:hosts:port/keyspace
      */
-    public static org.apache.camel.builder.endpoint.dsl.CassandraEndpointBuilderFactory.CassandraEndpointBuilder cql(
+    static org.apache.camel.builder.endpoint.dsl.CassandraEndpointBuilderFactory.CassandraEndpointBuilder cql(
             String path) {
         return org.apache.camel.builder.endpoint.dsl.CassandraEndpointBuilderFactory.endpointBuilder("cql", path);
     }
@@ -3620,7 +3620,7 @@ public class StaticEndpointBuilders {
      * instead of the default name
      * @param path beanRef:hosts:port/keyspace
      */
-    public static org.apache.camel.builder.endpoint.dsl.CassandraEndpointBuilderFactory.CassandraEndpointBuilder cql(
+    static org.apache.camel.builder.endpoint.dsl.CassandraEndpointBuilderFactory.CassandraEndpointBuilder cql(
             String componentName,
             String path) {
         return org.apache.camel.builder.endpoint.dsl.CassandraEndpointBuilderFactory.endpointBuilder(componentName, path);

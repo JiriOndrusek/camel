@@ -16,10 +16,12 @@
  */
 package org.apache.camel.component.cassandra;
 
-import com.datastax.driver.core.Cluster;
+import com.datastax.oss.driver.api.core.CqlSession;
 import org.cassandraunit.dataset.CQLDataSet;
 import org.cassandraunit.dataset.cql.ClassPathCQLDataSet;
 import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
+
+import java.net.InetSocketAddress;
 
 /**
  * Util methods to manage Cassandra in Unit tests
@@ -68,7 +70,7 @@ public final class CassandraUnitUtils {
         EmbeddedCassandraServerHelper.cleanEmbeddedCassandra();
     }
 
-    public static Cluster cassandraCluster() {
-        return Cluster.builder().addContactPoint(HOST).withClusterName("camel-cluster").build();
+    public static CqlSession cassandraSession() {
+        return CqlSession.builder().addContactPoint(new InetSocketAddress(HOST, 9042)).withKeyspace(KEYSPACE).withLocalDatacenter("datacenter1").build();
     }
 }

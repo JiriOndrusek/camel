@@ -49,7 +49,7 @@ public class CassandraAggregationRepositoryTest extends BaseCassandraTest {
     @Override
     protected void doPreSetup() throws Exception {
         camelContext = new DefaultCamelContext();
-        aggregationRepository = new CassandraAggregationRepository(cassandra.cluster, CassandraUnitUtils.KEYSPACE);
+        aggregationRepository = new CassandraAggregationRepository(cassandra.session, CassandraUnitUtils.KEYSPACE);
         aggregationRepository.start();
         super.doPreSetup();
     }
@@ -61,7 +61,7 @@ public class CassandraAggregationRepositoryTest extends BaseCassandraTest {
     }
 
     private boolean exists(String key) {
-        return cassandra.session.execute("select KEY from CAMEL_AGGREGATION where KEY=?", key).one() != null;
+        return cassandra.session.execute(String.format("select KEY from CAMEL_AGGREGATION where KEY='%s'", key)).one() != null;
     }
 
     @Test

@@ -16,6 +16,16 @@
  */
 package org.apache.camel.processor.idempotent.cassandra;
 
+import com.datastax.oss.driver.api.core.ConsistencyLevel;
+import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.PreparedStatement;
+import com.datastax.oss.driver.api.core.cql.ResultSet;
+import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.core.cql.SimpleStatement;
+import com.datastax.oss.driver.api.querybuilder.delete.Delete;
+import com.datastax.oss.driver.api.querybuilder.insert.Insert;
+import com.datastax.oss.driver.api.querybuilder.select.Select;
+import com.datastax.oss.driver.api.querybuilder.truncate.Truncate;
 import org.apache.camel.spi.IdempotentRepository;
 import org.apache.camel.support.service.ServiceSupport;
 import org.apache.camel.utils.cassandra.CassandraSessionHolder;
@@ -77,12 +87,12 @@ public class CassandraIdempotentRepository extends ServiceSupport implements Ide
     public CassandraIdempotentRepository() {
     }
 
-    public CassandraIdempotentRepository(Session session) {
+    public CassandraIdempotentRepository(CqlSession session) {
         this.sessionHolder = new CassandraSessionHolder(session);
     }
 
-    public CassandraIdempotentRepository(Cluster cluster, String keyspace) {
-        this.sessionHolder = new CassandraSessionHolder(cluster, keyspace);
+    public CassandraIdempotentRepository(CqlSession session, String keyspace) {
+        this.sessionHolder = new CassandraSessionHolder(session, keyspace);
     }
 
     private boolean isKey(ResultSet resultSet) {
@@ -98,7 +108,7 @@ public class CassandraIdempotentRepository extends ServiceSupport implements Ide
 
     protected final boolean isApplied(ResultSet resultSet) {
         Row row = resultSet.one();
-        return row == null || row.getBool("[applied]");
+        return row == null || row.getBoolean("[applied]");
     }
 
     protected Object[] getPKValues(String key) {
@@ -125,9 +135,9 @@ public class CassandraIdempotentRepository extends ServiceSupport implements Ide
 
     protected void initInsertStatement() {
         Insert insert = generateInsert(table, pkColumns, true, ttl);
-        insert = applyConsistencyLevel(insert, writeConsistencyLevel);
-        LOGGER.debug("Generated Insert {}", insert);
-        insertStatement = getSession().prepare(insert);
+        SimpleStatement statement = applyConsistencyLevel(insert.build(), writeConsistencyLevel);
+        LOGGER.debug("Generated Insert {}", statement);
+        insertStatement = getSession().prepare(statement);
     }
 
     @Override
@@ -142,9 +152,9 @@ public class CassandraIdempotentRepository extends ServiceSupport implements Ide
 
     protected void initSelectStatement() {
         Select select = generateSelect(table, pkColumns, pkColumns);
-        select = applyConsistencyLevel(select, readConsistencyLevel);
-        LOGGER.debug("Generated Select {}", select);
-        selectStatement = getSession().prepare(select);
+        SimpleStatement statement = applyConsistencyLevel(select.build(), readConsistencyLevel);
+        LOGGER.debug("Generated Select {}", statement);
+        selectStatement = getSession().prepare(statement);
     }
 
     @Override
@@ -164,9 +174,9 @@ public class CassandraIdempotentRepository extends ServiceSupport implements Ide
 
     protected void initDeleteStatement() {
         Delete delete = generateDelete(table, pkColumns, true);
-        delete = applyConsistencyLevel(delete, writeConsistencyLevel);
-        LOGGER.debug("Generated Delete {}", delete);
-        deleteStatement = getSession().prepare(delete);
+        SimpleStatement statement = applyConsistencyLevel(delete.build(), writeConsistencyLevel);
+        LOGGER.debug("Generated Delete {}", statement);
+        deleteStatement = getSession().prepare(statement);
     }
 
     @Override
@@ -176,14 +186,15 @@ public class CassandraIdempotentRepository extends ServiceSupport implements Ide
         return isApplied(getSession().execute(deleteStatement.bind(idValues)));
     }
 
+
     // -------------------------------------------------------------------------
     // Clear the repository
 
     protected void initClearStatement() {
         Truncate truncate = generateTruncate(table);
-        truncate = applyConsistencyLevel(truncate, writeConsistencyLevel);
-        LOGGER.debug("Generated truncate for clear operation {}", truncate);
-        truncateStatement = getSession().prepare(truncate);
+        SimpleStatement statement = applyConsistencyLevel(truncate.build(), writeConsistencyLevel);
+        LOGGER.debug("Generated truncate for clear operation {}", statement);
+        truncateStatement = getSession().prepare(statement);
     }
 
     @Override
@@ -195,11 +206,11 @@ public class CassandraIdempotentRepository extends ServiceSupport implements Ide
     // -------------------------------------------------------------------------
     // Getters & Setters
 
-    public Session getSession() {
+    public CqlSession getSession() {
         return sessionHolder.getSession();
     }
 
-    public void setSession(Session session) {
+    public void setSession(CqlSession session) {
         this.sessionHolder = new CassandraSessionHolder(session);
     }
 

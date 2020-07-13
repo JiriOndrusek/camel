@@ -17,7 +17,7 @@
 package org.apache.camel.processor.aggregate.cassandra;
 
 
-import com.datastax.oss.driver.api.core.session.Session;
+import com.datastax.oss.driver.api.core.CqlSession;
 
 /**
  * Concrete implementation of {@link CassandraAggregationRepository} using 2
@@ -29,14 +29,14 @@ public class NamedCassandraAggregationRepository extends CassandraAggregationRep
         setName("DEFAULT");
     }
 
-    public NamedCassandraAggregationRepository(Session session, String name) {
+    NamedCassandraAggregationRepository(CqlSession session, String name) {
         super(session);
         setPKColumns("NAME", "KEY");
         setName(name);
     }
 
-    public NamedCassandraAggregationRepository(Cluster cluster, String keyspace, String name) {
-        super(cluster, keyspace);
+    public NamedCassandraAggregationRepository(CqlSession session, String keyspace, String name) {
+        super(session, keyspace);
         setPKColumns("NAME", "KEY");
         setName(name);
     }

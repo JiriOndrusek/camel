@@ -16,8 +16,7 @@
  */
 package org.apache.camel.component.cassandra;
 
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Session;
+import com.datastax.oss.driver.api.core.CqlSession;
 import org.cassandraunit.CQLDataLoader;
 import org.cassandraunit.dataset.CQLDataSet;
 import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
@@ -29,8 +28,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class CassandraCQLUnit implements BeforeAllCallback, BeforeEachCallback {
 
-    public Session session;
-    public Cluster cluster;
+    public CqlSession session;
     protected CQLDataSet dataSet;
     protected String configurationFileName;
     protected long startupTimeoutMillis = EmbeddedCassandraServerHelper.DEFAULT_STARTUP_TIMEOUT;
@@ -45,15 +43,18 @@ public class CassandraCQLUnit implements BeforeAllCallback, BeforeEachCallback {
         assumeTrue(BaseCassandraTest.canTest(),
                 "Skipping test running in CI server - Fails sometimes on CI server with address already in use");
 
-        /* start an embedded Cassandra */
-        if (configurationFileName != null) {
-            EmbeddedCassandraServerHelper.startEmbeddedCassandra(configurationFileName, startupTimeoutMillis);
-        } else {
-            EmbeddedCassandraServerHelper.startEmbeddedCassandra(startupTimeoutMillis);
+        try {
+            /* start an embedded Cassandra */
+            if (configurationFileName != null) {
+                    EmbeddedCassandraServerHelper.startEmbeddedCassandra(configurationFileName, startupTimeoutMillis);
+            } else {
+                EmbeddedCassandraServerHelper.startEmbeddedCassandra(startupTimeoutMillis);
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
         }
 
         /* create structure and load data */
-        cluster = EmbeddedCassandraServerHelper.getCluster();
         session = EmbeddedCassandraServerHelper.getSession();
     }
 

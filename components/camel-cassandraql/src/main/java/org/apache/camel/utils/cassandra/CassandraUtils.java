@@ -15,6 +15,21 @@
  * limitations under the License.
  */
 package org.apache.camel.utils.cassandra;
+//
+import com.datastax.oss.driver.api.core.ConsistencyLevel;
+import com.datastax.oss.driver.api.core.cql.SimpleStatement;
+import com.datastax.oss.driver.api.querybuilder.QueryBuilder;
+import com.datastax.oss.driver.api.querybuilder.delete.Delete;
+import com.datastax.oss.driver.api.querybuilder.delete.DeleteSelection;
+import com.datastax.oss.driver.api.querybuilder.insert.Insert;
+import com.datastax.oss.driver.api.querybuilder.insert.InsertInto;
+import com.datastax.oss.driver.api.querybuilder.select.Select;
+import com.datastax.oss.driver.api.querybuilder.select.SelectFrom;
+import com.datastax.oss.driver.api.querybuilder.truncate.Truncate;
+
+import static com.datastax.oss.driver.api.querybuilder.QueryBuilder.bindMarker;
+import static com.datastax.oss.driver.api.querybuilder.QueryBuilder.insertInto;
+import static com.datastax.oss.driver.api.querybuilder.QueryBuilder.selectFrom;
 
 public final class CassandraUtils {
 
@@ -86,15 +101,17 @@ public final class CassandraUtils {
      * Generate Insert CQL.
      */
     public static Insert generateInsert(String table, String[] columns, boolean ifNotExists, Integer ttl) {
-        Insert insert = insertInto(table);
+        InsertInto into = insertInto(table);
+        Insert insert = null;
         for (String column : columns) {
-            insert = insert.value(column, bindMarker());
+            if(ttl == null) {
+                insert = into.value(column, bindMarker());
+            } else {
+                insert = into.value(column, bindMarker()).usingTtl(ttl);
+            }
         }
         if (ifNotExists) {
-            insert = insert.ifNotExists();
-        }
-        if (ttl != null) {
-            insert.using(ttl(ttl));
+            insert = into.json(bindMarker()).ifNotExists();
         }
         return insert;
     }
@@ -110,37 +127,43 @@ public final class CassandraUtils {
      * Generate select where columns = ? CQL.
      */
     public static Select generateSelect(String table, String[] selectColumns, String[] whereColumns, int whereColumnsMaxIndex) {
-        Select select = select(selectColumns).from(table);
+        SelectFrom from = selectFrom(table);
+        for (String column: selectColumns) {
+            from.column(column).all();
+        }
+        Select s = from.all();
         if (isWhereClause(whereColumns, whereColumnsMaxIndex)) {
-            Select.Where where = select.where();
             for (int i = 0; i < whereColumns.length && i < whereColumnsMaxIndex; i++) {
-                where.and(eq(whereColumns[i], bindMarker()));
+                s.whereColumn(whereColumns[i]).isEqualTo(bindMarker());
             }
         }
-        return select;
+        return s;
     }
 
-    /**
+   /**
      * Generate delete where columns = ? CQL.
      */
     public static Delete generateDelete(String table, String[] whereColumns, boolean ifExists) {
         return generateDelete(table, whereColumns, size(whereColumns), ifExists);
     }
 
-    /**
+   /**
      * Generate delete where columns = ? CQL.
      */
     public static Delete generateDelete(String table, String[] whereColumns, int whereColumnsMaxIndex, boolean ifExists) {
-        Delete delete = delete().from(table);
+        DeleteSelection deleteSelection = QueryBuilder.deleteFrom(table);
+        Delete delete = null;
+
         if (isWhereClause(whereColumns, whereColumnsMaxIndex)) {
-            Delete.Where where = delete.where();
             for (int i = 0; i < whereColumns.length && i < whereColumnsMaxIndex; i++) {
-                where.and(eq(whereColumns[i], bindMarker()));
+                delete = (delete != null ? delete : deleteSelection).whereColumn(whereColumns[i]).isEqualTo(bindMarker());
             }
         }
-        if (ifExists) {
-            delete = delete.ifExists();
-        }
+
+        //todo jondruse
+//        if (ifExists) {
+//            deleteSelection = deleteSelection.ifExists();
+//        }
         return delete;
     }
 
@@ -159,7 +182,7 @@ public final class CassandraUtils {
     /**
      * Apply consistency level if provided, else leave default.
      */
-    public static <T extends RegularStatement> T applyConsistencyLevel(T statement, ConsistencyLevel consistencyLevel) {
+    public static <T extends SimpleStatement> T applyConsistencyLevel(T statement, ConsistencyLevel consistencyLevel) {
         if (consistencyLevel != null) {
             statement.setConsistencyLevel(consistencyLevel);
         }
