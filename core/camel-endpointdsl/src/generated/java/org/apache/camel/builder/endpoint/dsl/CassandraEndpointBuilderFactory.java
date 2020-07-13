@@ -61,12 +61,13 @@ public interface CassandraEndpointBuilderFactory {
          * Consistency level to use.
          * 
          * The option is a:
-         * <code>com.datastax.oss.driver.api.core.ConsistencyLevel</code> type.
+         * <code>com.datastax.oss.driver.api.core.DefaultConsistencyLevel</code>
+         * type.
          * 
          * Group: common
          */
         default CassandraEndpointConsumerBuilder consistencyLevel(
-                Object consistencyLevel) {
+                DefaultConsistencyLevel consistencyLevel) {
             doSetProperty("consistencyLevel", consistencyLevel);
             return this;
         }
@@ -74,7 +75,8 @@ public interface CassandraEndpointBuilderFactory {
          * Consistency level to use.
          * 
          * The option will be converted to a
-         * <code>com.datastax.oss.driver.api.core.ConsistencyLevel</code> type.
+         * <code>com.datastax.oss.driver.api.core.DefaultConsistencyLevel</code>
+         * type.
          * 
          * Group: common
          */
@@ -829,12 +831,13 @@ public interface CassandraEndpointBuilderFactory {
          * Consistency level to use.
          * 
          * The option is a:
-         * <code>com.datastax.oss.driver.api.core.ConsistencyLevel</code> type.
+         * <code>com.datastax.oss.driver.api.core.DefaultConsistencyLevel</code>
+         * type.
          * 
          * Group: common
          */
         default CassandraEndpointProducerBuilder consistencyLevel(
-                Object consistencyLevel) {
+                DefaultConsistencyLevel consistencyLevel) {
             doSetProperty("consistencyLevel", consistencyLevel);
             return this;
         }
@@ -842,7 +845,8 @@ public interface CassandraEndpointBuilderFactory {
          * Consistency level to use.
          * 
          * The option will be converted to a
-         * <code>com.datastax.oss.driver.api.core.ConsistencyLevel</code> type.
+         * <code>com.datastax.oss.driver.api.core.DefaultConsistencyLevel</code>
+         * type.
          * 
          * Group: common
          */
@@ -1111,12 +1115,13 @@ public interface CassandraEndpointBuilderFactory {
          * Consistency level to use.
          * 
          * The option is a:
-         * <code>com.datastax.oss.driver.api.core.ConsistencyLevel</code> type.
+         * <code>com.datastax.oss.driver.api.core.DefaultConsistencyLevel</code>
+         * type.
          * 
          * Group: common
          */
         default CassandraEndpointBuilder consistencyLevel(
-                Object consistencyLevel) {
+                DefaultConsistencyLevel consistencyLevel) {
             doSetProperty("consistencyLevel", consistencyLevel);
             return this;
         }
@@ -1124,7 +1129,8 @@ public interface CassandraEndpointBuilderFactory {
          * Consistency level to use.
          * 
          * The option will be converted to a
-         * <code>com.datastax.oss.driver.api.core.ConsistencyLevel</code> type.
+         * <code>com.datastax.oss.driver.api.core.DefaultConsistencyLevel</code>
+         * type.
          * 
          * Group: common
          */
@@ -1323,6 +1329,25 @@ public interface CassandraEndpointBuilderFactory {
             doSetProperty("synchronous", synchronous);
             return this;
         }
+    }
+
+    /**
+     * Proxy enum for
+     * <code>com.datastax.oss.driver.api.core.DefaultConsistencyLevel</code>
+     * enum.
+     */
+    enum DefaultConsistencyLevel {
+        ANY,
+        ONE,
+        TWO,
+        THREE,
+        QUORUM,
+        ALL,
+        LOCAL_ONE,
+        LOCAL_QUORUM,
+        EACH_QUORUM,
+        SERIAL,
+        LOCAL_SERIAL;
     }
 
     public interface CassandraBuilders {

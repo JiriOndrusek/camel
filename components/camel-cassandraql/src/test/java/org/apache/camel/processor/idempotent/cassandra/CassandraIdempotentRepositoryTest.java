@@ -46,12 +46,12 @@ public class CassandraIdempotentRepositoryTest extends BaseCassandraTest {
         super.setUp();
     }
 
-    @Override
-    @AfterEach
-    public void tearDown() throws Exception {
-        idempotentRepository.stop();
-        super.tearDown();
-    }
+//    @Override
+//    @AfterEach
+//    public void tearDown() throws Exception {
+//        idempotentRepository.stop();
+//        super.tearDown();
+//    }
 
     private boolean exists(String key) {
         return cassandra.session.execute(String.format("select KEY from CAMEL_IDEMPOTENT where KEY='%s'", key)).one() != null;

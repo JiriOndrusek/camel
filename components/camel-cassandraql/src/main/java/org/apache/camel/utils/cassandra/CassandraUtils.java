@@ -23,6 +23,7 @@ import com.datastax.oss.driver.api.querybuilder.delete.Delete;
 import com.datastax.oss.driver.api.querybuilder.delete.DeleteSelection;
 import com.datastax.oss.driver.api.querybuilder.insert.Insert;
 import com.datastax.oss.driver.api.querybuilder.insert.InsertInto;
+import com.datastax.oss.driver.api.querybuilder.insert.RegularInsert;
 import com.datastax.oss.driver.api.querybuilder.select.Select;
 import com.datastax.oss.driver.api.querybuilder.select.SelectFrom;
 import com.datastax.oss.driver.api.querybuilder.truncate.Truncate;
@@ -102,18 +103,18 @@ public final class CassandraUtils {
      */
     public static Insert generateInsert(String table, String[] columns, boolean ifNotExists, Integer ttl) {
         InsertInto into = insertInto(table);
+        RegularInsert regularInsert = null;
         Insert insert = null;
         for (String column : columns) {
-            if(ttl == null) {
-                insert = into.value(column, bindMarker());
-            } else {
-                insert = into.value(column, bindMarker()).usingTtl(ttl);
-            }
+            regularInsert = (regularInsert != null ? regularInsert : into).value(column, bindMarker());
         }
         if (ifNotExists) {
-            insert = into.json(bindMarker()).ifNotExists();
+            insert = regularInsert.ifNotExists();
         }
-        return insert;
+        if(ttl != null) {
+            insert = (insert != null ? insert : regularInsert).usingTtl(ttl);
+        }
+        return insert != null ? insert : regularInsert;
     }
 
     /**
@@ -128,16 +129,19 @@ public final class CassandraUtils {
      */
     public static Select generateSelect(String table, String[] selectColumns, String[] whereColumns, int whereColumnsMaxIndex) {
         SelectFrom from = selectFrom(table);
+        Select select = null;
         for (String column: selectColumns) {
-            from.column(column).all();
+            select = (select != null ? select : from).column(column);
         }
-        Select s = from.all();
+        if(select == null) {
+            select = from.all();
+        }
         if (isWhereClause(whereColumns, whereColumnsMaxIndex)) {
             for (int i = 0; i < whereColumns.length && i < whereColumnsMaxIndex; i++) {
-                s.whereColumn(whereColumns[i]).isEqualTo(bindMarker());
+                select = select.whereColumn(whereColumns[i]).isEqualTo(bindMarker());
             }
         }
-        return s;
+        return select;
     }
 
    /**
@@ -158,12 +162,15 @@ public final class CassandraUtils {
             for (int i = 0; i < whereColumns.length && i < whereColumnsMaxIndex; i++) {
                 delete = (delete != null ? delete : deleteSelection).whereColumn(whereColumns[i]).isEqualTo(bindMarker());
             }
+        } else {
+            // Once there is at least one relation, the statement can be built:
+//            todo jondruse
+            throw new IllegalArgumentException("Delete without relation is not allowed.");
         }
 
-        //todo jondruse
-//        if (ifExists) {
-//            deleteSelection = deleteSelection.ifExists();
-//        }
+        if (ifExists) {
+            delete = delete.ifExists();
+        }
         return delete;
     }
 

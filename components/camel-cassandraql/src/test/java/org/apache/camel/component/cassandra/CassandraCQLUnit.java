@@ -16,17 +16,21 @@
  */
 package org.apache.camel.component.cassandra;
 
+import com.datastax.oss.driver.api.core.CqlIdentifier;
 import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.internal.core.session.DefaultSession;
 import org.cassandraunit.CQLDataLoader;
 import org.cassandraunit.dataset.CQLDataSet;
 import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-public class CassandraCQLUnit implements BeforeAllCallback, BeforeEachCallback {
+public class CassandraCQLUnit implements BeforeAllCallback, BeforeEachCallback, AfterAllCallback {
 
     public CqlSession session;
     protected CQLDataSet dataSet;
@@ -56,12 +60,25 @@ public class CassandraCQLUnit implements BeforeAllCallback, BeforeEachCallback {
 
         /* create structure and load data */
         session = EmbeddedCassandraServerHelper.getSession();
-    }
+//        if(session.isClosed()) {
+//            ((DefaultSession) session).init(CqlIdentifier.fromCql(CassandraUnitUtils.KEYSPACE));
+//        }
+     }
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
         CQLDataLoader dataLoader = new CQLDataLoader(session);
         dataLoader.load(dataSet);
+        session = dataLoader.getSession();
     }
 
+    @Override
+    public void afterAll(ExtensionContext extensionContext) throws Exception {
+//        try {
+//            CassandraUnitUtils.cleanEmbeddedCassandra();
+//            session = null;
+//        } catch (Throwable e) {
+//            // ignore shutdown errors
+//        }
+    }
 }

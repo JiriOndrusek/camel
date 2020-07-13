@@ -43,12 +43,12 @@ public class CassandraIdempotentTest extends BaseCassandraTest {
         super.doPreSetup();
     }
 
-    @Override
-    @AfterEach
-    public void tearDown() throws Exception {
-        super.tearDown();
-        idempotentRepository.stop();
-    }
+//    @Override
+//    @AfterEach
+//    public void tearDown() throws Exception {
+//        super.tearDown();
+//        idempotentRepository.stop();
+//    }
 
     @Override
     protected RouteBuilder createRouteBuilder() throws Exception {

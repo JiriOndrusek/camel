@@ -19,8 +19,10 @@ package org.apache.camel.component.cassandra;
 import com.datastax.oss.driver.api.core.ConsistencyLevel;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.CqlSessionBuilder;
+import com.datastax.oss.driver.api.core.DefaultConsistencyLevel;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
+import com.datastax.oss.driver.api.core.cql.SimpleStatement;
 import com.datastax.oss.driver.api.core.session.Session;
 import org.apache.camel.Category;
 import org.apache.camel.Component;
@@ -68,7 +70,7 @@ public class CassandraEndpoint extends ScheduledPollEndpoint {
     @UriParam
     private CqlSession session;
     @UriParam
-    private ConsistencyLevel consistencyLevel;
+    private DefaultConsistencyLevel consistencyLevel;
     @UriParam
     private String loadBalancingPolicy;
     @UriParam
@@ -101,8 +103,6 @@ public class CassandraEndpoint extends ScheduledPollEndpoint {
         super.doStart();
 
         // we can get the cluster using various ways
-
-        //todo jondruse
         if (session == null && beanRef != null) {
             Object bean = CamelContextHelper.mandatoryLookup(getCamelContext(), beanRef);
             if (bean instanceof CqlSession) {
@@ -157,12 +157,9 @@ public class CassandraEndpoint extends ScheduledPollEndpoint {
      * Create and configure a Prepared CQL statement
      */
     protected PreparedStatement prepareStatement(String cql) {
-        PreparedStatement preparedStatement = getSessionHolder().getSession().prepare(cql);
-//        todo jondruse
-//        if (consistencyLevel != null) {
-//            preparedStatement.setConsistencyLevel(consistencyLevel);
-//        }
-        return preparedStatement;
+        SimpleStatement statement = SimpleStatement.builder(cql)
+                .setConsistencyLevel(consistencyLevel).build();
+        return getSessionHolder().getSession().prepare(statement);
     }
 
     /**
@@ -302,7 +299,7 @@ public class CassandraEndpoint extends ScheduledPollEndpoint {
     /**
      * Consistency level to use
      */
-    public void setConsistencyLevel(ConsistencyLevel consistencyLevel) {
+    public void setConsistencyLevel(DefaultConsistencyLevel consistencyLevel) {
         this.consistencyLevel = consistencyLevel;
     }
 

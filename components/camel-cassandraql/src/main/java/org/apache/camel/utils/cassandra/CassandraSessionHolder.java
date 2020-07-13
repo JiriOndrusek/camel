@@ -50,14 +50,6 @@ public class CassandraSessionHolder {
     }
 
     public void start() {
-        //todo jondruse
-//        if (managedSession) {
-//            if (keyspace.isEmpty()) {
-//                this.session = cluster.connect();
-//            } else {
-//                this.session = cluster.connect(keyspace);
-//            }
-//        }
     }
 
     public void stop() {

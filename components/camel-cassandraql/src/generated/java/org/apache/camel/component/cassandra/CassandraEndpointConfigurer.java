@@ -32,7 +32,7 @@ public class CassandraEndpointConfigurer extends PropertyConfigurerSupport imple
         case "clustername":
         case "clusterName": target.setClusterName(property(camelContext, java.lang.String.class, value)); return true;
         case "consistencylevel":
-        case "consistencyLevel": target.setConsistencyLevel(property(camelContext, com.datastax.oss.driver.api.core.ConsistencyLevel.class, value)); return true;
+        case "consistencyLevel": target.setConsistencyLevel(property(camelContext, com.datastax.oss.driver.api.core.DefaultConsistencyLevel.class, value)); return true;
         case "cql": target.setCql(property(camelContext, java.lang.String.class, value)); return true;
         case "delay": target.setDelay(property(camelContext, long.class, value)); return true;
         case "exceptionhandler":
@@ -86,7 +86,7 @@ public class CassandraEndpointConfigurer extends PropertyConfigurerSupport imple
         answer.put("basicPropertyBinding", boolean.class);
         answer.put("bridgeErrorHandler", boolean.class);
         answer.put("clusterName", java.lang.String.class);
-        answer.put("consistencyLevel", com.datastax.oss.driver.api.core.ConsistencyLevel.class);
+        answer.put("consistencyLevel", com.datastax.oss.driver.api.core.DefaultConsistencyLevel.class);
         answer.put("cql", java.lang.String.class);
         answer.put("delay", long.class);
         answer.put("exceptionHandler", org.apache.camel.spi.ExceptionHandler.class);

@@ -17,6 +17,7 @@
 package org.apache.camel.component.cassandra;
 
 import org.apache.camel.test.junit5.CamelTestSupport;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.net.URL;
@@ -33,15 +34,4 @@ public abstract class BaseCassandraTest extends CamelTestSupport {
         System.out.println("-------------------------------------------------------------");
         return true;
     }
-
-    @Override
-    public void afterAll(ExtensionContext context) {
-        super.afterAll(context);
-        try {
-            CassandraUnitUtils.cleanEmbeddedCassandra();
-        } catch (Throwable e) {
-            // ignore shutdown errors
-        }
-    }
-
 }

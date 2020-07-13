@@ -118,11 +118,9 @@ public class CassandraProducer extends DefaultProducer {
         if (messageCql == null) {
             // URI CQL
             lPreparedStatement = this.preparedStatement;
-            //  todo jondruse
         } else if (messageCql instanceof String) {
             // Message CQL
             lPreparedStatement = getEndpoint().prepareStatement((String)messageCql);
-        //        todo jondruse
       }  else if (messageCql instanceof SimpleStatement) {
             // Message Statement
             lPreparedStatement = getEndpoint().getSession().prepare((SimpleStatement) messageCql);
@@ -143,27 +141,27 @@ public class CassandraProducer extends DefaultProducer {
     private ResultSet executeStatement(CqlSession session, Object messageCql, Object[] cqlParams) {
         ResultSet resultSet = null;
         String cql = null;
-        //todo jondruse
-//        RegularStatement statement = null;
+        SimpleStatement statement = null;
         if (messageCql == null) {
             // URI CQL
             cql = getEndpoint().getCql();
         } else if (messageCql instanceof String) {
             // Message CQL
             cql = (String)messageCql;
-//        } else if (messageCql instanceof RegularStatement) {
-//            // Message Statement
-//            statement = (RegularStatement)messageCql;
+        } else if (messageCql instanceof SimpleStatement) {
+            // Message Statement
+            statement = (SimpleStatement) messageCql;
         } else {
             throw new IllegalArgumentException("Invalid " + CassandraConstants.CQL_QUERY + " header");
         }
-        /*if (statement != null) {
+        if (statement != null) {
             resultSet = session.execute(statement);
-        } else */if (isEmpty(cqlParams)) {
+        } else if (isEmpty(cqlParams)) {
             resultSet = session.execute(cql);
-        } /*else {
-            resultSet = session.execute(cql, cqlParams);
-        }*/
+        } else {
+            resultSet = session.execute(
+                    SimpleStatement.builder("SELECT * FROM test where k = ?").addPositionalValues(cqlParams).build());
+        }
         return resultSet;
     }
 

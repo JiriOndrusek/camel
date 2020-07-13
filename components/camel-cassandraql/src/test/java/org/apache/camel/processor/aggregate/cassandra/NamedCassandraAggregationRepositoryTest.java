@@ -56,11 +56,11 @@ public class NamedCassandraAggregationRepositoryTest extends BaseCassandraTest {
         aggregationRepository.start();
     }
 
-    @Override
-    @AfterEach
-    public void tearDown() throws Exception {
-        aggregationRepository.stop();
-    }
+//    @Override
+//    @AfterEach
+//    public void tearDown() throws Exception {
+//        aggregationRepository.stop();
+//    }
 
     private boolean exists(String key) {
         return cassandra.session.execute(String.format("select KEY from NAMED_CAMEL_AGGREGATION where NAME='ID' and KEY='%s'", key)).one() != null;

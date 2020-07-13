@@ -54,11 +54,11 @@ public class CassandraAggregationRepositoryTest extends BaseCassandraTest {
         super.doPreSetup();
     }
 
-    @Override
-    @AfterEach
-    public void tearDown() throws Exception {
-        aggregationRepository.stop();
-    }
+//    @Override
+//    @AfterEach
+//    public void tearDown() throws Exception {
+//        aggregationRepository.stop();
+//    }
 
     private boolean exists(String key) {
         return cassandra.session.execute(String.format("select KEY from CAMEL_AGGREGATION where KEY='%s'", key)).one() != null;

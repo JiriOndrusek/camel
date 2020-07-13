@@ -30,6 +30,15 @@ public class CassandraLoadBalancingPolicies {
 
     public LoadBalancingPolicy getLoadBalancingPolicy(String policy) {
         // todo jondruse
+        //Load balancing policy
+        //Previous driver versions came with multiple load balancing policies that could be nested into each other. In our experience, this was one of the most complicated aspects of the configuration.
+        //
+        //In driver 4, we are taking a more opinionated approach: we provide a single default policy, with what we consider as the best practices:
+        //
+        //local only: we believe that failover should be handled at infrastructure level, not by application code.
+        //token-aware.
+        //optionally filtering nodes with a custom predicate.
+        //You can still provide your own policy by implementing the LoadBalancingPolicy interface.
         LoadBalancingPolicy loadBalancingPolicy = new DefaultLoadBalancingPolicy(null, policy);
 //        LoadBalancingPolicy loadBalancingPolicy = new RoundRobinPolicy();
 //        switch (policy) {

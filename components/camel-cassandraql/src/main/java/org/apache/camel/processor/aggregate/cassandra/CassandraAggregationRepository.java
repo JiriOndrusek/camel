@@ -205,11 +205,10 @@ public class CassandraAggregationRepository extends ServiceSupport implements Re
     // Get exchange from repository
 
     protected void initSelectStatement() {
-//        todo jondruse
-//        SelectF select = generateSelect(table, getAllColumns(), pkColumns);
-//        select = applyConsistencyLevel(select, readConsistencyLevel);
-//        LOGGER.debug("Generated Select {}", select);
-//        selectStatement = getSession().prepare(select);
+        Select select = generateSelect(table, getAllColumns(), pkColumns);
+        SimpleStatement statement = applyConsistencyLevel(select.build(), readConsistencyLevel);
+        LOGGER.debug("Generated Select {}", statement);
+        selectStatement = getSession().prepare(statement);
     }
 
     /**
