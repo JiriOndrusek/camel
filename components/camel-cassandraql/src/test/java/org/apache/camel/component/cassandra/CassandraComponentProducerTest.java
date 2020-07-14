@@ -36,6 +36,7 @@ import static org.apache.camel.test.junit5.TestSupport.assertIsInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static com.datastax.oss.driver.api.querybuilder.QueryBuilder.bindMarker;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CassandraComponentProducerTest extends BaseCassandraTest {
 
@@ -68,7 +69,7 @@ public class CassandraComponentProducerTest extends BaseCassandraTest {
 
                 from("direct:input").to("cql://localhost/camel_ks?cql=" + CQL);
                 from("direct:inputNoParameter").to("cql://localhost/camel_ks?cql=" + NO_PARAMETER_CQL);
-                from("direct:loadBalancingPolicy").to("cql://localhost/camel_ks?cql=" + NO_PARAMETER_CQL + "&loadBalancingPolicy=RoundRobinPolicy");
+                from("direct:loadBalancingPolicy").to("cql://localhost/camel_ks?cql=" + NO_PARAMETER_CQL + "&loadBalancingPolicyClass=org.apache.camel.component.cassandra.MockLoadBalancingPolicy");
                 from("direct:inputNotConsistent").to(NOT_CONSISTENT_URI);
                 from("direct:inputNoEndpointCql").to("cql://localhost/camel_ks");
             }
@@ -120,16 +121,20 @@ public class CassandraComponentProducerTest extends BaseCassandraTest {
 
     @Test
     public void testLoadBalancing() throws Exception {
-        loadBalancingPolicyTemplate.requestBodyAndHeader(new Object[] {"Claus 2", "Ibsen 2", "c_ibsen"}, CassandraConstants.CQL_QUERY,
-                                                         "update camel_user set first_name=?, last_name=? where login=?");
+        loadBalancingPolicyTemplate.requestBodyAndHeader(new Object[]{"Claus 2", "Ibsen 2", "c_ibsen"}, CassandraConstants.CQL_QUERY,
+                "update camel_user set first_name=?, last_name=? where login=?");
+
 
         CqlSession session = CassandraUnitUtils.cassandraSession();
-        ResultSet resultSet = session.execute(String.format("select login, first_name, last_name from camel_user where login = '%'", "c_ibsen"));
+        ResultSet resultSet = session.execute(String.format("select login, first_name, last_name from camel_user where login = '%s'", "c_ibsen"));
         Row row = resultSet.one();
         assertNotNull(row);
         assertEquals("Claus 2", row.getString("first_name"));
         assertEquals("Ibsen 2", row.getString("last_name"));
         session.close();
+
+
+        assertTrue(MockLoadBalancingPolicy.USED);
     }
 
     /**

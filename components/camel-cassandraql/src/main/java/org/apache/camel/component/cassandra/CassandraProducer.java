@@ -160,7 +160,7 @@ public class CassandraProducer extends DefaultProducer {
             resultSet = session.execute(cql);
         } else {
             resultSet = session.execute(
-                    SimpleStatement.builder("SELECT * FROM test where k = ?").addPositionalValues(cqlParams).build());
+                    SimpleStatement.builder(cql).addPositionalValues(cqlParams).build());
         }
         return resultSet;
     }

@@ -34,6 +34,7 @@ public class CassandraEndpointConfigurer extends PropertyConfigurerSupport imple
         case "consistencylevel":
         case "consistencyLevel": target.setConsistencyLevel(property(camelContext, com.datastax.oss.driver.api.core.DefaultConsistencyLevel.class, value)); return true;
         case "cql": target.setCql(property(camelContext, java.lang.String.class, value)); return true;
+        case "datacenter": target.setDatacenter(property(camelContext, java.lang.String.class, value)); return true;
         case "delay": target.setDelay(property(camelContext, long.class, value)); return true;
         case "exceptionhandler":
         case "exceptionHandler": target.setExceptionHandler(property(camelContext, org.apache.camel.spi.ExceptionHandler.class, value)); return true;
@@ -44,8 +45,8 @@ public class CassandraEndpointConfigurer extends PropertyConfigurerSupport imple
         case "initialDelay": target.setInitialDelay(property(camelContext, long.class, value)); return true;
         case "lazystartproducer":
         case "lazyStartProducer": target.setLazyStartProducer(property(camelContext, boolean.class, value)); return true;
-        case "loadbalancingpolicy":
-        case "loadBalancingPolicy": target.setLoadBalancingPolicy(property(camelContext, java.lang.String.class, value)); return true;
+        case "loadbalancingpolicyclass":
+        case "loadBalancingPolicyClass": target.setLoadBalancingPolicyClass(property(camelContext, java.lang.String.class, value)); return true;
         case "password": target.setPassword(property(camelContext, java.lang.String.class, value)); return true;
         case "pollstrategy":
         case "pollStrategy": target.setPollStrategy(property(camelContext, org.apache.camel.spi.PollingConsumerPollStrategy.class, value)); return true;
@@ -88,13 +89,14 @@ public class CassandraEndpointConfigurer extends PropertyConfigurerSupport imple
         answer.put("clusterName", java.lang.String.class);
         answer.put("consistencyLevel", com.datastax.oss.driver.api.core.DefaultConsistencyLevel.class);
         answer.put("cql", java.lang.String.class);
+        answer.put("datacenter", java.lang.String.class);
         answer.put("delay", long.class);
         answer.put("exceptionHandler", org.apache.camel.spi.ExceptionHandler.class);
         answer.put("exchangePattern", org.apache.camel.ExchangePattern.class);
         answer.put("greedy", boolean.class);
         answer.put("initialDelay", long.class);
         answer.put("lazyStartProducer", boolean.class);
-        answer.put("loadBalancingPolicy", java.lang.String.class);
+        answer.put("loadBalancingPolicyClass", java.lang.String.class);
         answer.put("password", java.lang.String.class);
         answer.put("pollStrategy", org.apache.camel.spi.PollingConsumerPollStrategy.class);
         answer.put("prepareStatements", boolean.class);
@@ -133,6 +135,7 @@ public class CassandraEndpointConfigurer extends PropertyConfigurerSupport imple
         case "consistencylevel":
         case "consistencyLevel": return target.getConsistencyLevel();
         case "cql": return target.getCql();
+        case "datacenter": return target.getDatacenter();
         case "delay": return target.getDelay();
         case "exceptionhandler":
         case "exceptionHandler": return target.getExceptionHandler();
@@ -143,8 +146,8 @@ public class CassandraEndpointConfigurer extends PropertyConfigurerSupport imple
         case "initialDelay": return target.getInitialDelay();
         case "lazystartproducer":
         case "lazyStartProducer": return target.isLazyStartProducer();
-        case "loadbalancingpolicy":
-        case "loadBalancingPolicy": return target.getLoadBalancingPolicy();
+        case "loadbalancingpolicyclass":
+        case "loadBalancingPolicyClass": return target.getLoadBalancingPolicyClass();
         case "password": return target.getPassword();
         case "pollstrategy":
         case "pollStrategy": return target.getPollStrategy();

@@ -20,10 +20,11 @@ import com.datastax.oss.driver.api.core.ConsistencyLevel;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.CqlSessionBuilder;
 import com.datastax.oss.driver.api.core.DefaultConsistencyLevel;
+import com.datastax.oss.driver.api.core.config.DefaultDriverOption;
+import com.datastax.oss.driver.api.core.config.DriverConfigLoader;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.SimpleStatement;
-import com.datastax.oss.driver.api.core.session.Session;
 import org.apache.camel.Category;
 import org.apache.camel.Component;
 import org.apache.camel.Consumer;
@@ -57,6 +58,8 @@ public class CassandraEndpoint extends ScheduledPollEndpoint {
     private Integer port;
     @UriPath
     private String keyspace;
+    @UriParam(defaultValue = "datacenter1")
+    private String datacenter = "datacenter1";
     @UriParam
     private String cql;
     @UriParam(defaultValue = "true")
@@ -72,7 +75,7 @@ public class CassandraEndpoint extends ScheduledPollEndpoint {
     @UriParam
     private DefaultConsistencyLevel consistencyLevel;
     @UriParam
-    private String loadBalancingPolicy;
+    private String loadBalancingPolicyClass;
     @UriParam
     private ResultSetConversionStrategy resultSetConversionStrategy = ResultSetConversionStrategies.all();
 
@@ -142,13 +145,14 @@ public class CassandraEndpoint extends ScheduledPollEndpoint {
         if (username != null && !username.isEmpty() && password != null) {
             sessionBuilder.withAuthCredentials(username, password);
         }
-        if (loadBalancingPolicy != null && !loadBalancingPolicy.isEmpty()) {
-            //        todo jondruse
-//            sessionBuilder.withLoadBalancingPolicy(cassLoadBalancingPolicies.getLoadBalancingPolicy(loadBalancingPolicy));
+        if (loadBalancingPolicyClass != null && !loadBalancingPolicyClass.isEmpty()) {
+            DriverConfigLoader driverConfigLoader = DriverConfigLoader.programmaticBuilder()
+                    .withString(DefaultDriverOption.LOAD_BALANCING_POLICY_CLASS, loadBalancingPolicyClass)
+                    .build();
+            sessionBuilder.withConfigLoader(driverConfigLoader);
         }
 
-        //        todo jondruse
-        sessionBuilder.withLocalDatacenter("datacenter1");
+        sessionBuilder.withLocalDatacenter(datacenter);
         sessionBuilder.withKeyspace(keyspace);
         return sessionBuilder;
     }
@@ -230,6 +234,17 @@ public class CassandraEndpoint extends ScheduledPollEndpoint {
      */
     public void setKeyspace(String keyspace) {
         this.keyspace = keyspace;
+    }
+
+    public String getDatacenter() {
+        return datacenter;
+    }
+
+    /**
+     * Datacenter to use
+     */
+    public void setDatacenter(String datacenter) {
+        this.datacenter = datacenter;
     }
 
     public String getCql() {
@@ -327,14 +342,15 @@ public class CassandraEndpoint extends ScheduledPollEndpoint {
     }
 
     /**
-     * To use a specific LoadBalancingPolicy
+     * To use a specific LoadBalancingPolicyClass
      */
-    public String getLoadBalancingPolicy() {
-        return loadBalancingPolicy;
+    public String getLoadBalancingPolicyClass() {
+        return loadBalancingPolicyClass;
     }
 
-    public void setLoadBalancingPolicy(String loadBalancingPolicy) {
-        this.loadBalancingPolicy = loadBalancingPolicy;
+    public void setLoadBalancingPolicyClass(String loadBalancingPolicyClass) {
+        this.loadBalancingPolicyClass = loadBalancingPolicyClass;
     }
+
 
 }

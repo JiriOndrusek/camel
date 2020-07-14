@@ -30,7 +30,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-public class CassandraCQLUnit implements BeforeAllCallback, BeforeEachCallback, AfterAllCallback {
+public class CassandraCQLUnit implements BeforeAllCallback, BeforeEachCallback, AfterEachCallback {
 
     public CqlSession session;
     protected CQLDataSet dataSet;
@@ -57,28 +57,22 @@ public class CassandraCQLUnit implements BeforeAllCallback, BeforeEachCallback, 
         } catch(Exception e) {
             e.printStackTrace();
         }
-
-        /* create structure and load data */
-        session = EmbeddedCassandraServerHelper.getSession();
-//        if(session.isClosed()) {
-//            ((DefaultSession) session).init(CqlIdentifier.fromCql(CassandraUnitUtils.KEYSPACE));
-//        }
      }
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
+        /* create structure and load data */
+        session = CqlSession.builder().build();
         CQLDataLoader dataLoader = new CQLDataLoader(session);
         dataLoader.load(dataSet);
-        session = dataLoader.getSession();
     }
 
     @Override
-    public void afterAll(ExtensionContext extensionContext) throws Exception {
-//        try {
-//            CassandraUnitUtils.cleanEmbeddedCassandra();
-//            session = null;
-//        } catch (Throwable e) {
-//            // ignore shutdown errors
-//        }
+    public void afterEach(ExtensionContext extensionContext) throws Exception {
+        try {
+            session.close();
+        } catch (Throwable e) {
+            // ignore shutdown errors
+        }
     }
 }

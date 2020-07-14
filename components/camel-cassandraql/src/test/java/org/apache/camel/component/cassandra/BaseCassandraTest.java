@@ -26,12 +26,16 @@ public abstract class BaseCassandraTest extends CamelTestSupport {
 
     public static boolean canTest() {
         // we cannot test on CI
-        //todo do not commit
-        URL url = Thread.currentThread().getContextClassLoader().getResource("camel-cassandra.yaml");
-        System.setProperty("cassandra.config", "file://"+url.getFile());
-        System.out.println("-------------------------------------------------------------");
-        System.out.println("-------------------------------------------------------------");
-        System.out.println("-------------------------------------------------------------");
-        return true;
+        return System.getenv("BUILD_ID") == null;
+    }
+
+    @Override
+    public void afterAll(ExtensionContext context) {
+        super.afterAll(context);
+        try {
+            CassandraUnitUtils.cleanEmbeddedCassandra();
+        } catch (Throwable e) {
+            // ignore shutdown errors
+        }
     }
 }

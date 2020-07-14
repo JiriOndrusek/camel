@@ -98,15 +98,27 @@ public interface CassandraEndpointBuilderFactory {
             return this;
         }
         /**
-         * To use a specific LoadBalancingPolicy.
+         * Datacenter to use.
+         * 
+         * The option is a: <code>java.lang.String</code> type.
+         * 
+         * Default: datacenter1
+         * Group: common
+         */
+        default CassandraEndpointConsumerBuilder datacenter(String datacenter) {
+            doSetProperty("datacenter", datacenter);
+            return this;
+        }
+        /**
+         * To use a specific LoadBalancingPolicyClass.
          * 
          * The option is a: <code>java.lang.String</code> type.
          * 
          * Group: common
          */
-        default CassandraEndpointConsumerBuilder loadBalancingPolicy(
-                String loadBalancingPolicy) {
-            doSetProperty("loadBalancingPolicy", loadBalancingPolicy);
+        default CassandraEndpointConsumerBuilder loadBalancingPolicyClass(
+                String loadBalancingPolicyClass) {
+            doSetProperty("loadBalancingPolicyClass", loadBalancingPolicyClass);
             return this;
         }
         /**
@@ -868,15 +880,27 @@ public interface CassandraEndpointBuilderFactory {
             return this;
         }
         /**
-         * To use a specific LoadBalancingPolicy.
+         * Datacenter to use.
+         * 
+         * The option is a: <code>java.lang.String</code> type.
+         * 
+         * Default: datacenter1
+         * Group: common
+         */
+        default CassandraEndpointProducerBuilder datacenter(String datacenter) {
+            doSetProperty("datacenter", datacenter);
+            return this;
+        }
+        /**
+         * To use a specific LoadBalancingPolicyClass.
          * 
          * The option is a: <code>java.lang.String</code> type.
          * 
          * Group: common
          */
-        default CassandraEndpointProducerBuilder loadBalancingPolicy(
-                String loadBalancingPolicy) {
-            doSetProperty("loadBalancingPolicy", loadBalancingPolicy);
+        default CassandraEndpointProducerBuilder loadBalancingPolicyClass(
+                String loadBalancingPolicyClass) {
+            doSetProperty("loadBalancingPolicyClass", loadBalancingPolicyClass);
             return this;
         }
         /**
@@ -1152,15 +1176,27 @@ public interface CassandraEndpointBuilderFactory {
             return this;
         }
         /**
-         * To use a specific LoadBalancingPolicy.
+         * Datacenter to use.
+         * 
+         * The option is a: <code>java.lang.String</code> type.
+         * 
+         * Default: datacenter1
+         * Group: common
+         */
+        default CassandraEndpointBuilder datacenter(String datacenter) {
+            doSetProperty("datacenter", datacenter);
+            return this;
+        }
+        /**
+         * To use a specific LoadBalancingPolicyClass.
          * 
          * The option is a: <code>java.lang.String</code> type.
          * 
          * Group: common
          */
-        default CassandraEndpointBuilder loadBalancingPolicy(
-                String loadBalancingPolicy) {
-            doSetProperty("loadBalancingPolicy", loadBalancingPolicy);
+        default CassandraEndpointBuilder loadBalancingPolicyClass(
+                String loadBalancingPolicyClass) {
+            doSetProperty("loadBalancingPolicyClass", loadBalancingPolicyClass);
             return this;
         }
         /**

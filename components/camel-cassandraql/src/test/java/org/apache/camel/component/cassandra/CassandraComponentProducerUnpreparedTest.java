@@ -112,7 +112,7 @@ public class CassandraComponentProducerUnpreparedTest extends BaseCassandraTest 
         Update update = QueryBuilder.update("camel_user")
                 .setColumn("first_name", literal("Claus 2"))
                 .setColumn("last_name", literal("Ibsen 2"))
-                .whereColumn("login").isEqualTo(bindMarker());
+                .whereColumn("login").isEqualTo(literal("c_ibsen"));
         producerTemplate.requestBodyAndHeader(null, CassandraConstants.CQL_QUERY, update.build());
 
         CqlSession session = CassandraUnitUtils.cassandraSession();
