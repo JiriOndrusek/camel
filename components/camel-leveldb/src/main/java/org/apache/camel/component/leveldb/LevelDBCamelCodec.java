@@ -16,7 +16,11 @@
  */
 package org.apache.camel.component.leveldb;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
@@ -24,33 +28,27 @@ import org.apache.camel.Exchange;
 import org.apache.camel.ExtendedExchange;
 import org.apache.camel.support.DefaultExchange;
 import org.apache.camel.support.DefaultExchangeHolder;
-import org.fusesource.hawtbuf.Buffer;
-import org.fusesource.hawtbuf.DataByteArrayInputStream;
-import org.fusesource.hawtbuf.DataByteArrayOutputStream;
-import org.fusesource.hawtbuf.codec.Codec;
-import org.fusesource.hawtbuf.codec.ObjectCodec;
-import org.fusesource.hawtbuf.codec.StringCodec;
 
 public final class LevelDBCamelCodec {
 
-    private Codec<String> keyCodec = new StringCodec();
-    private Codec<DefaultExchangeHolder> exchangeCodec = new ObjectCodec<>();
+    private LevelDBSerializer serializer = new LevelDBSerializer() {};
 
-    public Buffer marshallKey(String key) throws IOException {
-        DataByteArrayOutputStream baos = new DataByteArrayOutputStream();
-        keyCodec.encode(key, baos);
-        return baos.toBuffer();
+
+    public byte[] marshallKey(String key) throws IOException {
+        return serializer.serialize(key);
     }
 
-    public String unmarshallKey(Buffer buffer) throws IOException {
-        DataByteArrayInputStream bais = new DataByteArrayInputStream(buffer);
-        String key = keyCodec.decode(bais);
-        return key;
+    public String unmarshallKey(byte[] buffer) throws IOException {
+        try {
+            return (String)serializer.deserialize(buffer);
+        } catch (ClassNotFoundException | ClassCastException e) {
+            //should not happen
+            throw new IllegalStateException("Key can not be deserialized", e);
+        }
     }
 
-    public Buffer marshallExchange(CamelContext camelContext, Exchange exchange, boolean allowSerializedHeaders)
+    public byte[] marshallExchange(CamelContext camelContext, Exchange exchange, boolean allowSerializedHeaders)
             throws IOException {
-        DataByteArrayOutputStream baos = new DataByteArrayOutputStream();
         // use DefaultExchangeHolder to marshal to a serialized object
         DefaultExchangeHolder pe = DefaultExchangeHolder.marshal(exchange, false, allowSerializedHeaders);
         // add the aggregated size and timeout property as the only properties we want to retain
@@ -71,13 +69,17 @@ public final class LevelDBCamelCodec {
         if (exchange.getFromEndpoint() != null) {
             DefaultExchangeHolder.addProperty(pe, "CamelAggregatedFromEndpoint", exchange.getFromEndpoint().getEndpointUri());
         }
-        exchangeCodec.encode(pe, baos);
-        return baos.toBuffer();
+        return serializer.serialize(pe);
     }
 
-    public Exchange unmarshallExchange(CamelContext camelContext, Buffer buffer) throws IOException {
-        DataByteArrayInputStream bais = new DataByteArrayInputStream(buffer);
-        DefaultExchangeHolder pe = exchangeCodec.decode(bais);
+    public Exchange unmarshallExchange(CamelContext camelContext, byte[] buffer) throws IOException {
+        DefaultExchangeHolder pe;
+        try {
+            pe = (DefaultExchangeHolder)serializer.deserialize(buffer);
+        } catch (ClassNotFoundException | ClassCastException e) {
+            //should not happen
+            throw new IllegalStateException("Value can not be deserialized", e);
+        }
         Exchange answer = new DefaultExchange(camelContext);
         DefaultExchangeHolder.unmarshal(answer, pe);
         // restore the from endpoint
@@ -91,4 +93,33 @@ public final class LevelDBCamelCodec {
         return answer;
     }
 
+    private LevelDBSerializer getSerializer() {
+        if(serializer == null) {
+            serializer = new LevelDBSerializer() {
+                public byte[] serialize(DefaultExchangeHolder object) throws IOException {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+                    try (ObjectOutputStream out = new ObjectOutputStream(baos)) {
+                        out.writeObject(object);
+                    }
+
+                    return baos.toByteArray();
+                }
+
+                public DefaultExchangeHolder deserialize(byte[] buffer) throws IOException, ClassNotFoundException {
+                    ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
+
+                    try (ObjectInputStream in = new ObjectInputStream(bais)) {
+                        return (DefaultExchangeHolder)in.readObject();
+                    }
+                }
+            };
+        }
+
+        return serializer;
+    }
+
+    public void setSerializer(LevelDBSerializer serializer) {
+        this.serializer = serializer;
+    }
 }

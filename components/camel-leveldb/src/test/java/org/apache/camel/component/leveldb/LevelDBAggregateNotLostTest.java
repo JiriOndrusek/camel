@@ -22,7 +22,6 @@ import org.apache.camel.AggregationStrategy;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.test.junit5.CamelTestSupport;
-import org.fusesource.hawtbuf.Buffer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -67,7 +66,7 @@ public class LevelDBAggregateNotLostTest extends CamelTestSupport {
 
         // assert the exchange was not lost and we got all the information still
         assertNotNull(bf);
-        Exchange completed = codec.unmarshallExchange(context, new Buffer(bf));
+        Exchange completed = codec.unmarshallExchange(context, bf);
         assertNotNull(completed);
         // should retain the exchange id
         assertEquals(exchangeId, completed.getExchangeId());
