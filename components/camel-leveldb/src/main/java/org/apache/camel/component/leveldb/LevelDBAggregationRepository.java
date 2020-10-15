@@ -53,8 +53,7 @@ public class LevelDBAggregationRepository extends ServiceSupport implements Reco
     private boolean useRecovery = true;
     private int maximumRedeliveries;
     private String deadLetterUri;
-    private boolean allowSerializedHeaders;
-   ;
+    private boolean allowSerializedHeaders;;
 
     /**
      * Creates an aggregation repository
@@ -471,9 +470,5 @@ public class LevelDBAggregationRepository extends ServiceSupport implements Reco
                 throw new RuntimeException(var2);
             }
         }
-    }
-
-    public void setSerializer(LevelDBSerializer serializer) {
-        codec.setSerializer(serializer);
     }
 }
