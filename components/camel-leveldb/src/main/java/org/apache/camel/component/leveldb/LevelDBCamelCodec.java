@@ -21,13 +21,27 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
+import java.util.Base64;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.node.IntNode;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
@@ -46,11 +60,15 @@ public final class LevelDBCamelCodec {
         objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
         objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 
-//        SimpleModule simpleModule = new SimpleModule();
-//        simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
-//        simpleModule.addSerializer(long.class, ToStringSerializer.instance);
-//
-//        objectMapper.registerModule(simpleModule);
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addSerializer(byte[].class, new ByteArraySerializer());
+        simpleModule.addDeserializer(byte[].class, new ByteArrayDeserializer());
+        simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
+        simpleModule.addSerializer(long.class, ToStringSerializer.instance);
+
+        simpleModule.setMixInAnnotation(DefaultExchangeHolder.class, HolderBodyMixin.class);
+
+        objectMapper.registerModule(simpleModule);
         if(module != null) {
             objectMapper.registerModule(module);
         }
@@ -160,5 +178,125 @@ public final class LevelDBCamelCodec {
         }
 
         return payload;
+    }
+
+    public static class ByteArraySerializer extends StdSerializer<byte[]> {
+        protected ByteArraySerializer() {
+            super(byte[].class);
+        }
+
+        @Override
+        public void serialize(byte[] value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+
+            String serialized;
+            try (final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+                oos.writeObject(value);
+                serialized = Base64.getEncoder().encodeToString(baos.toByteArray());
+            }
+
+            System.out.println("serializing ---------------------- into " + serialized);
+            gen.writeString(serialized);
+        }
+    }
+
+    public static class ByteArrayDeserializer extends StdDeserializer<byte[]> {
+
+        protected ByteArrayDeserializer() {
+            super(byte[].class);
+        }
+
+        @Override
+        public byte[] deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+            String s = p.getValueAsString();
+            byte[] data = null;
+            try (final ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(p.getBinaryValue()))) {
+                data = (byte[]) ois.readObject();
+            } catch(ClassNotFoundException e) {
+                //this should not happen as serualized content should be byte[]
+                throw new IllegalStateException("Content has to be byte[].", e);
+            }
+
+            System.out.println("deserializing " + s + " into " + data);
+            return data;
+        }
+    }
+
+    public abstract class HolderBodyMixin {
+        @JsonSerialize(using = BodySerializer.class)
+        @JsonDeserialize(using = BodyDeserializer.class)
+        private Object inBody;
+
+        @JsonSerialize(using = BodySerializer.class)
+        @JsonDeserialize(using = BodyDeserializer.class)
+        private Object outBody;
+    }
+
+    public static class BodySerializer extends StdSerializer<Object> {
+        protected BodySerializer() {
+            super(Object.class);
+        }
+
+        @Override
+        public void serialize(Object object, JsonGenerator gen, SerializerProvider provider) throws IOException {
+            if(object == null) {
+                return;
+            }
+            //serializing class
+            String clazz = object.getClass().getCanonicalName();
+            System.out.println("serializing class: " + clazz);
+
+            gen.writeStartObject();
+//            gen.writeStringField("clazz", clazz);
+            gen.writeFieldName("clazz");
+            gen.writeObject(object.getClass());
+            gen.writeFieldName("data");
+            gen.writeObject(object);
+            gen.writeEndObject();
+        }
+    }
+
+    public static class BodyDeserializer extends StdDeserializer<Object> {
+        protected BodyDeserializer() {
+            super(Object.class);
+        }
+
+        @Override
+        public Object deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+            JsonNode treeNode = p.getCodec().readTree(p);
+//            int clazz = (Integer)(node.get("clazz")).numberValue();
+            String clazzName = treeNode.get("clazz").asText();
+//            node.get("body").as
+            treeNode.path("data");
+
+           ObjectMapper om = (ObjectMapper) p.getCodec();
+           Object o = null;
+            try {
+               o =  om.readValue(treeNode.get("data").toString(), Class.forName(clazzName));
+               System.out.println("*************" + o);
+               return o;
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+
+
+            return null;
+        }
+
+//        ObjectCodec codec = jp.getCodec();
+//        ObjectNode treeNode = codec.readTree(jp);
+//        String type = treeNode.get("itemType").textValue();
+//        Class<? extends Item> objectClass = classes.get(type);
+//    if (objectClass == null) {
+//            objectClass = CustomItem.class;
+//        } else {
+//            treeNode.remove("itemType");
+//        }
+//        Item item = codec.treeToValue(treeNode, objectClass);
+//    item.setItemId(treeNode.get("itemId").asText());
+//    return item;
+
+
     }
 }

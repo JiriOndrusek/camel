@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -77,9 +78,9 @@ public class LevelDBCustomSerializationTest extends CamelTestSupport {
                 LevelDBAggregationRepository repo = new LevelDBAggregationRepository("repo1", "target/data/leveldb.dat");
 
                 SimpleModule simpleModule = new SimpleModule();
-                simpleModule.addSerializer(ObjectWithBinaryField.class, new ObjectWithBinaryFieldSerializer());
+//                simpleModule.addSerializer(ObjectWithBinaryField.class, new ObjectWithBinaryFieldSerializer());
 
-                repo.setJacksonModule(simpleModule);
+//                repo.setJacksonModule(simpleModule);
 
                 // here is the Camel route where we aggregate
                 from("direct:start")
@@ -122,6 +123,9 @@ public class LevelDBCustomSerializationTest extends CamelTestSupport {
         private String a;
         private byte[] b;
 
+        public ObjectWithBinaryField() {
+        }
+
         public ObjectWithBinaryField(String a, byte[] b) {
             this.a = a;
             this.b = b;
@@ -144,17 +148,33 @@ public class LevelDBCustomSerializationTest extends CamelTestSupport {
                     ", b=" + Arrays.toString(b) +
                     '}';
         }
-    }
 
-    public static class ObjectWithBinaryFieldSerializer extends StdSerializer<ObjectWithBinaryField> {
-        protected ObjectWithBinaryFieldSerializer() {
-            super(ObjectWithBinaryField.class);
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ObjectWithBinaryField that = (ObjectWithBinaryField) o;
+            return Objects.equals(a, that.a) &&
+                    Arrays.equals(b, that.b);
         }
 
         @Override
-        public void serialize(ObjectWithBinaryField value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-            System.out.println("serializing ----------------------");
-            gen.writeString(value.a + ":" + new String(value.b));
+        public int hashCode() {
+            int result = Objects.hash(a);
+            result = 31 * result + Arrays.hashCode(b);
+            return result;
         }
     }
+//
+//    public static class ObjectWithBinaryFieldSerializer extends StdSerializer<ObjectWithBinaryField> {
+//        protected ObjectWithBinaryFieldSerializer() {
+//            super(ObjectWithBinaryField.class);
+//        }
+//
+//        @Override
+//        public void serialize(ObjectWithBinaryField value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+//            System.out.println("serializing ----------------------");
+//            gen.writeString(value.a + ":" + new String(value.b));
+//        }
+//    }
 }
