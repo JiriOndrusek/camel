@@ -242,17 +242,19 @@ public final class LevelDBCamelCodec {
             if(object == null) {
                 return;
             }
-            //serializing class
-            String clazz = object.getClass().getCanonicalName();
-            System.out.println("serializing class: " + clazz);
+            //types from java.lang.*, java.util.* are handled by jackson itself
 
-            gen.writeStartObject();
-//            gen.writeStringField("clazz", clazz);
-            gen.writeFieldName("clazz");
-            gen.writeObject(object.getClass());
-            gen.writeFieldName("data");
-            gen.writeObject(object);
-            gen.writeEndObject();
+            Package p = object.getClass().getPackage();
+            if(p.getName().equals("java.lang") || p.getName().equals("java.util")) {
+                gen.writeObject(object);
+            } else {
+                gen.writeStartObject();
+                gen.writeFieldName("clazz");
+                gen.writeObject(object.getClass());
+                gen.writeFieldName("data");
+                gen.writeObject(object);
+                gen.writeEndObject();
+            }
         }
     }
 
@@ -264,39 +266,16 @@ public final class LevelDBCamelCodec {
         @Override
         public Object deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
             JsonNode treeNode = p.getCodec().readTree(p);
-//            int clazz = (Integer)(node.get("clazz")).numberValue();
-            String clazzName = treeNode.get("clazz").asText();
-//            node.get("body").as
-            treeNode.path("data");
+            ObjectMapper om = (ObjectMapper) p.getCodec();
 
-           ObjectMapper om = (ObjectMapper) p.getCodec();
-           Object o = null;
-            try {
-               o =  om.readValue(treeNode.get("data").toString(), Class.forName(clazzName));
-               System.out.println("*************" + o);
-               return o;
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+            if(treeNode.get("clazz") != null) {
+                Class cl = om.readValue(treeNode.get("clazz").toString(), Class.class);
+                return om.readValue(treeNode.get("data").toString(), cl);
             }
 
-
-
-            return null;
+            //todo correct value
+            return om.readValue(treeNode.toString(), Object.class);
         }
-
-//        ObjectCodec codec = jp.getCodec();
-//        ObjectNode treeNode = codec.readTree(jp);
-//        String type = treeNode.get("itemType").textValue();
-//        Class<? extends Item> objectClass = classes.get(type);
-//    if (objectClass == null) {
-//            objectClass = CustomItem.class;
-//        } else {
-//            treeNode.remove("itemType");
-//        }
-//        Item item = codec.treeToValue(treeNode, objectClass);
-//    item.setItemId(treeNode.get("itemId").asText());
-//    return item;
-
 
     }
 }
