@@ -61,7 +61,7 @@ public class LevelDBAggregateNotLostTest extends CamelTestSupport {
 
         // the exchange should be in the completed repo where we should be able to find it
         final LevelDBFile levelDBFile = repo.getLevelDBFile();
-        final LevelDBCamelCodec codec = new LevelDBCamelCodec();
+        final LevelDBCamelCodec codec = new LevelDBCamelCodec(null);
         byte[] bf = levelDBFile.getDb().get(keyBuilder("repo1-completed", exchangeId));
 
         // assert the exchange was not lost and we got all the information still

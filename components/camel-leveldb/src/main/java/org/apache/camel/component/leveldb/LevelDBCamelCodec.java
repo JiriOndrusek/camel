@@ -25,6 +25,7 @@ import java.nio.ByteBuffer;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -39,18 +40,20 @@ public final class LevelDBCamelCodec {
 
     private final ObjectMapper objectMapper;
 
-    public LevelDBCamelCodec() {
+    public LevelDBCamelCodec(Module module) {
         objectMapper = new ObjectMapper();
 
         objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
         objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 
-        SimpleModule module = new SimpleModule();
-        module.addSerializer(Long.class, ToStringSerializer.instance);
-        module.addSerializer(long.class, ToStringSerializer.instance);
-        //        module.addSerializer(DefaultExchangeHolder.class, );
-
-        objectMapper.registerModule(module);
+//        SimpleModule simpleModule = new SimpleModule();
+//        simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
+//        simpleModule.addSerializer(long.class, ToStringSerializer.instance);
+//
+//        objectMapper.registerModule(simpleModule);
+        if(module != null) {
+            objectMapper.registerModule(module);
+        }
     }
 
     public byte[] marshallKey(String key) throws IOException {
@@ -95,7 +98,7 @@ public final class LevelDBCamelCodec {
             serializeByteArray(inBody, dos);
             serializeByteArray(outBody, dos);
             objectMapper.writeValue(baos, pe);
-
+            System.out.println(objectMapper.writeValueAsString(pe));
             byte[] b = baos.toByteArray();
             return b;
         }

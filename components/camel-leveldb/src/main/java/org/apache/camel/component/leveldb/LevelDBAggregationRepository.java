@@ -23,6 +23,9 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.Module;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.spi.RecoverableAggregationRepository;
@@ -48,12 +51,13 @@ public class LevelDBAggregationRepository extends ServiceSupport implements Reco
     private String repositoryName;
     private boolean sync;
     private boolean returnOldExchange;
-    private final LevelDBCamelCodec codec = new LevelDBCamelCodec();
+    private LevelDBCamelCodec codec;
     private long recoveryInterval = 5000;
     private boolean useRecovery = true;
     private int maximumRedeliveries;
     private String deadLetterUri;
-    private boolean allowSerializedHeaders;;
+    private boolean allowSerializedHeaders;
+    private Module jacksonModule;
 
     /**
      * Creates an aggregation repository
@@ -102,7 +106,7 @@ public class LevelDBAggregationRepository extends ServiceSupport implements Reco
         LOG.debug("Adding key [{}] -> {}", key, exchange);
         try {
             byte[] lDbKey = keyBuilder(repositoryName, key);
-            final byte[] exchangeBuffer = codec.marshallExchange(camelContext, exchange, allowSerializedHeaders);
+            final byte[] exchangeBuffer = codec().marshallExchange(camelContext, exchange, allowSerializedHeaders);
 
             byte[] rc = null;
             if (isReturnOldExchange()) {
@@ -119,7 +123,7 @@ public class LevelDBAggregationRepository extends ServiceSupport implements Reco
 
             // only return old exchange if enabled
             if (isReturnOldExchange()) {
-                return codec.unmarshallExchange(camelContext, rc);
+                return codec().unmarshallExchange(camelContext, rc);
             }
         } catch (IOException e) {
             throw new RuntimeException("Error adding to repository " + repositoryName + " with key " + key, e);
@@ -138,7 +142,7 @@ public class LevelDBAggregationRepository extends ServiceSupport implements Reco
             byte[] rc = levelDBFile.getDb().get(lDbKey);
 
             if (rc != null) {
-                answer = codec.unmarshallExchange(camelContext, rc);
+                answer = codec().unmarshallExchange(camelContext, rc);
             }
         } catch (IOException e) {
             throw new RuntimeException("Error getting key " + key + " from repository " + repositoryName, e);
@@ -155,7 +159,7 @@ public class LevelDBAggregationRepository extends ServiceSupport implements Reco
         try {
             byte[] lDbKey = keyBuilder(repositoryName, key);
             final String exchangeId = exchange.getExchangeId();
-            final byte[] exchangeBuffer = codec.marshallExchange(camelContext, exchange, allowSerializedHeaders);
+            final byte[] exchangeBuffer = codec().marshallExchange(camelContext, exchange, allowSerializedHeaders);
 
             // remove the exchange
             byte[] rc = levelDBFile.getDb().get(lDbKey);
@@ -285,7 +289,7 @@ public class LevelDBAggregationRepository extends ServiceSupport implements Reco
             byte[] rc = levelDBFile.getDb().get(completedLDBKey);
 
             if (rc != null) {
-                answer = codec.unmarshallExchange(camelContext, rc);
+                answer = codec().unmarshallExchange(camelContext, rc);
             }
         } catch (IOException e) {
             throw new RuntimeException("Error recovering exchangeId " + exchangeId + " from repository " + repositoryName, e);
@@ -470,5 +474,20 @@ public class LevelDBAggregationRepository extends ServiceSupport implements Reco
                 throw new RuntimeException(var2);
             }
         }
+    }
+
+    public Module getJacksonModule() {
+        return jacksonModule;
+    }
+
+    public void setJacksonModule(Module jacksonModule) {
+        this.jacksonModule = jacksonModule;
+    }
+
+    public LevelDBCamelCodec codec() {
+        if (codec == null) {
+            codec = new LevelDBCamelCodec(jacksonModule);
+        }
+        return codec;
     }
 }
