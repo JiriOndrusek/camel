@@ -227,7 +227,6 @@
         <module>camel-hl7</module>
         <module>camel-ical</module>
         <module>camel-iec60870</module>
-        <module>camel-ignite</module>
         <module>camel-infinispan</module>
         <module>camel-influxdb</module>
         <module>camel-iota</module>

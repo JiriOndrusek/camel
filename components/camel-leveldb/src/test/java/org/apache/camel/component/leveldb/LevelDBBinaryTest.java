@@ -16,16 +16,21 @@
  */
 package org.apache.camel.component.leveldb;
 
+import java.io.ByteArrayOutputStream;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
+import org.apache.camel.test.junit5.params.Parameterized;
 import org.apache.camel.test.junit5.params.Test;
 import org.junit.jupiter.api.BeforeEach;
 
 import static org.apache.camel.test.junit5.TestSupport.deleteDirectory;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class LevelDBAggregateDiscardOnTimeoutTest extends LevelDBTestSupport {
+@Parameterized
+public class LevelDBBinaryTest extends LevelDBTestSupport {
 
     @Override
     @BeforeEach
@@ -35,57 +40,47 @@ public class LevelDBAggregateDiscardOnTimeoutTest extends LevelDBTestSupport {
     }
 
     @Test
-    public void testAggregateDiscardOnTimeout() throws Exception {
+    public void testLevelDBAggregate() throws Exception {
         MockEndpoint mock = getMockEndpoint("mock:aggregated");
-        mock.expectedMessageCount(0);
+        byte[] a = new byte[10];
+        new Random().nextBytes(a);
+        byte[] b = new byte[10];
+        new Random().nextBytes(b);
+        byte[] c = new byte[10];
+        new Random().nextBytes(c);
 
-        template.sendBodyAndHeader("direct:start", "A", "id", 123);
-        template.sendBodyAndHeader("direct:start", "B", "id", 123);
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            outputStream.write(a);
+            outputStream.write(b);
+            outputStream.write(c);
 
-        // wait 3 seconds
-        Thread.sleep(3000);
+            mock.expectedBodiesReceived(outputStream.toByteArray());
+        }
 
-        mock.assertIsSatisfied();
+        template.sendBodyAndHeader("direct:start", a, "id", 123);
+        template.sendBodyAndHeader("direct:start", b, "id", 123);
+        template.sendBodyAndHeader("direct:start", c, "id", 123);
 
-        // now send 3 which does not timeout
-        mock.reset();
-        mock.expectedBodiesReceived("C+D+E");
+        assertMockEndpointsSatisfied(30, TimeUnit.SECONDS);
 
-        template.sendBodyAndHeader("direct:start", "A", "id", 123);
-        template.sendBodyAndHeader("direct:start", "B", "id", 123);
-        template.sendBodyAndHeader("direct:start", "C", "id", 123);
-
-        // should complete before timeout
-        mock.await(1500, TimeUnit.MILLISECONDS);
+        // from endpoint should be preserved
+        assertEquals("direct://start", mock.getReceivedExchanges().get(0).getFromEndpoint().getEndpointUri());
     }
 
     @Override
     protected RouteBuilder createRouteBuilder() throws Exception {
-
         return new RouteBuilder() {
             @Override
+            // START SNIPPET: e1
             public void configure() throws Exception {
+                // here is the Camel route where we aggregate
                 from("direct:start")
-                        .aggregate(header("id"), new StringAggregationStrategy())
+                        .aggregate(header("id"), new ByteAggregationStrategy())
+                        // use our created leveldb repo as aggregation repository
                         .completionSize(3).aggregationRepository(getRepo())
-                        // use a 3 second timeout
-                        .completionTimeout(2000)
-                        // and if timeout occurred then just discard the aggregated message
-                        .discardOnCompletionTimeout()
                         .to("mock:aggregated");
             }
+            // END SNIPPET: e1
         };
-    }
-
-    @Override
-    LevelDBAggregationRepository getRepo() {
-        LevelDBAggregationRepository repo = super.getRepo();
-        repo = new LevelDBAggregationRepository("repo1", "target/data/leveldb.dat");
-        // enable recovery
-        repo.setUseRecovery(true);
-        // check faster
-        repo.setRecoveryInterval(500, TimeUnit.MILLISECONDS);
-
-        return repo;
     }
 }

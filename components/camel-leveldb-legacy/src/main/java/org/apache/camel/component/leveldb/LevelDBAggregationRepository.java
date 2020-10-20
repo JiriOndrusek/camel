@@ -39,7 +39,10 @@ import org.slf4j.LoggerFactory;
 
 /**
  * An instance of {@link org.apache.camel.spi.AggregationRepository} which is backed by a {@link LevelDBFile}.
+ * 
+ * @deprecated Use {@link org.apache.camel.component.leveldb.LevelDBAggregationRepository} from component camel-leveldb.
  */
+@Deprecated
 public class LevelDBAggregationRepository extends ServiceSupport implements RecoverableAggregationRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(LevelDBAggregationRepository.class);
