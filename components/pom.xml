@@ -268,6 +268,7 @@
         <module>camel-ldap</module>
         <module>camel-ldif</module>
         <module>camel-leveldb-legacy</module>
+        <module>camel-legacy</module>
         <module>camel-lra</module>
         <module>camel-lucene</module>
         <module>camel-lumberjack</module>
