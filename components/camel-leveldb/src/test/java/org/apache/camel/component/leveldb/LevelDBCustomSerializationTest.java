@@ -21,14 +21,17 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.apache.camel.AggregationStrategy;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
@@ -53,10 +56,10 @@ public class LevelDBCustomSerializationTest extends CamelTestSupport {
     public void testLevelDBAggregate() throws Exception {
         MockEndpoint mock = getMockEndpoint("mock:aggregated");
         ObjectWithBinaryField objectA = new ObjectWithBinaryField("a", "byteArray1".getBytes());
-        ObjectWithBinaryField objectB = new ObjectWithBinaryField("b",  "byteArray2".getBytes());
-        ObjectWithBinaryField objectC = new ObjectWithBinaryField("c",  "byteArray3".getBytes());
+        ObjectWithBinaryField objectB = new ObjectWithBinaryField("b", "byteArray2".getBytes());
+        ObjectWithBinaryField objectC = new ObjectWithBinaryField("c", "byteArray3".getBytes());
 
-        mock.expectedBodiesReceived(objectA.aggregateWith(objectB).aggregateWith(objectC));
+        mock.expectedBodiesReceived(objectA.aggregateWith(objectB).aggregateWith(objectC).withA("a+b+c"));
 
         template.sendBodyAndHeader("direct:start", objectA, "id", 123);
         template.sendBodyAndHeader("direct:start", objectB, "id", 123);
@@ -78,9 +81,10 @@ public class LevelDBCustomSerializationTest extends CamelTestSupport {
                 LevelDBAggregationRepository repo = new LevelDBAggregationRepository("repo1", "target/data/leveldb.dat");
 
                 SimpleModule simpleModule = new SimpleModule();
-//                simpleModule.addSerializer(ObjectWithBinaryField.class, new ObjectWithBinaryFieldSerializer());
+                simpleModule.addSerializer(ObjectWithBinaryField.class, new ObjectWithBinaryFieldSerializer());
+                simpleModule.addDeserializer(ObjectWithBinaryField.class, new ObjectWithBinaryFieldDeserializer());
 
-//                repo.setJacksonModule(simpleModule);
+                repo.setJacksonModule(simpleModule);
 
                 // here is the Camel route where we aggregate
                 from("direct:start")
@@ -105,7 +109,7 @@ public class LevelDBCustomSerializationTest extends CamelTestSupport {
             ObjectWithBinaryField newObject = newExchange.getIn().getBody(ObjectWithBinaryField.class);
 
             if (oldObject == null) {
-                return  newExchange;
+                return newExchange;
             }
 
             try {
@@ -113,7 +117,6 @@ public class LevelDBCustomSerializationTest extends CamelTestSupport {
             } catch (IOException e) {
                 //ignore
             }
-
 
             return oldExchange;
         }
@@ -131,6 +134,11 @@ public class LevelDBCustomSerializationTest extends CamelTestSupport {
             this.b = b;
         }
 
+        public ObjectWithBinaryField withA(String a) {
+            this.a = a;
+            return this;
+        }
+
         public ObjectWithBinaryField aggregateWith(ObjectWithBinaryField newObject) throws IOException {
 
             try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
@@ -144,15 +152,17 @@ public class LevelDBCustomSerializationTest extends CamelTestSupport {
         @Override
         public String toString() {
             return "ObjectWithBinaryField{" +
-                    "a='" + a + '\'' +
-                    ", b=" + Arrays.toString(b) +
-                    '}';
+                   "a='" + a + '\'' +
+                   ", b=" + Arrays.toString(b) +
+                   '}';
         }
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
             ObjectWithBinaryField that = (ObjectWithBinaryField) o;
             return Objects.equals(a, that.a) &&
                     Arrays.equals(b, that.b);
@@ -165,16 +175,31 @@ public class LevelDBCustomSerializationTest extends CamelTestSupport {
             return result;
         }
     }
-//
-//    public static class ObjectWithBinaryFieldSerializer extends StdSerializer<ObjectWithBinaryField> {
-//        protected ObjectWithBinaryFieldSerializer() {
-//            super(ObjectWithBinaryField.class);
-//        }
-//
-//        @Override
-//        public void serialize(ObjectWithBinaryField value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-//            System.out.println("serializing ----------------------");
-//            gen.writeString(value.a + ":" + new String(value.b));
-//        }
-//    }
+
+    public static class ObjectWithBinaryFieldSerializer extends StdSerializer<ObjectWithBinaryField> {
+        protected ObjectWithBinaryFieldSerializer() {
+            super(ObjectWithBinaryField.class);
+        }
+
+        @Override
+        public void serialize(ObjectWithBinaryField value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+            gen.writeString(value.a + "+:" + new String(value.b));
+        }
+    }
+
+    public static class ObjectWithBinaryFieldDeserializer extends StdDeserializer<ObjectWithBinaryField> {
+        protected ObjectWithBinaryFieldDeserializer() {
+            super(ObjectWithBinaryField.class);
+        }
+
+        @Override
+        public ObjectWithBinaryField deserialize(JsonParser p, DeserializationContext ctxt)
+                throws IOException, JsonProcessingException {
+            JsonNode treeNode = p.getCodec().readTree(p);
+
+            String s = treeNode.textValue();
+
+            return new ObjectWithBinaryField(s.substring(0, s.indexOf(":")), s.substring(s.indexOf(":") + 1).getBytes());
+        }
+    }
 }

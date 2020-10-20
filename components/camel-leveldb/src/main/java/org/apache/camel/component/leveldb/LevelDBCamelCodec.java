@@ -40,7 +40,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.apache.camel.CamelContext;
@@ -69,7 +68,7 @@ public final class LevelDBCamelCodec {
         simpleModule.setMixInAnnotation(DefaultExchangeHolder.class, HolderBodyMixin.class);
 
         objectMapper.registerModule(simpleModule);
-        if(module != null) {
+        if (module != null) {
             objectMapper.registerModule(module);
         }
     }
@@ -190,12 +189,11 @@ public final class LevelDBCamelCodec {
 
             String serialized;
             try (final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+                 ObjectOutputStream oos = new ObjectOutputStream(baos)) {
                 oos.writeObject(value);
                 serialized = Base64.getEncoder().encodeToString(baos.toByteArray());
             }
 
-            System.out.println("serializing ---------------------- into " + serialized);
             gen.writeString(serialized);
         }
     }
@@ -208,17 +206,12 @@ public final class LevelDBCamelCodec {
 
         @Override
         public byte[] deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-            String s = p.getValueAsString();
-            byte[] data = null;
             try (final ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(p.getBinaryValue()))) {
-                data = (byte[]) ois.readObject();
-            } catch(ClassNotFoundException e) {
+                return (byte[]) ois.readObject();
+            } catch (ClassNotFoundException e) {
                 //this should not happen as serualized content should be byte[]
                 throw new IllegalStateException("Content has to be byte[].", e);
             }
-
-            System.out.println("deserializing " + s + " into " + data);
-            return data;
         }
     }
 
@@ -239,13 +232,14 @@ public final class LevelDBCamelCodec {
 
         @Override
         public void serialize(Object object, JsonGenerator gen, SerializerProvider provider) throws IOException {
-            if(object == null) {
+            if (object == null) {
                 return;
             }
             //types from java.lang.*, java.util.* are handled by jackson itself
 
             Package p = object.getClass().getPackage();
-            if(p.getName().equals("java.lang") || p.getName().equals("java.util")) {
+            //            JsonSerializer serializer = provider.findValueSerializer(object.getClass());
+            if (/*serializer != null ||*/ p == null || p.getName().equals("java.lang") || p.getName().equals("java.util")) {
                 gen.writeObject(object);
             } else {
                 gen.writeStartObject();
@@ -268,12 +262,12 @@ public final class LevelDBCamelCodec {
             JsonNode treeNode = p.getCodec().readTree(p);
             ObjectMapper om = (ObjectMapper) p.getCodec();
 
-            if(treeNode.get("clazz") != null) {
+            if (treeNode.get("clazz") != null) {
                 Class cl = om.readValue(treeNode.get("clazz").toString(), Class.class);
                 return om.readValue(treeNode.get("data").toString(), cl);
             }
 
-            //todo correct value
+            //todo better call
             return om.readValue(treeNode.toString(), Object.class);
         }
 

@@ -51,7 +51,7 @@ public class LevelDBBinaryTest extends CamelTestSupport {
         byte[] c = new byte[10];
         new Random().nextBytes(c);
 
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream( )) {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             outputStream.write(a);
             outputStream.write(b);
             outputStream.write(c);
@@ -96,7 +96,6 @@ public class LevelDBBinaryTest extends CamelTestSupport {
             if (oldExchange == null) {
                 return newExchange;
             }
-
 
             try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
                 outputStream.write(oldExchange.getIn().getBody(byte[].class));
