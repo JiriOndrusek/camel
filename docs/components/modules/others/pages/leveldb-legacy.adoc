@@ -1,11 +1,13 @@
-[[leveldb-other]]
-= LevelDB Component
-:docTitle: LevelDB
-:artifactId: camel-leveldb
+[[leveldb-legacy-other]]
+= LevelDB-legacy Component
+//THIS FILE IS COPIED: EDIT THE SOURCE FILE:
+:page-source: components/camel-leveldb-legacy/src/main/docs/leveldb-legacy.adoc
+:docTitle: LevelDB-legacy
+:artifactId: camel-leveldb-legacy
 :description: Using LevelDB as persistent EIP store
 :since: 2.10
 :supportLevel: Stable
-include::{cq-version}@camel-quarkus:ROOT:partial$reference/others/leveldb.adoc[]
+include::{cq-version}@camel-quarkus:ROOT:partial$reference/others/leveldb-legacy.adoc[]
 
 *Since Camel {since}*
 
