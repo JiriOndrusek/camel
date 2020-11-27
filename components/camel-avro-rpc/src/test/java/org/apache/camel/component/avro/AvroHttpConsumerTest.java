@@ -37,14 +37,14 @@ public class AvroHttpConsumerTest extends AvroConsumerTestSupport {
         transceiver = new HttpTransceiver(new URL("http://localhost:" + avroPort));
         requestor = new SpecificRequestor(KeyValueProtocol.class, transceiver);
 
+        reflectTransceiver = new HttpTransceiver(new URL("http://localhost:" + avroPortReflection));
+        reflectRequestor = new ReflectRequestor(TestReflection.class, reflectTransceiver);
+
         transceiverMessageInRoute = new HttpTransceiver(new URL("http://localhost:" + avroPortMessageInRoute));
         requestorMessageInRoute = new SpecificRequestor(KeyValueProtocol.class, transceiverMessageInRoute);
 
         transceiverForWrongMessages = new HttpTransceiver(new URL("http://localhost:" + avroPortForWrongMessages));
         requestorForWrongMessages = new SpecificRequestor(KeyValueProtocol.class, transceiverForWrongMessages);
-
-        reflectTransceiver = new HttpTransceiver(new URL("http://localhost:" + avroPortReflection));
-        reflectRequestor = new ReflectRequestor(TestReflection.class, reflectTransceiver);
     }
 
     @Override
