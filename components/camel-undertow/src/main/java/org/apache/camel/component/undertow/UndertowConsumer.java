@@ -217,7 +217,7 @@ public class UndertowConsumer extends DefaultConsumer implements HttpHandler, Su
         } else if (computeAllowedRoles() != null && !computeAllowedRoles().isEmpty()) {
             //this case could happen due to bad configuration
             //if allowedRoles are present but securityProvider is not, access has to be denied in this case
-            LOG.warn("Illegal state caused by missing securitProvider but existing allowed roles!");
+            LOG.warn("Illegal state caused by missing securityProvider but existing allowed roles!");
             httpExchange.setStatusCode(StatusCodes.FORBIDDEN);
             httpExchange.endExchange();
             return;

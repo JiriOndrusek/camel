@@ -174,6 +174,14 @@ public class UndertowComponent extends DefaultComponent
 
     private void initSecurityProvider() throws Exception {
         Object securityConfiguration = getSecurityConfiguration();
+        //if securityConfiguration is null, try to find it in registry (provided from spring-boot starter)
+        if (securityConfiguration == null) {
+            Map<String, Object> cfgs = getCamelContext().getRegistry().findByTypeWithName(Object.class);
+            if (cfgs.containsKey("camel.component.undertow.securityConfiguration")) {
+                securityConfiguration = cfgs.get("camel.component.undertow.securityConfiguration");
+                LOG.debug("Security configuration found in registry.");
+            }
+        }
         if (securityConfiguration != null) {
             ServiceLoader<UndertowSecurityProvider> securityProvider = ServiceLoader.load(UndertowSecurityProvider.class);
 
