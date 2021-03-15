@@ -57,4 +57,5 @@ final class MockConnectionSettings extends SplunkConfiguration {
             return service;
         }
     }
+
 }
