@@ -183,14 +183,24 @@ public class JsonPathEngine {
             return path.read(list, configuration);
         } else {
             // can we find an adapter which can read the message body/header
-            Object answer = readWithAdapter(path, exchange);
+            Object answer = null;
+            RuntimeException e = null;
+            try {
+                answer = readWithAdapter(path, exchange);
+            } catch (RuntimeException exception) {
+                e = exception;
+            }
             if (answer == null) {
-                // fallback and attempt input stream for any other types
+                // fallback and attempt input stream for any other types or if exception was thrown
                 answer = readWithInputStream(path, exchange);
             }
             if (answer != null) {
                 return answer;
             }
+            if (e != null) {
+                throw e;
+            }
+
         }
 
         // is json path configured to suppress exceptions
@@ -208,6 +218,17 @@ public class JsonPathEngine {
         } else {
             throw new CamelExchangeException("Cannot read message body as supported JSON value", exchange);
         }
+    }
+
+    private Object fallbackRead(JsonPath path, Exchange exchange, Object answer) throws IOException {
+        if (answer == null) {
+            // fallback and attempt input stream for any other types
+            answer = readWithInputStream(path, exchange);
+        }
+        if (answer != null) {
+            return answer;
+        }
+        return null;
     }
 
     private Object readWithInputStream(JsonPath path, Exchange exchange) throws IOException {
