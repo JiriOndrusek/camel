@@ -74,6 +74,12 @@ public class AnnotationTypeConverterLoader implements TypeConverterLoader {
         this.resolver = resolver;
     }
 
+    public static void load(TypeConverterRegistry registry, Set<Class> converterClasses) {
+        for (Class clazz : converterClasses) {
+            loadConverterMethods(registry, clazz, new HashSet<>());
+        }
+    }
+
     @Override
     public void load(TypeConverterRegistry registry) throws TypeConverterLoaderException {
         String[] packageNames;
@@ -131,7 +137,7 @@ public class AnnotationTypeConverterLoader implements TypeConverterLoader {
                 if (LOG.isTraceEnabled()) {
                     LOG.trace("Loading converter class: {}", ObjectHelper.name(type));
                 }
-                loadConverterMethods(registry, type);
+                loadConverterMethods(registry, type, visitedClasses);
             }
         }
 
@@ -259,7 +265,7 @@ public class AnnotationTypeConverterLoader implements TypeConverterLoader {
     /**
      * Loads all of the converter methods for the given type
      */
-    protected void loadConverterMethods(TypeConverterRegistry registry, Class<?> type) {
+    protected static void loadConverterMethods(TypeConverterRegistry registry, Class<?> type, Set<Class<?>> visitedClasses) {
         if (visitedClasses.contains(type)) {
             return;
         }
@@ -287,7 +293,7 @@ public class AnnotationTypeConverterLoader implements TypeConverterLoader {
 
             Class<?> superclass = type.getSuperclass();
             if (superclass != null && !superclass.equals(Object.class)) {
-                loadConverterMethods(registry, superclass);
+                loadConverterMethods(registry, superclass, visitedClasses);
             }
         } catch (NoClassDefFoundError e) {
             boolean ignore = false;
@@ -312,7 +318,7 @@ public class AnnotationTypeConverterLoader implements TypeConverterLoader {
         return true;
     }
 
-    private CachingInjector<?> handleHasConverterAnnotation(
+    private static CachingInjector<?> handleHasConverterAnnotation(
             TypeConverterRegistry registry, Class<?> type,
             CachingInjector<?> injector, Method method, boolean allowNull) {
         if (isValidConverterMethod(method)) {
@@ -347,7 +353,7 @@ public class AnnotationTypeConverterLoader implements TypeConverterLoader {
         return injector;
     }
 
-    private CachingInjector<?> handleHasFallbackConverterAnnotation(
+    private static CachingInjector<?> handleHasFallbackConverterAnnotation(
             TypeConverterRegistry registry, Class<?> type,
             CachingInjector<?> injector, Method method, boolean allowNull) {
         if (isValidFallbackConverterMethod(method)) {
@@ -383,18 +389,19 @@ public class AnnotationTypeConverterLoader implements TypeConverterLoader {
         return injector;
     }
 
-    protected void registerTypeConverter(
+    protected static void registerTypeConverter(
             TypeConverterRegistry registry,
             Method method, Class<?> toType, Class<?> fromType, TypeConverter typeConverter) {
         registry.addTypeConverter(toType, fromType, typeConverter);
     }
 
-    protected boolean isValidConverterMethod(Method method) {
+    protected static boolean isValidConverterMethod(Method method) {
         Class<?>[] parameterTypes = method.getParameterTypes();
         return parameterTypes.length == 1 || parameterTypes.length == 2 && Exchange.class.isAssignableFrom(parameterTypes[1]);
     }
 
-    protected void registerFallbackTypeConverter(TypeConverterRegistry registry, TypeConverter typeConverter, Method method) {
+    protected static void registerFallbackTypeConverter(
+            TypeConverterRegistry registry, TypeConverter typeConverter, Method method) {
         boolean canPromote = false;
         // check whether the annotation may indicate it can promote
         if (method.getAnnotation(Converter.class) != null) {
@@ -403,7 +410,7 @@ public class AnnotationTypeConverterLoader implements TypeConverterLoader {
         registry.addFallbackTypeConverter(typeConverter, canPromote);
     }
 
-    protected boolean isValidFallbackConverterMethod(Method method) {
+    protected static boolean isValidFallbackConverterMethod(Method method) {
         Class<?>[] parameterTypes = method.getParameterTypes();
         return parameterTypes.length == 3 || parameterTypes.length == 4 && Exchange.class.isAssignableFrom(parameterTypes[1])
                 && TypeConverterRegistry.class.isAssignableFrom(parameterTypes[parameterTypes.length - 1]);
