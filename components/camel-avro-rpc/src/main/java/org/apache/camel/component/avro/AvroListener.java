@@ -17,18 +17,22 @@
 package org.apache.camel.component.avro;
 
 import java.net.InetSocketAddress;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.avro.Protocol;
 import org.apache.avro.Schema;
 import org.apache.avro.ipc.Server;
-import org.apache.avro.ipc.jetty.HttpServer;
 import org.apache.avro.ipc.netty.NettyServer;
 import org.apache.avro.ipc.specific.SpecificResponder;
 import org.apache.avro.specific.SpecificData;
 import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
+import org.apache.camel.component.avro.spi.AvroRpcHttpServerBuilder;
 import org.apache.camel.support.ExchangeHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.util.log.Log;
@@ -69,7 +73,17 @@ public class AvroListener {
         }
 
         if (AVRO_HTTP_TRANSPORT.equalsIgnoreCase(configuration.getTransport().name())) {
-            server = new HttpServer(responder, configuration.getPort());
+            ServiceLoader<AvroRpcHttpServerBuilder> httpServerBuilderServiceLoader = ServiceLoader.load(AvroRpcHttpServerBuilder.class);
+
+            Iterator<AvroRpcHttpServerBuilder> iter = httpServerBuilderServiceLoader.iterator();
+            List<String> providers = new LinkedList();
+            if (iter.hasNext()) {
+                AvroRpcHttpServerBuilder httpServerBuilder = iter.next();
+                Log.getLog().info("Http Server builder found {}", httpServerBuilder.getClass().getName());
+                server = httpServerBuilder.create(responder, configuration.getPort());
+            } else {
+                throw new IllegalArgumentException("Http Server builder not found!");
+            }
         } else if (AVRO_NETTY_TRANSPORT.equalsIgnoreCase(configuration.getTransport().name())) {
             server = new NettyServer(responder, new InetSocketAddress(configuration.getHost(), configuration.getPort()));
         } else {
