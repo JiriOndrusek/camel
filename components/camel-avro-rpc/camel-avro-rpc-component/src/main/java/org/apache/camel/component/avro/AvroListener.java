@@ -35,7 +35,8 @@ import org.apache.camel.ExchangePattern;
 import org.apache.camel.component.avro.spi.AvroRpcHttpServerBuilder;
 import org.apache.camel.support.ExchangeHelper;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jetty.util.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.apache.camel.component.avro.AvroConstants.AVRO_HTTP_TRANSPORT;
 import static org.apache.camel.component.avro.AvroConstants.AVRO_NETTY_TRANSPORT;
@@ -45,6 +46,8 @@ import static org.apache.camel.component.avro.AvroConstants.AVRO_NETTY_TRANSPORT
  * routes mapped.
  */
 public class AvroListener {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AvroListener.class);
 
     private ConcurrentMap<String, AvroConsumer> consumerRegistry = new ConcurrentHashMap<>();
     private AvroConsumer defaultConsumer;
@@ -73,13 +76,14 @@ public class AvroListener {
         }
 
         if (AVRO_HTTP_TRANSPORT.equalsIgnoreCase(configuration.getTransport().name())) {
-            ServiceLoader<AvroRpcHttpServerBuilder> httpServerBuilderServiceLoader = ServiceLoader.load(AvroRpcHttpServerBuilder.class);
+            ServiceLoader<AvroRpcHttpServerBuilder> httpServerBuilderServiceLoader
+                    = ServiceLoader.load(AvroRpcHttpServerBuilder.class);
 
             Iterator<AvroRpcHttpServerBuilder> iter = httpServerBuilderServiceLoader.iterator();
             List<String> providers = new LinkedList();
             if (iter.hasNext()) {
                 AvroRpcHttpServerBuilder httpServerBuilder = iter.next();
-                Log.getLog().info("Http Server builder found {}", httpServerBuilder.getClass().getName());
+                LOGGER.debug("Http Server builder found {}", httpServerBuilder.getClass().getName());
                 server = httpServerBuilder.create(responder, configuration.getPort());
             } else {
                 throw new IllegalArgumentException("Http Server builder not found!");
@@ -129,7 +133,7 @@ public class AvroListener {
     public boolean unregister(String messageName) {
         if (!StringUtils.isEmpty(messageName)) {
             if (consumerRegistry.remove(messageName) == null) {
-                Log.getLog().warn("Consumer with message name {} was already unregistered.", messageName);
+                LOGGER.warn("Consumer with message name {} was already unregistered.", messageName);
             }
         } else {
             defaultConsumer = null;
