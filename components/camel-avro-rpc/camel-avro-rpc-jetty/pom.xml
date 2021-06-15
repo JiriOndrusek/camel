@@ -28,9 +28,9 @@
         <version>3.11.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>camel-avro-rpc-spi</artifactId>
-    <name>Camel :: Avro RPC :: Spi</name>
-    <description>Camel Avro  RPC spi</description>
+    <artifactId>camel-avro-rpc-jetty</artifactId>
+    <name>Camel :: Avro RPC :: Jetty</name>
+    <description>Camel Avro  RPC Jetty</description>
 
 
     <properties>
@@ -40,6 +40,10 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-avro-rpc-spi</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apache.avro</groupId>
             <artifactId>avro-ipc-jetty</artifactId>
