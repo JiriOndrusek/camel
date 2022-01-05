@@ -20,13 +20,8 @@ import org.apache.camel.*;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.aws2.sqs.AmazonSQSClientMock;
 import org.apache.camel.component.aws2.sqs.Sqs2Component;
-import org.apache.camel.component.aws2.sqs.Sqs2Constants;
-import org.apache.camel.component.aws2.sqs.Sqs2Endpoint;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class SqsDeadletterWithClientRegistryLocalstackIT extends Aws2SQSBaseTest {
 
@@ -40,7 +35,6 @@ public class SqsDeadletterWithClientRegistryLocalstackIT extends Aws2SQSBaseTest
     protected CamelContext createCamelContext() throws Exception {
         CamelContext ctx = super.createCamelContext();
         AmazonSQSClientMock awsSQSClient = new AmazonSQSClientMock();
-
 
         Sqs2Component sqs = ctx.getComponent("aws2-sqs", Sqs2Component.class);
 
@@ -75,7 +69,9 @@ public class SqsDeadletterWithClientRegistryLocalstackIT extends Aws2SQSBaseTest
                 errorHandler(deadLetterChannel("aws2-sqs://deadletter?autoCreateQueue=true")
                         .useOriginalMessage());
 
-                from("direct:start").startupOrder(2).process(e -> {throw new IllegalStateException();}).toF("aws2-sqs://%s?autoCreateQueue=true", sharedNameGenerator.getName());
+                from("direct:start").startupOrder(2).process(e -> {
+                    throw new IllegalStateException();
+                }).toF("aws2-sqs://%s?autoCreateQueue=true", sharedNameGenerator.getName());
 
                 from("aws2-sqs://deadletter").to("mock:result");
             }
