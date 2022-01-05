@@ -147,6 +147,12 @@ public class Sqs2Endpoint extends ScheduledPollEndpoint implements HeaderFilterS
     @Override
     protected void doInit() throws Exception {
         super.doInit();
+
+        if (!configuration.isUseDefaultCredentialsProvider() && configuration.getAmazonSQSClient() == null
+                && (configuration.getAccessKey() == null || configuration.getSecretKey() == null)) {
+            throw new IllegalArgumentException("AmazonSQSClient or accessKey and secretKey must be specified.");
+        }
+
         client = configuration.getAmazonSQSClient() != null
                 ? configuration.getAmazonSQSClient() : Sqs2ClientFactory.getSqsClient(configuration).getSQSClient();
 

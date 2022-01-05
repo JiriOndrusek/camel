@@ -66,11 +66,11 @@ public class SqsDeadletterWithClientRegistryLocalstackIT extends Aws2SQSBaseTest
         return new RouteBuilder() {
             @Override
             public void configure() throws Exception {
-                errorHandler(deadLetterChannel("aws2-sqs://deadletter?autoCreateQueue=true")
-                        .useOriginalMessage());
+                //                errorHandler(deadLetterChannel("aws2-sqs://deadletter?autoCreateQueue=true")
+                //                        .useOriginalMessage());
 
                 from("direct:start").startupOrder(2).process(e -> {
-                    throw new IllegalStateException();
+                    //                    throw new IllegalStateException();
                 }).toF("aws2-sqs://%s?autoCreateQueue=true", sharedNameGenerator.getName());
 
                 from("aws2-sqs://deadletter").to("mock:result");

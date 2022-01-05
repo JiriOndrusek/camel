@@ -16,14 +16,12 @@
  */
 package org.apache.camel.component.aws2.sqs.integration;
 
-import org.apache.camel.EndpointInject;
-import org.apache.camel.Exchange;
-import org.apache.camel.ExchangePattern;
-import org.apache.camel.Processor;
-import org.apache.camel.ProducerTemplate;
+import org.apache.camel.*;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.aws2.sqs.Sqs2Component;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.junit.jupiter.api.Test;
+import software.amazon.awssdk.services.sqs.SqsClient;
 
 public class SqsConsumerMessageLocalstackIT extends Aws2SQSBaseTest {
 
@@ -32,6 +30,21 @@ public class SqsConsumerMessageLocalstackIT extends Aws2SQSBaseTest {
 
     @EndpointInject("mock:result")
     private MockEndpoint result;
+
+    @Override
+    protected CamelContext createCamelContext() throws Exception {
+        CamelContext ctx = super.createCamelContext();
+
+        Sqs2Component sqs = ctx.getComponent("aws2-sqs", Sqs2Component.class);
+
+        //todo if those 2 lines are enabled, test is successful, becouse it will use client from context
+        SqsClient client = sqs.getConfiguration().getAmazonSQSClient();
+        sqs.getConfiguration().setAmazonSQSClient(null);
+        ctx.getRegistry().bind("awsSQSClient", client);
+
+        return ctx;
+
+    }
 
     @Test
     public void sendInOnly() throws Exception {
