@@ -84,7 +84,7 @@ public class FromDefinition extends OptionalIdentifiedDefinition<FromDefinition>
         } else if (endpoint != null) {
             return endpoint.getEndpointUri();
         } else if (endpointConsumerBuilder != null) {
-            return endpointConsumerBuilder.getUri();
+            return endpointConsumerBuilder.getRawUri();
         } else {
             return null;
         }
