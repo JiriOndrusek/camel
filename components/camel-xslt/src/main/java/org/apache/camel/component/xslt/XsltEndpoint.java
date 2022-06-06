@@ -353,6 +353,9 @@ public class XsltEndpoint extends ProcessorEndpoint {
     }
 
     protected XsltBuilder createXsltBuilder() throws Exception {
+        System.out.println();
+        System.out.println(">>>>>>>>>>>>>>>>>>... create xslt builder");
+        System.out.println();
         final CamelContext ctx = getCamelContext();
         final ClassResolver resolver = ctx.getClassResolver();
         final Injector injector = ctx.getInjector();
@@ -369,7 +372,7 @@ public class XsltEndpoint extends ProcessorEndpoint {
             if (trFactoryClass != null) {
                 // provide the class loader of this component to work in OSGi environments
                 Class<TransformerFactory> factoryClass = resolver.resolveMandatoryClass(trFactoryClass,
-                        TransformerFactory.class, XsltComponent.class.getClassLoader());
+                        TransformerFactory.class,  Thread.currentThread().getContextClassLoader());
                 LOG.debug("Using TransformerFactoryClass {}", factoryClass);
                 factory = injector.newInstance(factoryClass);
 

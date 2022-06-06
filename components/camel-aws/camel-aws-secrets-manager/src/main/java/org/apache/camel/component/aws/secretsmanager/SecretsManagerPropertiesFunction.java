@@ -113,8 +113,11 @@ public class SecretsManagerPropertiesFunction extends ServiceSupport implements 
             clientBuilder.region(Region.of(region));
             client = clientBuilder.build();
         } else {
-            throw new RuntimeCamelException(
-                    "Using the AWS Secrets Manager Properties Function requires setting AWS credentials as application properties or environment variables");
+            client = camelContext.getRegistry().findSingleByType(SecretsManagerClient.class);
+            if(client== null) {
+                throw new RuntimeCamelException(
+                        "Using the AWS Secrets Manager Properties Function requires setting AWS credentials as application properties or environment variables");
+            }
         }
     }
 
