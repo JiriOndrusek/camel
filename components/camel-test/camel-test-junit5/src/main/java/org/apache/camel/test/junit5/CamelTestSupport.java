@@ -121,10 +121,10 @@ public abstract class CamelTestSupport
     private final Map<String, String> fromEndpoints = new HashMap<>();
     private static final ThreadLocal<AtomicInteger> TESTS = new ThreadLocal<>();
     private static final ThreadLocal<CamelTestSupport> INSTANCE = new ThreadLocal<>();
-    private String currentTestName;
+    protected String currentTestName;
     private boolean isCreateCamelContextPerClass = false;
     private CamelRouteCoverageDumper routeCoverageDumper = new CamelRouteCoverageDumper();
-    private ExtensionContext.Store globalStore;
+    protected ExtensionContext.Store globalStore;
     private boolean testDirectoryCleaned;
     // CHECKSTYLE:ON
 
@@ -413,7 +413,7 @@ public abstract class CamelTestSupport
         }
     }
 
-    private void doSetUp() throws Exception {
+    protected void doSetUp() throws Exception {
         LOG.debug("setUp test");
         // jmx is enabled if we have configured to use it, or if dump route
         // coverage is enabled (it requires JMX)
@@ -582,7 +582,7 @@ public abstract class CamelTestSupport
         } else {
             LOG.debug("tearDown()");
             doStopTemplates(consumer, template, fluentTemplate);
-            doStopCamelContext(context, camelContextService);
+            stopCamelContext();
             doPostTearDown();
             cleanupResources();
         }
@@ -593,7 +593,7 @@ public abstract class CamelTestSupport
         LOG.debug("tearDownCreateCamelContextPerClass()");
         TESTS.remove();
         doStopTemplates(threadConsumer.get(), threadTemplate.get(), threadFluentTemplate.get());
-        doStopCamelContext(threadCamelContext.get(), threadService.get());
+        stopCamelContext();
         doPostTearDown();
         cleanupResources();
     }
