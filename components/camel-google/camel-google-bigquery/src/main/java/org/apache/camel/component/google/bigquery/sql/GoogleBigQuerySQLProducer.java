@@ -72,24 +72,28 @@ public class GoogleBigQuerySQLProducer extends DefaultProducer {
      */
     @Override
     public void process(Exchange exchange) throws Exception {
-        String translatedQuery = SqlHelper.translateQuery(query, exchange);
+        Map<String, QueryParameterValue> parameters = new HashMap<>();
+
         Map<String, Object> queryParameters = extractParameters(exchange);
+
+        String translatedQuery = SqlHelper.translateQuery(query, parameters, exchange);
 
         Message message = exchange.getMessage();
         message.setHeader(GoogleBigQueryConstants.TRANSLATED_QUERY, translatedQuery);
         JobId jobId = message.getHeader(GoogleBigQueryConstants.JOB_ID, JobId.class);
 
-        Long affectedRows = executeSQL(jobId, translatedQuery, queryParameters);
+        Long affectedRows = executeSQL(jobId, translatedQuery, queryParameters, parameters);
 
         LOG.debug("The query {} affected {} rows", query, affectedRows);
         message.setBody(affectedRows);
     }
 
-    private Long executeSQL(JobId jobId, String translatedQuery, Map<String, Object> queryParameters) throws Exception {
+    private Long executeSQL(JobId jobId, String translatedQuery, Map<String, Object> queryParameters, Map<String, QueryParameterValue> patternParameters) throws Exception {
         QueryJobConfiguration.Builder builder = QueryJobConfiguration.newBuilder(translatedQuery)
                 .setUseLegacySql(false);
 
-        setQueryParameters(queryParameters, builder);
+        setQueryParameters(queryParameters, patternParameters, builder);
+        setPatternParameters(queryParameters, patternParameters, builder);
 
         QueryJobConfiguration queryJobConfiguration = builder.build();
 
@@ -157,10 +161,12 @@ public class GoogleBigQuerySQLProducer extends DefaultProducer {
         return result;
     }
 
-    private void setQueryParameters(Map<String, Object> params, QueryJobConfiguration.Builder builder) {
+    private void setQueryParameters(Map<String, Object> params, Map<String, QueryParameterValue> patternParams,
+                                    QueryJobConfiguration.Builder builder) {
         if (params == null) {
             return;
         }
+
 
         params.forEach((key, value) -> {
             QueryParameterValue parameterValue;
@@ -173,6 +179,19 @@ public class GoogleBigQuerySQLProducer extends DefaultProducer {
                 parameterValue = QueryParameterValue.of(value.toString(), StandardSQLTypeName.STRING);
             }
             builder.addNamedParameter(key, parameterValue);
+        });
+    }
+
+    private void setPatternParameters(Map<String, Object> params, Map<String, QueryParameterValue> patternParams,
+                                    QueryJobConfiguration.Builder builder) {
+        if (patternParams == null) {
+            return;
+        }
+        //todo remove duplicities between params and patterParams
+
+
+        patternParams.forEach((key, value) -> {
+            builder.addNamedParameter(key, value);
         });
     }
 

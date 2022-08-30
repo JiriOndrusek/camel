@@ -19,10 +19,13 @@ package org.apache.camel.component.google.bigquery.sql;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.cloud.bigquery.QueryParameterValue;
+import com.google.cloud.bigquery.StandardSQLTypeName;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
@@ -80,6 +83,42 @@ public final class SqlHelper {
 
             String replacement = Matcher.quoteReplacement(value);
             matcher.appendReplacement(stringBuffer, replacement);
+        }
+        matcher.appendTail(stringBuffer);
+        return stringBuffer.toString();
+    }
+
+
+    /**
+     * Replaces pattern in query in form of "${param}" with values from message header Raises an error if param value
+     * not found in headers
+     *
+     * @param  exchange
+     * @return          Translated query text
+     */
+    public static String translateQuery(String query, Map<String, QueryParameterValue> parameters, Exchange exchange) {
+        Message message = exchange.getMessage();
+        Matcher matcher = pattern.matcher(query);
+        StringBuffer stringBuffer = new StringBuffer();
+        while (matcher.find()) {
+            String paramKey = matcher.group(1);
+
+            Object object = message.getHeader(paramKey, Object.class);
+            if (object == null) {
+                object = exchange.getProperty(paramKey, String.class);
+                if (object == null) {
+                    throw new RuntimeExchangeException(
+                            "SQL pattern with name '" + paramKey + "' not found in the message headers", exchange);
+                }
+            }
+
+            QueryParameterValue parameterValue = QueryParameterValue.of(object, (Class<Object>) object.getClass());
+            parameters.put(paramKey, parameterValue);
+//            if(parameterValue.getType() == StandardSQLTypeName.STRING) {
+//
+//            }
+//            String replacement = Matcher.quoteReplacement(""paramKey);
+            matcher.appendReplacement(stringBuffer, "@" + paramKey);
         }
         matcher.appendTail(stringBuffer);
         return stringBuffer.toString();
