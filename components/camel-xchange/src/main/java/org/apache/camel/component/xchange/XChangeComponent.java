@@ -24,6 +24,7 @@ import org.apache.camel.spi.annotations.Component;
 import org.apache.camel.support.DefaultComponent;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.ExchangeFactory;
+import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.utils.Assert;
 
 @Component("xchange")
@@ -50,6 +51,10 @@ public class XChangeComponent extends DefaultComponent {
         return xchanges.get(name);
     }
 
+    void putXChange(String name, XChange xchange) {
+        xchanges.put(name, xchange);
+    }
+
     @Override
     protected void doShutdown() throws Exception {
         super.doShutdown();
@@ -65,7 +70,15 @@ public class XChangeComponent extends DefaultComponent {
         if (xchange == null) {
             Class<? extends Exchange> exchangeClass = XChangeHelper.loadXChangeClass(getCamelContext(), name);
             Assert.notNull(exchangeClass, "XChange not supported: " + name);
-            xchange = new XChange(createExchange(exchangeClass));
+//            xchange = new XChange(createExchange(exchangeClass));
+
+            ExchangeSpecification specification = new ExchangeSpecification(exchangeClass);
+//                specification.setHost("http://localhost");
+//                specification.setPort(9090);
+                specification.setSslUri("http://localhost:9090");
+
+            xchange = new XChange(ExchangeFactory.INSTANCE.createExchange(specification));
+
             xchanges.put(name, xchange);
         }
 

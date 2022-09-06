@@ -77,6 +77,33 @@
             <artifactId>log4j-slf4j-impl</artifactId>
             <scope>test</scope>
         </dependency>
+
+<!--        &lt;!&ndash; Override the guava version prescribed by Camel with the one needed by wiremock for tests &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>com.google.guava</groupId>-->
+<!--            <artifactId>guava</artifactId>-->
+<!--            <version>31.0.1-jre</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock-jre8</artifactId>
+            <version>${wiremock-version}</version>
+            <scope>test</scope>
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    &lt;!&ndash;-->
+<!--                     Adding `camel-jetty` forces WireMock to use mixed Jetty-->
+<!--                     versions, here we exclude WireMocks Jetty dependencies so-->
+<!--                     that we only use the ones declared by the `jetty` component-->
+<!--                     &ndash;&gt;-->
+<!--                    <groupId>org.eclipse.jetty</groupId>-->
+<!--                    <artifactId>*</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+        </dependency>
+
     </dependencies>
 
 </project>

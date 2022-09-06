@@ -18,9 +18,12 @@ package org.apache.camel.component.xchange.account;
 
 import java.util.List;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.xchange.XChangeComponent;
 import org.apache.camel.test.junit5.CamelTestSupport;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.knowm.xchange.dto.account.Balance;
@@ -30,8 +33,20 @@ import org.knowm.xchange.dto.account.Wallet;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-@EnabledIfSystemProperty(named = "enable.xchange.itests", matches = "true", disabledReason = "Requires API credentials")
+//@EnabledIfSystemProperty(named = "enable.xchange.itests", matches = "true", disabledReason = "Requires API credentials")
 public class AccountProducerTest extends CamelTestSupport {
+
+    public static WireMockServer wireMockServer = new WireMockServer(9090);
+
+//    @BeforeAll
+//    public static void startWireMockServer() {
+//        wireMockServer.start();
+//    }
+//
+//    @AfterAll
+//    public static void stopWireMockServer() {
+//        wireMockServer.stop();
+//    }
 
     @Override
     protected RouteBuilder createRouteBuilder() {
