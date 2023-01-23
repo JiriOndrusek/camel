@@ -149,6 +149,17 @@ public class Sqs2Endpoint extends ScheduledPollEndpoint implements HeaderFilterS
             headerFilterStrategy = new Sqs2HeaderFilterStrategy();
         }
 
+        initUrl();
+
+        if (queueUrl == null && configuration.isAutoCreateQueue()) {
+            createQueue(client);
+        } else {
+            LOG.debug("Using Amazon SQS queue url: {}", queueUrl);
+            updateQueueAttributes(client);
+        }
+    }
+
+    protected void initUrl() {
         if (configuration.getQueueUrl() != null) {
             queueUrl = configuration.getQueueUrl();
         } else {
@@ -195,12 +206,6 @@ public class Sqs2Endpoint extends ScheduledPollEndpoint implements HeaderFilterS
             }
         }
 
-        if (queueUrl == null && configuration.isAutoCreateQueue()) {
-            createQueue(client);
-        } else {
-            LOG.debug("Using Amazon SQS queue url: {}", queueUrl);
-            updateQueueAttributes(client);
-        }
     }
 
     private boolean queueExists(SqsClient client) {

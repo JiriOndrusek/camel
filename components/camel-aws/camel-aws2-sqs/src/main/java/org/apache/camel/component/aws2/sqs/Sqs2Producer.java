@@ -99,7 +99,7 @@ public class Sqs2Producer extends DefaultProducer {
 
     public void processSingleMessage(final Exchange exchange) {
         String body = exchange.getIn().getBody(String.class);
-        SendMessageRequest.Builder request = SendMessageRequest.builder().queueUrl(getQueueUrl()).messageBody(body);
+        SendMessageRequest.Builder request = SendMessageRequest.builder().queueUrl(getQueueUrlWithInit()).messageBody(body);
         request.messageAttributes(translateAttributes(exchange.getIn().getHeaders(), exchange));
         addDelay(request, exchange);
         configureFifoAttributes(request, exchange);
@@ -268,6 +268,12 @@ public class Sqs2Producer extends DefaultProducer {
     }
 
     protected String getQueueUrl() {
+        return getEndpoint().getQueueUrl();
+    }
+    protected String getQueueUrlWithInit() {
+        if(getEndpoint().getQueueUrl() == null) {
+            getEndpoint().initUrl();
+        }
         return getEndpoint().getQueueUrl();
     }
 
