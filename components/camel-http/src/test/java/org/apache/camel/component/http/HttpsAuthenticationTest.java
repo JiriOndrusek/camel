@@ -16,6 +16,7 @@
  */
 package org.apache.camel.component.http;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,13 +24,22 @@ import org.apache.camel.BindToRegistry;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.http.handler.AuthenticationValidationHandler;
 import org.apache.camel.support.jsse.SSLContextParameters;
+import org.apache.camel.test.AvailablePortFinder;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponseInterceptor;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.bootstrap.HttpServer;
 import org.apache.http.impl.bootstrap.ServerBootstrap;
+import org.apache.http.impl.client.BasicAuthCache;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.localserver.RequestBasicAuth;
 import org.apache.http.localserver.ResponseBasicUnauthorized;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpProcessor;
 import org.apache.http.protocol.ImmutableHttpProcessor;
 import org.apache.http.protocol.ResponseContent;
@@ -44,12 +54,16 @@ public class HttpsAuthenticationTest extends BaseHttpsTest {
     private String user = "camel";
     private String password = "password";
     private HttpServer localServer;
+    private int port = AvailablePortFinder.getNextAvailable();
 
     @BindToRegistry("x509HostnameVerifier")
     private NoopHostnameVerifier hostnameVerifier = new NoopHostnameVerifier();
 
     @BindToRegistry("sslContextParameters")
     private SSLContextParameters sslContextParameters = new SSLContextParameters();
+
+    @BindToRegistry("basicAuthContext")
+    private HttpContext basicAuthContexts = basicAuthContext();
 
     @BeforeEach
     @Override
@@ -59,10 +73,31 @@ public class HttpsAuthenticationTest extends BaseHttpsTest {
                 .setExpectationVerifier(getHttpExpectationVerifier()).setSslContext(getSSLContext())
                 .registerHandler("/",
                         new AuthenticationValidationHandler(GET.name(), null, null, getExpectedContent(), user, password))
+                .setListenerPort(port)
                 .create();
         localServer.start();
 
+
+
         super.setUp();
+    }
+
+
+    HttpContext basicAuthContext() {
+
+        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(user, password);
+        BasicCredentialsProvider provider = new BasicCredentialsProvider();
+        provider.setCredentials(new AuthScope(null, -1), credentials);
+
+        BasicAuthCache authCache = new BasicAuthCache();
+        BasicScheme basicAuth = new BasicScheme();
+        authCache.put(new HttpHost("localhost", 8083), basicAuth);
+
+        HttpClientContext context = HttpClientContext.create();
+        context.setAuthCache(authCache);
+        context.setCredentialsProvider(provider);
+
+        return context;
     }
 
     @AfterEach
@@ -80,6 +115,17 @@ public class HttpsAuthenticationTest extends BaseHttpsTest {
 
         Exchange exchange = template.request("https://127.0.0.1:" + localServer.getLocalPort()
                                              + "/?authUsername=camel&authPassword=password&x509HostnameVerifier=#x509HostnameVerifier&sslContextParameters=#sslContextParameters",
+                exchange1 -> {
+                });
+
+        assertExchange(exchange);
+    }
+
+    @Test
+    public void httpsGetWithHttpCache() throws Exception {
+
+        Exchange exchange = template.request("https://localhost:" + localServer.getLocalPort()
+                                             + "?throwExceptionOnFailure=false&httpContext=#basicAuthContext",
                 exchange1 -> {
                 });
 
