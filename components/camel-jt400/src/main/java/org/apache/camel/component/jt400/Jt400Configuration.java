@@ -435,16 +435,16 @@ public class Jt400Configuration {
             }
 
             if (isSecured()) {
-                system = connectionPool.getSecureConnection(systemName, userID, password);
+                system = connectionPool.getSecureConnection(systemName, userID, password.toCharArray());
             } else {
-                system = connectionPool.getConnection(systemName, userID, password);
+                system = connectionPool.getConnection(systemName, userID, password.toCharArray());
             }
 
             if (ccsid != DEFAULT_SYSTEM_CCSID) {
                 system.setCcsid(ccsid);
             }
             try {
-                system.setGuiAvailable(guiAvailable);
+                system.setGuiAvailable(false);
             } catch (PropertyVetoException e) {
                 LOG.warn("Failed to disable IBM i prompting in the environment running Camel. This exception will be ignored.",
                         e);
@@ -452,8 +452,10 @@ public class Jt400Configuration {
             return system; // Not null here.
         } catch (ConnectionPoolException e) {
             throw new RuntimeCamelException(
-                    String.format("Unable to obtain an IBM i connection for system name '%s' and user ID '%s'", systemName,
-                            userID),
+                    String.format(
+                            "Unable to obtain an IBM i connection for system name '%s' and user ID '%s', connectionPool class is %s",
+                            systemName,
+                            userID, connectionPool.getClass().getName()),
                     e);
         } catch (PropertyVetoException e) {
             throw new RuntimeCamelException("Unable to set the CSSID to use with " + system, e);
