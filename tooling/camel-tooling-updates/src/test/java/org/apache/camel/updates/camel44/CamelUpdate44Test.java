@@ -14,8 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.camel.updates;
+package org.apache.camel.updates.camel44;
 
+import org.apache.camel.updates.CamelQuarkusTestUtil;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.java.JavaParser;
@@ -30,9 +31,9 @@ public class CamelUpdate44Test implements RewriteTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
-        CamelQuarkusTestUtil.recipe3_8(spec)
-                .parser(JavaParser.fromJavaVersion().logCompilationWarningsAndErrors(true).classpath("camel-api", "camel-util",
-                        "camel-base", "camel-core-model", "camel-json-validator"))
+        CamelQuarkusTestUtil.recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_4)
+                .parser(JavaParser.fromJavaVersion().logCompilationWarningsAndErrors(true).classpath("camel-api",
+                        "camel-core-model", "camel-support", "camel-base-engine", "camel-endpointdsl", "camel-kafka"))
                 .typeValidationOptions(TypeValidation.none());
     }
 
@@ -41,7 +42,6 @@ public class CamelUpdate44Test implements RewriteTest {
      */
     @Test
     void testCamelMainRouteControllerProperty() {
-        //language=java
         rewriteRun(Assertions.properties("""
                    #test
                    camel.main.routeControllerBackOffDelay=1000
@@ -59,7 +59,6 @@ public class CamelUpdate44Test implements RewriteTest {
      */
     @Test
     void testCamelMainRouteControllerDashedProperty() {
-        //language=java
         rewriteRun(Assertions.properties("""
                    #test
                    camel.main.route-controller-back-off-max-attempts = 10

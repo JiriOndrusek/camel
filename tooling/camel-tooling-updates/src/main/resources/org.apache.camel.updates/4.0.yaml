@@ -45,6 +45,7 @@ recipeList:
   - org.apache.camel.updates.camel40.java.CamelBeanRecipe
   - org.apache.camel.updates.camel40.java.CamelHttpRecipe
   - org.apache.camel.updates.camel40.UsePluginHelperForContextGetters
+  - org.openrewrite.java.camel.migrate.ChangeTypes
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.java.camel.migrate.ChangeTypes

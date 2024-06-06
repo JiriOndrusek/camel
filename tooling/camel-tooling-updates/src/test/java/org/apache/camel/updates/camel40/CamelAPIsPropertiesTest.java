@@ -28,7 +28,8 @@ public class CamelAPIsPropertiesTest implements RewriteTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
-        CamelQuarkusTestUtil.recipe3alpha(spec, "org.openrewrite.java.camel.migrate.ChangePropertyValue")
+        CamelQuarkusTestUtil
+                .recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_0, "org.openrewrite.java.camel.migrate.ChangePropertyValue")
                 .parser(JavaParser.fromJavaVersion().logCompilationWarningsAndErrors(true))
                 .typeValidationOptions(TypeValidation.none());
     }

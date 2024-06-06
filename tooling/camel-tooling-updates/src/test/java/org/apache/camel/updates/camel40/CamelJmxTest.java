@@ -29,8 +29,10 @@ public class CamelJmxTest implements RewriteTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
-        CamelQuarkusTestUtil.recipe3alpha(spec, "org.openrewrite.java.camel.migrate.ChangeManagedChoiceMBeanMethodName",
-                "org.openrewrite.java.camel.migrate.ChangeManagedFailoverLoadBalancerMBeanMethodName")
+        CamelQuarkusTestUtil
+                .recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_0,
+                        "org.openrewrite.java.camel.migrate.ChangeManagedChoiceMBeanMethodName",
+                        "org.openrewrite.java.camel.migrate.ChangeManagedFailoverLoadBalancerMBeanMethodName")
                 .parser(JavaParser.fromJavaVersion().logCompilationWarningsAndErrors(true).classpath("camel-management-api"))
                 .typeValidationOptions(TypeValidation.none());
     }

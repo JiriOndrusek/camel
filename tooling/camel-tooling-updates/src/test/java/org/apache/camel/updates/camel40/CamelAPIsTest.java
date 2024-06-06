@@ -18,7 +18,6 @@ package org.apache.camel.updates.camel40;
 
 import org.apache.camel.updates.CamelQuarkusTestUtil;
 import org.junit.jupiter.api.Test;
-import org.openrewrite.java.JavaParser;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
 import org.openrewrite.test.TypeValidation;
@@ -29,10 +28,9 @@ public class CamelAPIsTest implements RewriteTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
-        CamelQuarkusTestUtil.recipe3alpha(spec)
-                .parser(JavaParser.fromJavaVersion().logCompilationWarningsAndErrors(true).classpath("camel-api",
-                        "camel-support", "camel-core-model", "camel-util", "camel-catalog", "camel-main",
-                        "camel-management-api"))
+        CamelQuarkusTestUtil.recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_0)
+                .parser(CamelQuarkusTestUtil.parserFromClasspath(CamelQuarkusTestUtil.CamelVersion.v3_18,
+                        "camel-api", "camel-core-model", "camel-util", "camel-catalog", "camel-main", "camel-management-api"))
                 .typeValidationOptions(TypeValidation.none());
     }
 
@@ -945,7 +943,9 @@ public class CamelAPIsTest implements RewriteTest {
     @Test
     void testOneIntrospectionSupport() {
         //language=java
-        rewriteRun(spec -> CamelQuarkusTestUtil.recipe(spec, "3alpha", "org.openrewrite.java.camel.migrate.ChangeTypes"),
+        rewriteRun(
+                spec -> CamelQuarkusTestUtil.recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_0,
+                        "org.openrewrite.java.camel.migrate.ChangeTypes"),
                 java("""
                             import org.apache.camel.support.IntrospectionSupport;
 
@@ -973,7 +973,9 @@ public class CamelAPIsTest implements RewriteTest {
     @Test
     void testMultiIntrospectionSupport() {
         //language=java
-        rewriteRun(spec -> CamelQuarkusTestUtil.recipe(spec, "3alpha", "org.openrewrite.java.camel.migrate.ChangeTypes"),
+        rewriteRun(
+                spec -> CamelQuarkusTestUtil.recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_0,
+                        "org.openrewrite.java.camel.migrate.ChangeTypes"),
                 java("""
                             import org.apache.camel.support.IntrospectionSupport;
 
