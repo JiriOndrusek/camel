@@ -29,7 +29,7 @@ public class CamelHttpTest implements RewriteTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
-        CamelQuarkusTestUtil.recipe3alpha(spec)
+        CamelQuarkusTestUtil.recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_0)
                 .parser(JavaParser.fromJavaVersion().logCompilationWarningsAndErrors(true).classpath("camel-api",
                         "camel-support", "camel-core-model", "camel-util", "camel-catalog", "camel-main", "httpclient",
                         "httpcore", "httpclient"))

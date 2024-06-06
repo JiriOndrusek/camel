@@ -29,7 +29,8 @@ public class CamelPomRecipeTest implements RewriteTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
-        CamelQuarkusTestUtil.recipe3alpha(spec, "org.openrewrite.java.camel.migrate.removedExtensions")
+        CamelQuarkusTestUtil
+                .recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_0, "org.openrewrite.java.camel.migrate.removedExtensions")
                 .parser(JavaParser.fromJavaVersion().logCompilationWarningsAndErrors(true))
                 .typeValidationOptions(TypeValidation.none());
     }
