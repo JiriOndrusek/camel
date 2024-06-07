@@ -18,7 +18,6 @@ package org.apache.camel.updates.camel40;
 
 import org.apache.camel.updates.CamelQuarkusTestUtil;
 import org.junit.jupiter.api.Test;
-import org.openrewrite.java.JavaParser;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
 import org.openrewrite.test.TypeValidation;
@@ -30,8 +29,8 @@ public class CamelBeanRecipeTest implements RewriteTest {
     @Override
     public void defaults(RecipeSpec spec) {
         CamelQuarkusTestUtil.recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_0)
-                .parser(JavaParser.fromJavaVersion().logCompilationWarningsAndErrors(true).classpath("camel-bean",
-                        "camel-core-model"))
+                .parser(CamelQuarkusTestUtil.parserFromClasspath(CamelQuarkusTestUtil.CamelVersion.v3_18,
+                        "camel-bean", "camel-core-model"))
                 .typeValidationOptions(TypeValidation.none());
     }
 
