@@ -199,7 +199,7 @@
                 <version>3.1.1</version>
                 <executions>
                     <execution>
-                        <phase>install</phase>
+                        <phase>process-test-resources</phase>
                         <goals>
                             <goal>copy</goal>
                         </goals>
@@ -207,45 +207,57 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.apache.camel</groupId>
+                                    <artifactId>camel-activemq</artifactId>
+                                    <version>${camel3.18-version}</version>
+                                    <outputDirectory>${project.build.outputDirectory}/META-INF/rewrite/classpath</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.camel</groupId>
                                     <artifactId>camel-api</artifactId>
                                     <version>${camel3.18-version}</version>
-                                    <outputDirectory>${project.resources[0].directory}/META-INF/rewrite/classpath</outputDirectory>
+                                    <outputDirectory>${project.build.outputDirectory}/META-INF/rewrite/classpath</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.camel</groupId>
-                                    <artifactId>camel-core-model</artifactId>
+                                    <artifactId>camel-bean</artifactId>
                                     <version>${camel3.18-version}</version>
-                                    <outputDirectory>${project.resources[0].directory}/META-INF/rewrite/classpath</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.camel</groupId>
-                                    <artifactId>camel-util</artifactId>
-                                    <version>${camel3.18-version}</version>
-                                    <outputDirectory>${project.resources[0].directory}/META-INF/rewrite/classpath</outputDirectory>
+                                    <outputDirectory>${project.build.outputDirectory}/META-INF/rewrite/classpath</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.camel</groupId>
                                     <artifactId>camel-catalog</artifactId>
                                     <version>${camel3.18-version}</version>
-                                    <outputDirectory>${project.resources[0].directory}/META-INF/rewrite/classpath</outputDirectory>
+                                    <outputDirectory>${project.build.outputDirectory}/META-INF/rewrite/classpath</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.camel</groupId>
-                                    <artifactId>camel-support</artifactId>
+                                    <artifactId>camel-core-model</artifactId>
                                     <version>${camel3.18-version}</version>
-                                    <outputDirectory>${project.resources[0].directory}/META-INF/rewrite/classpath</outputDirectory>
+                                    <outputDirectory>${project.build.outputDirectory}/META-INF/rewrite/classpath</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.camel</groupId>
                                     <artifactId>camel-main</artifactId>
                                     <version>${camel3.18-version}</version>
-                                    <outputDirectory>${project.resources[0].directory}/META-INF/rewrite/classpath</outputDirectory>
+                                    <outputDirectory>${project.build.outputDirectory}/META-INF/rewrite/classpath</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.camel</groupId>
                                     <artifactId>camel-management-api</artifactId>
                                     <version>${camel3.18-version}</version>
-                                    <outputDirectory>${project.resources[0].directory}/META-INF/rewrite/classpath</outputDirectory>
+                                    <outputDirectory>${project.build.outputDirectory}/META-INF/rewrite/classpath</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.camel</groupId>
+                                    <artifactId>camel-support</artifactId>
+                                    <version>${camel3.18-version}</version>
+                                    <outputDirectory>${project.build.outputDirectory}/META-INF/rewrite/classpath</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.camel</groupId>
+                                    <artifactId>camel-util</artifactId>
+                                    <version>${camel3.18-version}</version>
+                                    <outputDirectory>${project.build.outputDirectory}/META-INF/rewrite/classpath</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
