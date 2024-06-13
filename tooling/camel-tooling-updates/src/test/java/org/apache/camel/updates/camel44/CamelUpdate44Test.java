@@ -17,9 +17,7 @@
 package org.apache.camel.updates.camel44;
 
 import org.apache.camel.updates.CamelQuarkusTestUtil;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.openrewrite.java.JavaParser;
 import org.openrewrite.properties.Assertions;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
@@ -32,8 +30,8 @@ public class CamelUpdate44Test implements RewriteTest {
     @Override
     public void defaults(RecipeSpec spec) {
         CamelQuarkusTestUtil.recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_4)
-                .parser(JavaParser.fromJavaVersion().logCompilationWarningsAndErrors(true).classpath("camel-api",
-                        "camel-core-model", "camel-support", "camel-base-engine", "camel-endpointdsl", "camel-kafka"))
+                .parser(CamelQuarkusTestUtil.parserFromClasspath(CamelQuarkusTestUtil.CamelVersion.v4_0,
+                        "camel-api", "camel-util", "camel-base", "camel-core-model", "camel-json-validator", "camel-xpath"))
                 .typeValidationOptions(TypeValidation.none());
     }
 
@@ -75,7 +73,7 @@ public class CamelUpdate44Test implements RewriteTest {
      * <a href="https://camel.apache.org/manual/camel-4x-upgrade-guide-4_4.html#_camel_json_validator">doc</a>
      */
     @Test
-    void testJsonValiidator() {
+    void testJsonValidator() {
         //language=java
         rewriteRun(java(
                 """
@@ -348,7 +346,7 @@ public class CamelUpdate44Test implements RewriteTest {
      * Removed xpath(String text, String headerName)
      */
     @Test
-    @Disabled //https://github.com/quarkusio/quarkus-updates/issues/142
+    //    @Disabled //https://github.com/quarkusio/quarkus-updates/issues/142
     void testXpath1() {
         //language=java
         rewriteRun(java("""
@@ -381,7 +379,7 @@ public class CamelUpdate44Test implements RewriteTest {
      * Removed xpath(String text, Class<?> resultType, String headerName)
      */
     @Test
-    @Disabled //https://github.com/quarkusio/quarkus-updates/issues/142
+    //    @Disabled //https://github.com/quarkusio/quarkus-updates/issues/142
     void testXpath2() {
         //language=java
         rewriteRun(java("""
@@ -414,7 +412,7 @@ public class CamelUpdate44Test implements RewriteTest {
      * Removed xpath(String text, Class<?> resultType, Namespaces namespaces, String headerName) {
      */
     @Test
-    @Disabled //https://github.com/quarkusio/quarkus-updates/issues/142
+    //    @Disabled //https://github.com/quarkusio/quarkus-updates/issues/142
     void testXpath3() {
         //language=java
         rewriteRun(java("""
@@ -434,8 +432,9 @@ public class CamelUpdate44Test implements RewriteTest {
                         public class Xpath3Test extends RouteBuilder {
                             @Override
                             public void configure()  {
-                                /*Some of the Java DSL for tokenize, xmlTokenize, xpath, xquery and jsonpath has been removed as part of making the DSL model consistent.
-                        See https://camel.apache.org/manual/camel-4x-upgrade-guide-4_4.html#_camel_core for more details.*/from("direct:in").choice().when().xpath("text", Object.class, "namespace", "header")
+                                /*Some Java DSL for tokenize, xmlTokenize, xpath, xquery and jsonpath has been removed as part of making the DSL model consistent.
+                        See https://camel.apache.org/manual/camel-4x-upgrade-guide-4_4.html#_camel_core for more details.
+                        */from("direct:in").choice().when().removed_xpath("text", Object.class, null, "header")
                                         .to("mock:premium");
                             }
                         }
@@ -446,7 +445,7 @@ public class CamelUpdate44Test implements RewriteTest {
      * Removed xquery(String text, String headerName)
      */
     @Test
-    @Disabled //https://github.com/quarkusio/quarkus-updates/issues/142
+    //    @Disabled //https://github.com/quarkusio/quarkus-updates/issues/142
     void testXquery1() {
         //language=java
         rewriteRun(java("""
@@ -478,7 +477,7 @@ public class CamelUpdate44Test implements RewriteTest {
      * Removed xquery(String text, Class<?> resultType, String headerName)
      */
     @Test
-    @Disabled //https://github.com/quarkusio/quarkus-updates/issues/142
+    //    @Disabled //https://github.com/quarkusio/quarkus-updates/issues/142
     void testXquery2() {
         //language=java
         rewriteRun(java("""
@@ -510,7 +509,7 @@ public class CamelUpdate44Test implements RewriteTest {
      * Removed xquery(String text, Class<?> resultType, Namespaces namespaces, String headerName) {
      */
     @Test
-    @Disabled //https://github.com/quarkusio/quarkus-updates/issues/142
+    //    @Disabled //https://github.com/quarkusio/quarkus-updates/issues/142
     void testXquery3() {
         //language=java
         rewriteRun(java("""

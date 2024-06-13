@@ -30,7 +30,8 @@ public class CamelAPIsTest implements RewriteTest {
     public void defaults(RecipeSpec spec) {
         CamelQuarkusTestUtil.recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_0)
                 .parser(CamelQuarkusTestUtil.parserFromClasspath(CamelQuarkusTestUtil.CamelVersion.v3_18,
-                        "camel-api", "camel-core-model", "camel-util", "camel-catalog", "camel-main", "camel-management-api"))
+                        "camel-api", "camel-core-model", "camel-util", "camel-catalog", "camel-main", "camel-management-api",
+                        "camel-support"))
                 .typeValidationOptions(TypeValidation.none());
     }
 
@@ -944,8 +945,7 @@ public class CamelAPIsTest implements RewriteTest {
     void testOneIntrospectionSupport() {
         //language=java
         rewriteRun(
-                spec -> CamelQuarkusTestUtil.recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_0,
-                        "org.openrewrite.java.camel.migrate.ChangeTypes"),
+                spec -> CamelQuarkusTestUtil.recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_0),
                 java("""
                             import org.apache.camel.support.IntrospectionSupport;
 
@@ -974,8 +974,7 @@ public class CamelAPIsTest implements RewriteTest {
     void testMultiIntrospectionSupport() {
         //language=java
         rewriteRun(
-                spec -> CamelQuarkusTestUtil.recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_0,
-                        "org.openrewrite.java.camel.migrate.ChangeTypes"),
+                spec -> CamelQuarkusTestUtil.recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_0),
                 java("""
                             import org.apache.camel.support.IntrospectionSupport;
 

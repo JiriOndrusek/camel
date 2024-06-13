@@ -45,10 +45,12 @@ recipeList:
   - org.apache.camel.updates.camel40.java.CamelBeanRecipe
   - org.apache.camel.updates.camel40.java.CamelHttpRecipe
   - org.apache.camel.updates.camel40.UsePluginHelperForContextGetters
-  - org.openrewrite.java.camel.migrate.ChangeTypes
+  - org.apache.camel.updates.camel40.ChangeTypes
+  - org.apache.camel.updates.camel40.ChangeManagedChoiceMBeanMethodName
+  - org.apache.camel.updates.camel40.ChangeManagedFailoverLoadBalancerMBeanMethodName
 ---
 type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.java.camel.migrate.ChangeTypes
+name: org.apache.camel.updates.camel40.ChangeTypes
 displayName: Migrate moved types between Came 3.x and Camel 4.x
 description: Change type of classes related to change of API.
 recipeList:
@@ -154,7 +156,7 @@ recipeList:
         oldValue: Discard
 ---
 type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.java.camel.migrate.ChangeManagedChoiceMBeanMethodName
+name: org.apache.camel.updates.camel40.ChangeManagedChoiceMBeanMethodName
 displayName: Change of method names brought by Camel JMX API changes
 description: MBeans now use a consistent method name of `extendedInformation`.
 recipeList:
@@ -165,7 +167,7 @@ recipeList:
       ignoreDefinition: null
 ---
 type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.java.camel.migrate.ChangeManagedFailoverLoadBalancerMBeanMethodName
+name: org.apache.camel.updates.camel40.ChangeManagedFailoverLoadBalancerMBeanMethodName
 displayName: Change of method names brought by Camel JMX API changes
 description: MBeans now use a consistent method name of `extendedInformation`.
 recipeList:
