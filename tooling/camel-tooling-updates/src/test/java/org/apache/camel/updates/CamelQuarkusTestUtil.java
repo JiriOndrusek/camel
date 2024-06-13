@@ -74,7 +74,12 @@ public class CamelQuarkusTestUtil {
     }
 
     public static Parser.Builder parserFromClasspath(CamelVersion from, String... classpath) {
-        List<String> resources = Arrays.stream(classpath).map(cl -> cl + "-" + from.getVersion()).collect(Collectors.toList());
+        List<String> resources = Arrays.stream(classpath).map(cl -> {
+            if (cl.startsWith("camel-")) {
+                return cl + "-" + from.getVersion();
+            }
+            return cl;
+        }).collect(Collectors.toList());
 
         return JavaParser.fromJavaVersion().logCompilationWarningsAndErrors(true)
                 .classpathFromResources(new InMemoryExecutionContext(), resources.toArray(new String[resources.size()]));
