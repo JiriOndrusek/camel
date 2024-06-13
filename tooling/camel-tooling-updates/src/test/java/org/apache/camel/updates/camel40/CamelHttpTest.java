@@ -18,7 +18,6 @@ package org.apache.camel.updates.camel40;
 
 import org.apache.camel.updates.CamelQuarkusTestUtil;
 import org.junit.jupiter.api.Test;
-import org.openrewrite.java.JavaParser;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
 import org.openrewrite.test.TypeValidation;
@@ -30,9 +29,9 @@ public class CamelHttpTest implements RewriteTest {
     @Override
     public void defaults(RecipeSpec spec) {
         CamelQuarkusTestUtil.recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_0)
-                .parser(JavaParser.fromJavaVersion().logCompilationWarningsAndErrors(true).classpath("camel-api",
-                        "camel-support", "camel-core-model", "camel-util", "camel-catalog", "camel-main", "httpclient",
-                        "httpcore", "httpclient"))
+                .parser(CamelQuarkusTestUtil.parserFromClasspath(CamelQuarkusTestUtil.CamelVersion.v3_18,
+                        "camel-api", "camel-support", "camel-core-model", "camel-util", "camel-catalog", "camel-main",
+                        "httpclient-4.5.14", "httpcore-4.4.16"))
                 .typeValidationOptions(TypeValidation.none());
     }
 
