@@ -189,11 +189,28 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-core-model</artifactId>
+            <version>4.0.3</version>
+        </dependency>
     </dependencies>
 
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <!-- to copy the dependencies for the test -->
                 <groupId>org.apache.maven.plugins</groupId>
@@ -339,12 +356,6 @@
                                 <artifactItem>
                                     <groupId>org.apache.camel</groupId>
                                     <artifactId>camel-util</artifactId>
-                                    <version>${camel4.0-version}</version>
-                                    <outputDirectory>${project.build.outputDirectory}/META-INF/rewrite/classpath</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.camel</groupId>
-                                    <artifactId>camel-xpath</artifactId>
                                     <version>${camel4.0-version}</version>
                                     <outputDirectory>${project.build.outputDirectory}/META-INF/rewrite/classpath</outputDirectory>
                                 </artifactItem>
