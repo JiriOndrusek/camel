@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import org.apache.camel.updates.AbstractCamelQuarkusYamlVisitor;
+import org.apache.camel.updates.AbstractCamelYamlVisitor;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
@@ -39,7 +39,7 @@ import static org.openrewrite.Tree.randomId;
  */
 @EqualsAndHashCode(callSuper = true)
 @Value
-public class CamelQuarkusYamlRouteConfigurationSequenceRecipe extends Recipe {
+public class CamelYamlRouteConfigurationSequenceRecipe extends Recipe {
 
     private static JsonPathMatcher MATCHER_ROUTE_CONFIGURATION = new JsonPathMatcher("$.route-configuration");
     private static JsonPathMatcher MATCHER_ROUTE_CONFIGURATION_ON_EXCEPTION
@@ -58,7 +58,7 @@ public class CamelQuarkusYamlRouteConfigurationSequenceRecipe extends Recipe {
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
 
-        return new AbstractCamelQuarkusYamlVisitor() {
+        return new AbstractCamelYamlVisitor() {
 
             private Yaml.Sequence sequenceToReplace;
             private boolean indentRegistered = false;

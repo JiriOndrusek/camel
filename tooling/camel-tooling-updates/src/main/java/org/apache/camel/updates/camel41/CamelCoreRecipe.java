@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import org.apache.camel.updates.AbstractCamelQuarkusJavaVisitor;
+import org.apache.camel.updates.AbstractCamelJavaVisitor;
 import org.apache.camel.updates.RecipesUtil;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
@@ -54,7 +54,7 @@ public class CamelCoreRecipe extends Recipe {
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
 
-        return RecipesUtil.newVisitor(new AbstractCamelQuarkusJavaVisitor() {
+        return RecipesUtil.newVisitor(new AbstractCamelJavaVisitor() {
             @Override
             public J.Literal visitLiteral(J.Literal literal, ExecutionContext context) {
                 J.Literal l = super.visitLiteral(literal, context);

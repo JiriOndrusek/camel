@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Parent of Camel xml visitors, catches any exception, logs it and then continues.
  */
-public abstract class AbstractCamelQuarkusXmlVisitor extends XmlIsoVisitor<ExecutionContext> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCamelQuarkusXmlVisitor.class);
+public abstract class AbstractCamelXmlVisitor extends XmlIsoVisitor<ExecutionContext> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCamelXmlVisitor.class);
 
     @Override
     public final Xml.Tag visitTag(Xml.Tag tag, ExecutionContext executionContext) {

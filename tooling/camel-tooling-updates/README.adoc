@@ -16,18 +16,19 @@ To apply recipes on a standalone Camel Project you can use maven plugin:
 
 mvn -U org.openrewrite.maven:rewrite-maven-plugin:5.20.0:run \
 -Drewrite.recipeArtifactCoordinates=org.apache.camel:camel-tooling-updates:4.7.0-SNAPSHOT \
--DactiveRecipes=org.apache.camel.updates.camel44.CamelQuarkusMigrationRecipe
+-DactiveRecipes=org.apache.camel.updates.camel44.CamelMigrationRecipe
 -Drewrite.recipeFile=/org.apache.camel.updates/4.0.yaml
 ```
 
+== JUnit testing
 
------------------ PR --------------------------------------------
-This is a draft of simple migration module using Openrewrite recipes for Camel migration.
-This version is a extraction of recipes from project https://github.com/quarkusio/quarkus-updates/ into a Camel repository.
-Please look at the README.adoc to understand the module.
+Several migration paths to different versions must be covered by the tests.
+Therefore, the project uses the maven-dependency-plugin to download various versions of certain libraries.
 
-Here is a list with TODOs (the reason why this PR is a draft)
-- This module should be standalone project.
-It might be necessary to release new version of recipes and it wouldn't be possible if whole Camel has to be released as well.
-- Better CLI for executing the migration would be nice. Look for example on quarkus https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.0
-It would be nice to use something like `camel update 4.4` (which in case of camel 3.x would trigger update to 4.0 and then to 4.4)
+Libraries are not packed into the installed jar.
+
+== Test jar
+
+Project installs also test classes into a `test-jar` artifact.
+This allows other projects (like https://github.com/quarkusio/quarkus-updates/[quarkus-updates]) to laverage from the tests.
+

@@ -18,7 +18,7 @@ package org.apache.camel.updates.camel40.java;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import org.apache.camel.updates.AbstractCamelQuarkusJavaVisitor;
+import org.apache.camel.updates.AbstractCamelJavaVisitor;
 import org.apache.camel.updates.RecipesUtil;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
@@ -48,7 +48,7 @@ public class CamelHttpRecipe extends Recipe {
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
 
-        return RecipesUtil.newVisitor("org.apache.http..*", new AbstractCamelQuarkusJavaVisitor() {
+        return RecipesUtil.newVisitor("org.apache.http..*", new AbstractCamelJavaVisitor() {
             @Override
             protected J.Import doVisitImport(J.Import _import, ExecutionContext context) {
                 doAfterVisit(

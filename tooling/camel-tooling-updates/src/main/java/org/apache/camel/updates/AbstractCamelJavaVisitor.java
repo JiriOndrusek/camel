@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Parent of Camel visitors, skips visit methods in case that there is no camel package imported.
+ * Parent of Camel xml visitors, catches any exception, logs it and then continues.
  * <p>
  * Every method <i>visit*</i> is marked as final and methods <i>doVisit*</i> are used instead.
  * </p>
@@ -37,8 +37,8 @@ import org.slf4j.LoggerFactory;
  * signature)</i>.
  * </p>
  */
-public abstract class AbstractCamelQuarkusJavaVisitor extends JavaIsoVisitor<ExecutionContext> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCamelQuarkusJavaVisitor.class);
+public abstract class AbstractCamelJavaVisitor extends JavaIsoVisitor<ExecutionContext> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCamelJavaVisitor.class);
 
     //There is no need to  initialize all patterns at the class start.
     //Map is a cache for created patterns

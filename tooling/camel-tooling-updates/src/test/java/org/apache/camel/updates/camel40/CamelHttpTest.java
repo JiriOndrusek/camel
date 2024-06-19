@@ -16,7 +16,7 @@
  */
 package org.apache.camel.updates.camel40;
 
-import org.apache.camel.updates.CamelQuarkusTestUtil;
+import org.apache.camel.updates.CamelTestUtil;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
@@ -28,8 +28,8 @@ public class CamelHttpTest implements RewriteTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
-        CamelQuarkusTestUtil.recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_0)
-                .parser(CamelQuarkusTestUtil.parserFromClasspath(CamelQuarkusTestUtil.CamelVersion.v3_18,
+        CamelTestUtil.recipe(spec, CamelTestUtil.CamelVersion.v4_0)
+                .parser(CamelTestUtil.parserFromClasspath(CamelTestUtil.CamelVersion.v3_18,
                         "camel-api", "camel-support", "camel-core-model", "camel-util", "camel-catalog", "camel-main",
                         "httpclient-4.5.14", "httpcore-4.4.16"))
                 .typeValidationOptions(TypeValidation.none());
@@ -52,16 +52,13 @@ public class CamelHttpTest implements RewriteTest {
                             import org.apache.http.protocol.HttpContext;
                             import org.eclipse.microprofile.config.ConfigProvider;
 
-                            import static org.apache.camel.quarkus.component.http.it.HttpResource.USER_ADMIN;
-                            import static org.apache.camel.quarkus.component.http.it.HttpResource.USER_ADMIN_PASSWORD;
-
                             public class HttpProducers {
 
                                 @Named
                                 HttpContext basicAuthContext() {
                                     Integer port = ConfigProvider.getConfig().getValue("quarkus.http.test-port", Integer.class);
 
-                                    UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(USER_ADMIN, USER_ADMIN_PASSWORD);
+                                    UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("USER_ADMIN", "USER_ADMIN_PASSWORD");
                                     BasicCredentialsProvider provider = new BasicCredentialsProvider();
                                     provider.setCredentials(AuthScope.ANY, credentials);
 
@@ -89,16 +86,13 @@ public class CamelHttpTest implements RewriteTest {
                             import org.apache.hc.core5.http.protocol.HttpContext;
                             import org.eclipse.microprofile.config.ConfigProvider;
 
-                            import static org.apache.camel.quarkus.component.http.it.HttpResource.USER_ADMIN;
-                            import static org.apache.camel.quarkus.component.http.it.HttpResource.USER_ADMIN_PASSWORD;
-
                             public class HttpProducers {
 
                                 @Named
                                 HttpContext basicAuthContext() {
                                     Integer port = ConfigProvider.getConfig().getValue("quarkus.http.test-port", Integer.class);
 
-                                    UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(USER_ADMIN, USER_ADMIN_PASSWORD);
+                                    UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("USER_ADMIN", "USER_ADMIN_PASSWORD");
                                     BasicCredentialsProvider provider = new BasicCredentialsProvider();
                                     provider.setCredentials(new AuthScope(null, -1), credentials);
 

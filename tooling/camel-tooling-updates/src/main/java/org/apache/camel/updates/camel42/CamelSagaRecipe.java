@@ -20,7 +20,7 @@ import java.util.Collections;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import org.apache.camel.updates.AbstractCamelQuarkusJavaVisitor;
+import org.apache.camel.updates.AbstractCamelJavaVisitor;
 import org.apache.camel.updates.RecipesUtil;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
@@ -53,7 +53,7 @@ public class CamelSagaRecipe extends Recipe {
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
 
-        return RecipesUtil.newVisitor(new AbstractCamelQuarkusJavaVisitor() {
+        return RecipesUtil.newVisitor(new AbstractCamelJavaVisitor() {
             @Override
             protected J.MethodInvocation doVisitMethodInvocation(J.MethodInvocation method, ExecutionContext context) {
                 J.MethodInvocation mi = super.doVisitMethodInvocation(method, context);

@@ -16,7 +16,7 @@
  */
 package org.apache.camel.updates.camel40;
 
-import org.apache.camel.updates.CamelQuarkusTestUtil;
+import org.apache.camel.updates.CamelTestUtil;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
@@ -27,7 +27,7 @@ public class CamelYamlTest implements RewriteTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
-        CamelQuarkusTestUtil.recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_0)
+        CamelTestUtil.recipe(spec, CamelTestUtil.CamelVersion.v4_0)
                 .typeValidationOptions(TypeValidation.none());
     }
 
@@ -105,7 +105,7 @@ public class CamelYamlTest implements RewriteTest {
                         handled:
                           constant: "true"
                         exception:
-                          - "org.apache.camel.quarkus.core.it.routeconfigurations.RouteConfigurationsException"
+                          - "org.apache.camel.core.it.routeconfigurations.RouteConfigurationsException"
                         steps:
                           - set-body:
                               constant:
@@ -118,7 +118,7 @@ public class CamelYamlTest implements RewriteTest {
                             handled:
                               constant: "true"
                             exception:
-                              - "org.apache.camel.quarkus.core.it.routeconfigurations.RouteConfigurationsException"
+                              - "org.apache.camel.core.it.routeconfigurations.RouteConfigurationsException"
                             steps:
                               - set-body:
                                   constant:
@@ -148,7 +148,7 @@ public class CamelYamlTest implements RewriteTest {
                         handled:
                           constant: "true"
                         exception:
-                          - "org.apache.camel.quarkus.core.it.routeconfigurations.RouteConfigurationsException"
+                          - "org.apache.camel.core.it.routeconfigurations.RouteConfigurationsException"
                         steps:
                           - set-body:
                               constant:
@@ -160,7 +160,7 @@ public class CamelYamlTest implements RewriteTest {
                         handled:
                           constant: "true"
                         exception:
-                          - "org.apache.camel.quarkus.core.it.routeconfigurations.RouteConfigurationsException"
+                          - "org.apache.camel.core.it.routeconfigurations.RouteConfigurationsException"
                         steps:
                           - set-body:
                               constant:
@@ -173,7 +173,7 @@ public class CamelYamlTest implements RewriteTest {
                             handled:
                               constant: "true"
                             exception:
-                              - "org.apache.camel.quarkus.core.it.routeconfigurations.RouteConfigurationsException"
+                              - "org.apache.camel.core.it.routeconfigurations.RouteConfigurationsException"
                             steps:
                               - set-body:
                                   constant:
@@ -186,7 +186,7 @@ public class CamelYamlTest implements RewriteTest {
                             handled:
                               constant: "true"
                             exception:
-                              - "org.apache.camel.quarkus.core.it.routeconfigurations.RouteConfigurationsException"
+                              - "org.apache.camel.core.it.routeconfigurations.RouteConfigurationsException"
                             steps:
                               - set-body:
                                   constant:
@@ -223,7 +223,7 @@ public class CamelYamlTest implements RewriteTest {
                             handled:
                               constant: "true"
                             exception:
-                              - "org.apache.camel.quarkus.core.it.routeconfigurations.RouteConfigurationsException"
+                              - "org.apache.camel.core.it.routeconfigurations.RouteConfigurationsException"
                             steps:
                               - set-body:
                                   constant:

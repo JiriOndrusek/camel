@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import org.apache.camel.updates.AbstractCamelQuarkusJavaVisitor;
+import org.apache.camel.updates.AbstractCamelJavaVisitor;
 import org.apache.camel.updates.RecipesUtil;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
@@ -77,7 +77,7 @@ public class CamelAPIsRecipe extends Recipe {
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
-        return RecipesUtil.newVisitor(new AbstractCamelQuarkusJavaVisitor() {
+        return RecipesUtil.newVisitor(new AbstractCamelJavaVisitor() {
 
             //Cache for all methodInvocations CamelContext adapt(java.lang.Class).
             private Map<UUID, Tree> adaptCache = new HashMap<>();

@@ -16,7 +16,7 @@
  */
 package org.apache.camel.updates.camel40;
 
-import org.apache.camel.updates.CamelQuarkusTestUtil;
+import org.apache.camel.updates.CamelTestUtil;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
@@ -28,8 +28,8 @@ public class CamelAPIsTest implements RewriteTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
-        CamelQuarkusTestUtil.recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_0)
-                .parser(CamelQuarkusTestUtil.parserFromClasspath(CamelQuarkusTestUtil.CamelVersion.v3_18,
+        CamelTestUtil.recipe(spec, CamelTestUtil.CamelVersion.v4_0)
+                .parser(CamelTestUtil.parserFromClasspath(CamelTestUtil.CamelVersion.v3_18,
                         "camel-api", "camel-core-model", "camel-util", "camel-catalog", "camel-main", "camel-management-api",
                         "camel-support"))
                 .typeValidationOptions(TypeValidation.none());
@@ -490,7 +490,7 @@ public class CamelAPIsTest implements RewriteTest {
     void testAdapt2() {
         //language=java
         rewriteRun(java("""
-                package org.apache.camel.quarkus.component.test.it;
+                package org.apache.camel.component.test.it;
 
                 import org.apache.camel.CamelContext;
                 import org.apache.camel.ExtendedCamelContext;
@@ -505,7 +505,7 @@ public class CamelAPIsTest implements RewriteTest {
                     }
                 }
                 """, """
-                package org.apache.camel.quarkus.component.test.it;
+                package org.apache.camel.component.test.it;
 
                 import org.apache.camel.CamelContext;
                 import org.apache.camel.impl.engine.DefaultHeadersMapFactory;
@@ -526,7 +526,7 @@ public class CamelAPIsTest implements RewriteTest {
         //language=java
         rewriteRun(
                 java("""
-                            package org.apache.camel.quarkus.component.test.it;
+                            package org.apache.camel.component.test.it;
 
                             import org.apache.camel.CamelContext;
                             import org.apache.camel.ExtendedCamelContext;
@@ -542,7 +542,7 @@ public class CamelAPIsTest implements RewriteTest {
                             }
                         """,
                         """
-                                package org.apache.camel.quarkus.component.test.it;
+                                package org.apache.camel.component.test.it;
 
                                 import org.apache.camel.CamelContext;
                                 import org.apache.camel.ExtendedCamelContext;
@@ -565,7 +565,7 @@ public class CamelAPIsTest implements RewriteTest {
         //language=java
         rewriteRun(
                 java("""
-                            package org.apache.camel.quarkus.component.test.it;
+                            package org.apache.camel.component.test.it;
 
                             import org.apache.camel.CamelContext;
                             import org.apache.camel.ExtendedCamelContext;
@@ -583,7 +583,7 @@ public class CamelAPIsTest implements RewriteTest {
                             }
                         """,
                         """
-                                package org.apache.camel.quarkus.component.test.it;
+                                package org.apache.camel.component.test.it;
 
                                 import org.apache.camel.CamelContext;
                                 import org.apache.camel.ExtendedCamelContext;
@@ -607,7 +607,7 @@ public class CamelAPIsTest implements RewriteTest {
     void testModelToXMLDumperViaPluginHelper() {
         //language=java
         rewriteRun(java("""
-                    package org.apache.camel.quarkus.component.test.it;
+                    package org.apache.camel.component.test.it;
 
                     import org.apache.camel.CamelContext;
                     import org.apache.camel.ExtendedCamelContext;
@@ -625,7 +625,7 @@ public class CamelAPIsTest implements RewriteTest {
                     }
                 """,
                 """
-                        package org.apache.camel.quarkus.component.test.it;
+                        package org.apache.camel.component.test.it;
 
                         import org.apache.camel.CamelContext;
                         import org.apache.camel.ExtendedCamelContext;
@@ -649,7 +649,7 @@ public class CamelAPIsTest implements RewriteTest {
     void getRoutesLoaderViaPluginHelper() {
         //language=java
         rewriteRun(java("""
-                    package org.apache.camel.quarkus.component.test.it;
+                    package org.apache.camel.component.test.it;
 
                     import org.apache.camel.CamelContext;
                     import org.apache.camel.ExtendedCamelContext;
@@ -667,7 +667,7 @@ public class CamelAPIsTest implements RewriteTest {
                     }
                 """,
                 """
-                        package org.apache.camel.quarkus.component.test.it;
+                        package org.apache.camel.component.test.it;
 
                         import org.apache.camel.CamelContext;
                         import org.apache.camel.ExtendedCamelContext;
@@ -692,7 +692,7 @@ public class CamelAPIsTest implements RewriteTest {
         //language=java
         rewriteRun(java(
                 """
-                            package org.apache.camel.quarkus.component.test.it;
+                            package org.apache.camel.component.test.it;
 
                             import org.apache.camel.CamelContext;
                             import org.apache.camel.catalog.RuntimeCamelCatalog;
@@ -707,7 +707,7 @@ public class CamelAPIsTest implements RewriteTest {
                             }
                         """,
                 """
-                        package org.apache.camel.quarkus.component.test.it;
+                        package org.apache.camel.component.test.it;
 
                         import org.apache.camel.CamelContext;
                         import org.apache.camel.catalog.RuntimeCamelCatalog;
@@ -728,7 +728,7 @@ public class CamelAPIsTest implements RewriteTest {
         //language=java
         rewriteRun(java(
                 """
-                        package org.apache.camel.quarkus.component.test.it;
+                        package org.apache.camel.component.test.it;
 
                         import org.apache.camel.CamelContext;
                         import org.apache.camel.model.ModelCamelContext;
@@ -744,7 +744,7 @@ public class CamelAPIsTest implements RewriteTest {
                         }
                         """,
                 """
-                        package org.apache.camel.quarkus.component.test.it;
+                        package org.apache.camel.component.test.it;
 
                         import org.apache.camel.CamelContext;
                         import org.apache.camel.model.ModelCamelContext;
@@ -945,7 +945,7 @@ public class CamelAPIsTest implements RewriteTest {
     void testOneIntrospectionSupport() {
         //language=java
         rewriteRun(
-                spec -> CamelQuarkusTestUtil.recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_0),
+                spec -> CamelTestUtil.recipe(spec, CamelTestUtil.CamelVersion.v4_0),
                 java("""
                             import org.apache.camel.support.IntrospectionSupport;
 
@@ -974,7 +974,7 @@ public class CamelAPIsTest implements RewriteTest {
     void testMultiIntrospectionSupport() {
         //language=java
         rewriteRun(
-                spec -> CamelQuarkusTestUtil.recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_0),
+                spec -> CamelTestUtil.recipe(spec, CamelTestUtil.CamelVersion.v4_0),
                 java("""
                             import org.apache.camel.support.IntrospectionSupport;
 

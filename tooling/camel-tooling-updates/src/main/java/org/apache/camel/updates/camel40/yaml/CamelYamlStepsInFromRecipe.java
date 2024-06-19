@@ -21,7 +21,7 @@ import java.util.List;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import org.apache.camel.updates.AbstractCamelQuarkusYamlVisitor;
+import org.apache.camel.updates.AbstractCamelYamlVisitor;
 import org.apache.camel.updates.RecipesUtil;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
@@ -59,7 +59,7 @@ import org.openrewrite.yaml.tree.Yaml;
  */
 @EqualsAndHashCode(callSuper = true)
 @Value
-public class CamelQuarkusYamlStepsInFromRecipe extends Recipe {
+public class CamelYamlStepsInFromRecipe extends Recipe {
 
     private static String[] PATHS_TO_PRE_CHECK = new String[] { "route.from" };
     private static JsonPathMatcher MATCHER_WITHOUT_ROUTE = new JsonPathMatcher("$.steps");
@@ -78,7 +78,7 @@ public class CamelQuarkusYamlStepsInFromRecipe extends Recipe {
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
 
-        return new AbstractCamelQuarkusYamlVisitor() {
+        return new AbstractCamelYamlVisitor() {
             //both variables has to be set to null, to mark the migration done
             Yaml.Mapping from = null;
             Yaml.Mapping.Entry steps = null;

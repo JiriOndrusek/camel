@@ -22,7 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.apache.camel.updates.AbstractCamelQuarkusJavaVisitor;
+import org.apache.camel.updates.AbstractCamelJavaVisitor;
 import org.apache.camel.updates.RecipesUtil;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
@@ -49,7 +49,7 @@ public class CamelBeanRecipe extends Recipe {
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
-        return RecipesUtil.newVisitor(new AbstractCamelQuarkusJavaVisitor() {
+        return RecipesUtil.newVisitor(new AbstractCamelJavaVisitor() {
 
             @Override
             protected J.MethodInvocation doVisitMethodInvocation(J.MethodInvocation method, ExecutionContext context) {

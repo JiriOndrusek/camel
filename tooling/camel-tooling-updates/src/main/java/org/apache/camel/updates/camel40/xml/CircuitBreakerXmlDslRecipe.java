@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.camel.updates.AbstractCamelQuarkusXmlVisitor;
+import org.apache.camel.updates.AbstractCamelXmlVisitor;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
 import org.openrewrite.Tree;
@@ -100,7 +100,7 @@ public class CircuitBreakerXmlDslRecipe extends Recipe {
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
-        return new AbstractCamelQuarkusXmlVisitor() {
+        return new AbstractCamelXmlVisitor() {
 
             @Override
             public Xml.Tag doVisitTag(final Xml.Tag tag, final ExecutionContext ctx) {

@@ -21,7 +21,7 @@ import java.util.Optional;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import org.apache.camel.updates.AbstractCamelQuarkusYamlVisitor;
+import org.apache.camel.updates.AbstractCamelYamlVisitor;
 import org.openrewrite.Cursor;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
@@ -76,7 +76,7 @@ public class YamlDslRecipe extends Recipe {
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
 
-        return new AbstractCamelQuarkusYamlVisitor() {
+        return new AbstractCamelYamlVisitor() {
 
             @Override
             protected void clearLocalCache() {

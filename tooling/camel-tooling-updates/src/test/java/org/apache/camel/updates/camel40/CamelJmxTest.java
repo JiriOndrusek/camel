@@ -16,7 +16,7 @@
  */
 package org.apache.camel.updates.camel40;
 
-import org.apache.camel.updates.CamelQuarkusTestUtil;
+import org.apache.camel.updates.CamelTestUtil;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
@@ -28,9 +28,9 @@ public class CamelJmxTest implements RewriteTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
-        CamelQuarkusTestUtil
-                .recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_0)
-                .parser(CamelQuarkusTestUtil.parserFromClasspath(CamelQuarkusTestUtil.CamelVersion.v3_18,
+        CamelTestUtil
+                .recipe(spec, CamelTestUtil.CamelVersion.v4_0)
+                .parser(CamelTestUtil.parserFromClasspath(CamelTestUtil.CamelVersion.v3_18,
                         "camel-management-api"))
                 .typeValidationOptions(TypeValidation.none());
     }

@@ -16,7 +16,7 @@
  */
 package org.apache.camel.updates.camel44;
 
-import org.apache.camel.updates.CamelQuarkusTestUtil;
+import org.apache.camel.updates.CamelTestUtil;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.properties.Assertions;
@@ -30,8 +30,8 @@ public class CamelUpdate44Test implements RewriteTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
-        CamelQuarkusTestUtil.recipe(spec, CamelQuarkusTestUtil.CamelVersion.v4_4)
-                .parser(CamelQuarkusTestUtil.parserFromClasspath(CamelQuarkusTestUtil.CamelVersion.v4_0,
+        CamelTestUtil.recipe(spec, CamelTestUtil.CamelVersion.v4_4)
+                .parser(CamelTestUtil.parserFromClasspath(CamelTestUtil.CamelVersion.v4_0,
                         "camel-api", "camel-util", "camel-base", "camel-core-model", "camel-json-validator"))
                 .typeValidationOptions(TypeValidation.none());
     }

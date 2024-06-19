@@ -48,11 +48,11 @@ import static org.openrewrite.Tree.randomId;
 public class RecipesUtil {
 
     // ---------------- visitors
-    public static TreeVisitor<?, ExecutionContext> newVisitor(AbstractCamelQuarkusJavaVisitor visitor) {
+    public static TreeVisitor<?, ExecutionContext> newVisitor(AbstractCamelJavaVisitor visitor) {
         return Preconditions.check(new UsesType<>("org.apache.camel..*", false), visitor);
     }
 
-    public static TreeVisitor<?, ExecutionContext> newVisitor(String requiredImport, AbstractCamelQuarkusJavaVisitor visitor) {
+    public static TreeVisitor<?, ExecutionContext> newVisitor(String requiredImport, AbstractCamelJavaVisitor visitor) {
         return Preconditions.check(new UsesType<>(requiredImport, false), visitor);
     }
 

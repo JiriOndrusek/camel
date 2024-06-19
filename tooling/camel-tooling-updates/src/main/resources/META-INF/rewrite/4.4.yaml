@@ -20,11 +20,11 @@
 #####
 
 #####
-# Update the Camel - Quarkus extensions
+# Update the Camel project
 #####
 ---
 type: specs.openrewrite.org/v1beta/recipe
-name: org.apache.camel.updates.camel44.CamelQuarkusMigrationRecipe
+name: org.apache.camel.updates.camel44.CamelMigrationRecipe
 displayName: Migrates `camel 4.0` application to `camel 4.4`
 description: Migrates `camel 4.0` application to `camel 4.4`.
 recipeList:

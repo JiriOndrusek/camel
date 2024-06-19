@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Parent of Camel yaml visitors, catches any exception, logs it and then continues.
  */
-public abstract class AbstractCamelQuarkusYamlVisitor extends YamlIsoVisitor<ExecutionContext> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCamelQuarkusYamlVisitor.class);
+public abstract class AbstractCamelYamlVisitor extends YamlIsoVisitor<ExecutionContext> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCamelYamlVisitor.class);
 
     /**
      * Method is called before start of visiting a new document. Implementations might need to clear all local state

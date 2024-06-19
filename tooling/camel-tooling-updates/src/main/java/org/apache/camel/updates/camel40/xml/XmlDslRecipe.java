@@ -16,7 +16,7 @@
  */
 package org.apache.camel.updates.camel40.xml;
 
-import org.apache.camel.updates.AbstractCamelQuarkusXmlVisitor;
+import org.apache.camel.updates.AbstractCamelXmlVisitor;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
 import org.openrewrite.Tree;
@@ -68,7 +68,7 @@ public class XmlDslRecipe extends Recipe {
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
-        return new AbstractCamelQuarkusXmlVisitor() {
+        return new AbstractCamelXmlVisitor() {
 
             @Override
             public Xml.Tag doVisitTag(final Xml.Tag tag, final ExecutionContext ctx) {

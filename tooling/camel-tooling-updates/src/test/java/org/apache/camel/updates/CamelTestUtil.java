@@ -25,7 +25,7 @@ import org.openrewrite.Parser;
 import org.openrewrite.java.JavaParser;
 import org.openrewrite.test.RecipeSpec;
 
-public class CamelQuarkusTestUtil {
+public class CamelTestUtil {
 
     /**
      * Enumeration of Camel version, with precise versions of dependencies and the name of the recipe
@@ -54,11 +54,11 @@ public class CamelQuarkusTestUtil {
         }
 
         public String getYamlFile() {
-            return "/org.apache.camel.updates/" + getMajorMinor() + ".yaml";
+            return "/META-INF/rewrite/" + getMajorMinor() + ".yaml";
         }
 
         public String getRecipe() {
-            return "org.apache.camel.updates.camel" + major + minor + ".CamelQuarkusMigrationRecipe";
+            return "org.apache.camel.updates.camel" + major + minor + ".CamelMigrationRecipe";
         }
     }
 
