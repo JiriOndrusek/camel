@@ -162,6 +162,36 @@ public interface SplunkEndpointBuilderFactory {
             return this;
         }
         /**
+         * SSL configuration.
+         * 
+         * The option is a:
+         * <code>org.apache.camel.support.jsse.SSLContextParameters</code> type.
+         * 
+         * Group: common
+         * 
+         * @param sslContextParameters the value to set
+         * @return the dsl builder
+         */
+        default SplunkEndpointConsumerBuilder sslContextParameters(org.apache.camel.support.jsse.SSLContextParameters sslContextParameters) {
+            doSetProperty("sslContextParameters", sslContextParameters);
+            return this;
+        }
+        /**
+         * SSL configuration.
+         * 
+         * The option will be converted to a
+         * <code>org.apache.camel.support.jsse.SSLContextParameters</code> type.
+         * 
+         * Group: common
+         * 
+         * @param sslContextParameters the value to set
+         * @return the dsl builder
+         */
+        default SplunkEndpointConsumerBuilder sslContextParameters(String sslContextParameters) {
+            doSetProperty("sslContextParameters", sslContextParameters);
+            return this;
+        }
+        /**
          * A number that indicates the maximum number of entities to return.
          * 
          * The option is a: <code>int</code> type.
@@ -886,6 +916,36 @@ public interface SplunkEndpointBuilderFactory {
             doSetProperty("useSunHttpsHandler", useSunHttpsHandler);
             return this;
         }
+        /**
+         * Splunk validate certificates.
+         * 
+         * The option is a: <code>boolean</code> type.
+         * 
+         * Default: true
+         * Group: security
+         * 
+         * @param validateCertificates the value to set
+         * @return the dsl builder
+         */
+        default SplunkEndpointConsumerBuilder validateCertificates(boolean validateCertificates) {
+            doSetProperty("validateCertificates", validateCertificates);
+            return this;
+        }
+        /**
+         * Splunk validate certificates.
+         * 
+         * The option will be converted to a <code>boolean</code> type.
+         * 
+         * Default: true
+         * Group: security
+         * 
+         * @param validateCertificates the value to set
+         * @return the dsl builder
+         */
+        default SplunkEndpointConsumerBuilder validateCertificates(String validateCertificates) {
+            doSetProperty("validateCertificates", validateCertificates);
+            return this;
+        }
     }
 
     /**
@@ -1181,6 +1241,36 @@ public interface SplunkEndpointBuilderFactory {
             return this;
         }
         /**
+         * SSL configuration.
+         * 
+         * The option is a:
+         * <code>org.apache.camel.support.jsse.SSLContextParameters</code> type.
+         * 
+         * Group: common
+         * 
+         * @param sslContextParameters the value to set
+         * @return the dsl builder
+         */
+        default SplunkEndpointProducerBuilder sslContextParameters(org.apache.camel.support.jsse.SSLContextParameters sslContextParameters) {
+            doSetProperty("sslContextParameters", sslContextParameters);
+            return this;
+        }
+        /**
+         * SSL configuration.
+         * 
+         * The option will be converted to a
+         * <code>org.apache.camel.support.jsse.SSLContextParameters</code> type.
+         * 
+         * Group: common
+         * 
+         * @param sslContextParameters the value to set
+         * @return the dsl builder
+         */
+        default SplunkEndpointProducerBuilder sslContextParameters(String sslContextParameters) {
+            doSetProperty("sslContextParameters", sslContextParameters);
+            return this;
+        }
+        /**
          * Override the default Splunk event host field.
          * 
          * The option is a: <code>java.lang.String</code> type.
@@ -1435,6 +1525,36 @@ public interface SplunkEndpointBuilderFactory {
             doSetProperty("useSunHttpsHandler", useSunHttpsHandler);
             return this;
         }
+        /**
+         * Splunk validate certificates.
+         * 
+         * The option is a: <code>boolean</code> type.
+         * 
+         * Default: true
+         * Group: security
+         * 
+         * @param validateCertificates the value to set
+         * @return the dsl builder
+         */
+        default SplunkEndpointProducerBuilder validateCertificates(boolean validateCertificates) {
+            doSetProperty("validateCertificates", validateCertificates);
+            return this;
+        }
+        /**
+         * Splunk validate certificates.
+         * 
+         * The option will be converted to a <code>boolean</code> type.
+         * 
+         * Default: true
+         * Group: security
+         * 
+         * @param validateCertificates the value to set
+         * @return the dsl builder
+         */
+        default SplunkEndpointProducerBuilder validateCertificates(String validateCertificates) {
+            doSetProperty("validateCertificates", validateCertificates);
+            return this;
+        }
     }
 
     /**
@@ -1623,6 +1743,36 @@ public interface SplunkEndpointBuilderFactory {
             return this;
         }
         /**
+         * SSL configuration.
+         * 
+         * The option is a:
+         * <code>org.apache.camel.support.jsse.SSLContextParameters</code> type.
+         * 
+         * Group: common
+         * 
+         * @param sslContextParameters the value to set
+         * @return the dsl builder
+         */
+        default SplunkEndpointBuilder sslContextParameters(org.apache.camel.support.jsse.SSLContextParameters sslContextParameters) {
+            doSetProperty("sslContextParameters", sslContextParameters);
+            return this;
+        }
+        /**
+         * SSL configuration.
+         * 
+         * The option will be converted to a
+         * <code>org.apache.camel.support.jsse.SSLContextParameters</code> type.
+         * 
+         * Group: common
+         * 
+         * @param sslContextParameters the value to set
+         * @return the dsl builder
+         */
+        default SplunkEndpointBuilder sslContextParameters(String sslContextParameters) {
+            doSetProperty("sslContextParameters", sslContextParameters);
+            return this;
+        }
+        /**
          * Password for Splunk.
          * 
          * The option is a: <code>java.lang.String</code> type.
@@ -1728,6 +1878,36 @@ public interface SplunkEndpointBuilderFactory {
          */
         default SplunkEndpointBuilder useSunHttpsHandler(String useSunHttpsHandler) {
             doSetProperty("useSunHttpsHandler", useSunHttpsHandler);
+            return this;
+        }
+        /**
+         * Splunk validate certificates.
+         * 
+         * The option is a: <code>boolean</code> type.
+         * 
+         * Default: true
+         * Group: security
+         * 
+         * @param validateCertificates the value to set
+         * @return the dsl builder
+         */
+        default SplunkEndpointBuilder validateCertificates(boolean validateCertificates) {
+            doSetProperty("validateCertificates", validateCertificates);
+            return this;
+        }
+        /**
+         * Splunk validate certificates.
+         * 
+         * The option will be converted to a <code>boolean</code> type.
+         * 
+         * Default: true
+         * Group: security
+         * 
+         * @param validateCertificates the value to set
+         * @return the dsl builder
+         */
+        default SplunkEndpointBuilder validateCertificates(String validateCertificates) {
+            doSetProperty("validateCertificates", validateCertificates);
             return this;
         }
     }

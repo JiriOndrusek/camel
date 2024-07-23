@@ -35,6 +35,10 @@ public class SplunkComponentConfigurer extends PropertyConfigurerSupport impleme
         case "lazyStartProducer": target.setLazyStartProducer(property(camelContext, boolean.class, value)); return true;
         case "splunkconfigurationfactory":
         case "splunkConfigurationFactory": target.setSplunkConfigurationFactory(property(camelContext, org.apache.camel.component.splunk.SplunkConfigurationFactory.class, value)); return true;
+        case "sslcontextparameters":
+        case "sslContextParameters": target.setSslContextParameters(property(camelContext, org.apache.camel.support.jsse.SSLContextParameters.class, value)); return true;
+        case "useglobalsslcontextparameters":
+        case "useGlobalSslContextParameters": target.setUseGlobalSslContextParameters(property(camelContext, boolean.class, value)); return true;
         default: return false;
         }
     }
@@ -54,6 +58,10 @@ public class SplunkComponentConfigurer extends PropertyConfigurerSupport impleme
         case "lazyStartProducer": return boolean.class;
         case "splunkconfigurationfactory":
         case "splunkConfigurationFactory": return org.apache.camel.component.splunk.SplunkConfigurationFactory.class;
+        case "sslcontextparameters":
+        case "sslContextParameters": return org.apache.camel.support.jsse.SSLContextParameters.class;
+        case "useglobalsslcontextparameters":
+        case "useGlobalSslContextParameters": return boolean.class;
         default: return null;
         }
     }
@@ -74,6 +82,10 @@ public class SplunkComponentConfigurer extends PropertyConfigurerSupport impleme
         case "lazyStartProducer": return target.isLazyStartProducer();
         case "splunkconfigurationfactory":
         case "splunkConfigurationFactory": return target.getSplunkConfigurationFactory();
+        case "sslcontextparameters":
+        case "sslContextParameters": return target.getSslContextParameters();
+        case "useglobalsslcontextparameters":
+        case "useGlobalSslContextParameters": return target.isUseGlobalSslContextParameters();
         default: return null;
         }
     }

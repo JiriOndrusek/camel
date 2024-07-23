@@ -108,6 +108,13 @@ public class SplunkUriDsl(
   }
 
   /**
+   * SSL configuration
+   */
+  public fun sslContextParameters(sslContextParameters: String) {
+    it.property("sslContextParameters", sslContextParameters)
+  }
+
+  /**
    * A number that indicates the maximum number of entities to return.
    */
   public fun count(count: String) {
@@ -562,5 +569,19 @@ public class SplunkUriDsl(
    */
   public fun useSunHttpsHandler(useSunHttpsHandler: Boolean) {
     it.property("useSunHttpsHandler", useSunHttpsHandler.toString())
+  }
+
+  /**
+   * Splunk validate certificates.
+   */
+  public fun validateCertificates(validateCertificates: String) {
+    it.property("validateCertificates", validateCertificates)
+  }
+
+  /**
+   * Splunk validate certificates.
+   */
+  public fun validateCertificates(validateCertificates: Boolean) {
+    it.property("validateCertificates", validateCertificates.toString())
   }
 }

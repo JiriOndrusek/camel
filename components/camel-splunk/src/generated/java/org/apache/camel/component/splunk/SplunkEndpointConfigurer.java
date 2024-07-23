@@ -79,6 +79,8 @@ public class SplunkEndpointConfigurer extends PropertyConfigurerSupport implemen
         case "source": target.getConfiguration().setSource(property(camelContext, java.lang.String.class, value)); return true;
         case "sourcetype":
         case "sourceType": target.getConfiguration().setSourceType(property(camelContext, java.lang.String.class, value)); return true;
+        case "sslcontextparameters":
+        case "sslContextParameters": target.setSslContextParameters(property(camelContext, org.apache.camel.support.jsse.SSLContextParameters.class, value)); return true;
         case "sslprotocol":
         case "sslProtocol": target.getConfiguration().setSslProtocol(property(camelContext, com.splunk.SSLSecurityProtocol.class, value)); return true;
         case "startscheduler":
@@ -96,6 +98,8 @@ public class SplunkEndpointConfigurer extends PropertyConfigurerSupport implemen
         case "usesunhttpshandler":
         case "useSunHttpsHandler": target.getConfiguration().setUseSunHttpsHandler(property(camelContext, boolean.class, value)); return true;
         case "username": target.getConfiguration().setUsername(property(camelContext, java.lang.String.class, value)); return true;
+        case "validatecertificates":
+        case "validateCertificates": target.getConfiguration().setValidateCertificates(property(camelContext, boolean.class, value)); return true;
         default: return false;
         }
     }
@@ -159,6 +163,8 @@ public class SplunkEndpointConfigurer extends PropertyConfigurerSupport implemen
         case "source": return java.lang.String.class;
         case "sourcetype":
         case "sourceType": return java.lang.String.class;
+        case "sslcontextparameters":
+        case "sslContextParameters": return org.apache.camel.support.jsse.SSLContextParameters.class;
         case "sslprotocol":
         case "sslProtocol": return com.splunk.SSLSecurityProtocol.class;
         case "startscheduler":
@@ -176,6 +182,8 @@ public class SplunkEndpointConfigurer extends PropertyConfigurerSupport implemen
         case "usesunhttpshandler":
         case "useSunHttpsHandler": return boolean.class;
         case "username": return java.lang.String.class;
+        case "validatecertificates":
+        case "validateCertificates": return boolean.class;
         default: return null;
         }
     }
@@ -240,6 +248,8 @@ public class SplunkEndpointConfigurer extends PropertyConfigurerSupport implemen
         case "source": return target.getConfiguration().getSource();
         case "sourcetype":
         case "sourceType": return target.getConfiguration().getSourceType();
+        case "sslcontextparameters":
+        case "sslContextParameters": return target.getSslContextParameters();
         case "sslprotocol":
         case "sslProtocol": return target.getConfiguration().getSslProtocol();
         case "startscheduler":
@@ -257,6 +267,8 @@ public class SplunkEndpointConfigurer extends PropertyConfigurerSupport implemen
         case "usesunhttpshandler":
         case "useSunHttpsHandler": return target.getConfiguration().isUseSunHttpsHandler();
         case "username": return target.getConfiguration().getUsername();
+        case "validatecertificates":
+        case "validateCertificates": return target.getConfiguration().isValidateCertificates();
         default: return null;
         }
     }

@@ -19,6 +19,8 @@ package org.apache.camel.component.splunk;
 import java.net.Socket;
 import java.util.Map;
 
+import javax.net.ssl.SSLContext;
+
 import com.splunk.Service;
 import org.apache.camel.CamelContext;
 
@@ -53,7 +55,7 @@ final class MockConnectionSettings extends SplunkConfiguration {
         }
 
         @Override
-        public Service createService(CamelContext camelContext) {
+        public Service createService(CamelContext camelContext, SSLContext sslContext, boolean validateCertificates) {
             return service;
         }
     }

@@ -22,6 +22,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 
 import com.splunk.Args;
 import com.splunk.Service;
@@ -55,7 +56,7 @@ public abstract class SplunkDataWriter implements DataWriter {
         doWrite(event + SplunkEvent.LINEBREAK);
     }
 
-    protected synchronized void doWrite(String event) throws IOException {
+    protected synchronized void doWrite(String event) throws IOException, GeneralSecurityException {
         LOG.debug("writing event to splunk:{}", event);
         OutputStream ostream = socket.getOutputStream();
         Writer writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8);

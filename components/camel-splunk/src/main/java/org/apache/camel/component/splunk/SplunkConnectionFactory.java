@@ -22,6 +22,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+
 import com.splunk.HttpService;
 import com.splunk.SSLSecurityProtocol;
 import com.splunk.Service;
@@ -104,7 +107,7 @@ public class SplunkConnectionFactory {
         this.token = token;
     }
 
-    public synchronized Service createService(CamelContext camelContext) {
+    public synchronized Service createService(CamelContext camelContext, SSLContext sslContext, boolean validateCertificates) {
         final ServiceArgs args = new ServiceArgs();
         if (host != null) {
             args.setHost(host);
@@ -155,6 +158,22 @@ public class SplunkConnectionFactory {
                 if (Service.DEFAULT_SCHEME.equals(getScheme())) {
                     LOG.debug("Https in use. Setting SSL protocol to {}", getSslProtocol());
                     HttpService.setSslSecurityProtocol(getSslProtocol());
+                    HttpService.setValidateCertificates(validateCertificates);
+
+                    if (sslContext != null) {
+                        SSLContext origSsl = SSLContext.getDefault();
+                        SSLSocketFactory sslSocketFactory;
+                        try {
+                            SSLContext.setDefault(sslContext);
+                            sslSocketFactory = HttpService.createSSLFactory();
+                        } finally {
+                            SSLContext.setDefault(origSsl);
+                        }
+
+                        if (sslSocketFactory != null) {
+                            HttpService.setSSLSocketFactory(sslSocketFactory);
+                        }
+                    }
                 }
                 return Service.connect(args);
             }

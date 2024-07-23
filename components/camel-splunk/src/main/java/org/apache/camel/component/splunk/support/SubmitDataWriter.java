@@ -18,6 +18,7 @@ package org.apache.camel.component.splunk.support;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.security.GeneralSecurityException;
 
 import com.splunk.Args;
 import com.splunk.Index;
@@ -33,7 +34,7 @@ public class SubmitDataWriter extends SplunkDataWriter {
     }
 
     @Override
-    protected synchronized void doWrite(String event) throws IOException {
+    protected synchronized void doWrite(String event) throws IOException, GeneralSecurityException {
         Index index = getIndex();
         if (index != null) {
             index.submit(args, event);
@@ -52,7 +53,7 @@ public class SubmitDataWriter extends SplunkDataWriter {
         this.index = index;
     }
 
-    private Index getIndex() {
+    private Index getIndex() throws GeneralSecurityException, IOException {
         return (index == null) ? null : endpoint.getService().getIndexes().get(index);
     }
 

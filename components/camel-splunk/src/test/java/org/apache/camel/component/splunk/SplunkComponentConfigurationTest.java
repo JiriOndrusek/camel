@@ -69,7 +69,7 @@ public class SplunkComponentConfigurationTest extends CamelTestSupport {
         SplunkEndpoint endpoint = (SplunkEndpoint) component.createEndpoint("splunk://test");
         SplunkConnectionFactory scf = endpoint.getConfiguration().getConnectionFactory();
         //following call with fail with "Missing username or password, without fix of CAMEL-16313,
-        scf.createService(context);
+        scf.createService(context, null, false);
     }
 
     @Test

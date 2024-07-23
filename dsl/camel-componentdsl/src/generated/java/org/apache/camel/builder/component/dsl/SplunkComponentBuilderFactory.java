@@ -178,6 +178,40 @@ public interface SplunkComponentBuilderFactory {
             doSetProperty("healthCheckProducerEnabled", healthCheckProducerEnabled);
             return this;
         }
+    
+        /**
+         * Sets the default SSL configuration to use for all the endpoints. You
+         * can also configure it directly at the endpoint level.
+         * 
+         * The option is a:
+         * &lt;code&gt;org.apache.camel.support.jsse.SSLContextParameters&lt;/code&gt; type.
+         * 
+         * Group: security
+         * 
+         * @param sslContextParameters the value to set
+         * @return the dsl builder
+         */
+        default SplunkComponentBuilder sslContextParameters(org.apache.camel.support.jsse.SSLContextParameters sslContextParameters) {
+            doSetProperty("sslContextParameters", sslContextParameters);
+            return this;
+        }
+    
+        
+        /**
+         * Enable usage of global SSL context parameters.
+         * 
+         * The option is a: &lt;code&gt;boolean&lt;/code&gt; type.
+         * 
+         * Default: false
+         * Group: security
+         * 
+         * @param useGlobalSslContextParameters the value to set
+         * @return the dsl builder
+         */
+        default SplunkComponentBuilder useGlobalSslContextParameters(boolean useGlobalSslContextParameters) {
+            doSetProperty("useGlobalSslContextParameters", useGlobalSslContextParameters);
+            return this;
+        }
     }
 
     class SplunkComponentBuilderImpl
@@ -199,6 +233,8 @@ public interface SplunkComponentBuilderFactory {
             case "splunkConfigurationFactory": ((SplunkComponent) component).setSplunkConfigurationFactory((org.apache.camel.component.splunk.SplunkConfigurationFactory) value); return true;
             case "healthCheckConsumerEnabled": ((SplunkComponent) component).setHealthCheckConsumerEnabled((boolean) value); return true;
             case "healthCheckProducerEnabled": ((SplunkComponent) component).setHealthCheckProducerEnabled((boolean) value); return true;
+            case "sslContextParameters": ((SplunkComponent) component).setSslContextParameters((org.apache.camel.support.jsse.SSLContextParameters) value); return true;
+            case "useGlobalSslContextParameters": ((SplunkComponent) component).setUseGlobalSslContextParameters((boolean) value); return true;
             default: return false;
             }
         }

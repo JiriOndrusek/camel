@@ -16,11 +16,14 @@
  */
 package org.apache.camel.component.splunk;
 
+import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketException;
+import java.security.GeneralSecurityException;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
 
 import com.splunk.Service;
@@ -32,6 +35,7 @@ import org.apache.camel.spi.EndpointServiceLocation;
 import org.apache.camel.spi.UriEndpoint;
 import org.apache.camel.spi.UriParam;
 import org.apache.camel.support.ScheduledPollEndpoint;
+import org.apache.camel.support.jsse.SSLContextParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +54,8 @@ public class SplunkEndpoint extends ScheduledPollEndpoint implements EndpointSer
     private Service service;
     @UriParam
     private SplunkConfiguration configuration;
+    @UriParam(description = "SSL configuration")
+    private SSLContextParameters sslContextParameters;
 
     public SplunkEndpoint() {
     }
@@ -57,6 +63,11 @@ public class SplunkEndpoint extends ScheduledPollEndpoint implements EndpointSer
     public SplunkEndpoint(String uri, SplunkComponent component, SplunkConfiguration configuration) {
         super(uri, component);
         this.configuration = configuration;
+    }
+
+    @Override
+    public SplunkComponent getComponent() {
+        return (SplunkComponent) super.getComponent();
     }
 
     @Override
@@ -112,9 +123,10 @@ public class SplunkEndpoint extends ScheduledPollEndpoint implements EndpointSer
         super.doStop();
     }
 
-    public Service getService() {
+    public Service getService() throws GeneralSecurityException, IOException {
         if (service == null) {
-            this.service = configuration.getConnectionFactory().createService(getCamelContext());
+            this.service = configuration.getConnectionFactory().createService(getCamelContext(), provideSSLContext(),
+                    getConfiguration().isValidateCertificates());
         }
         return service;
     }
@@ -140,4 +152,23 @@ public class SplunkEndpoint extends ScheduledPollEndpoint implements EndpointSer
         }
         return answer;
     }
+
+    public SSLContextParameters getSslContextParameters() {
+        return sslContextParameters;
+    }
+
+    public void setSslContextParameters(SSLContextParameters sslContextParameters) {
+        this.sslContextParameters = sslContextParameters;
+    }
+
+    private SSLContext provideSSLContext() throws GeneralSecurityException, IOException {
+        if (sslContextParameters != null) {
+            return sslContextParameters.createSSLContext(getCamelContext());
+        } else if (getComponent().getSslContextParameters() != null) {
+            return getComponent().getSslContextParameters().createSSLContext(getCamelContext());
+        } else {
+            return null;
+        }
+    }
+
 }

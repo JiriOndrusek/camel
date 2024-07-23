@@ -54,6 +54,8 @@ public class SplunkConfiguration {
     private int connectionTimeout = 5000;
     @UriParam(label = "security")
     private boolean useSunHttpsHandler;
+    @UriParam(label = "security", defaultValue = "false")
+    private boolean validateCertificates = false;
 
     @UriParam(label = "producer")
     private String index;
@@ -383,6 +385,17 @@ public class SplunkConfiguration {
      */
     public void setConnectionFactory(SplunkConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
+    }
+
+    public boolean isValidateCertificates() {
+        return validateCertificates;
+    }
+
+    /**
+     * Splunk validate certificates.
+     */
+    public void setValidateCertificates(boolean validateCertificates) {
+        this.validateCertificates = validateCertificates;
     }
 
     private SplunkConnectionFactory createDefaultConnectionFactory() {
