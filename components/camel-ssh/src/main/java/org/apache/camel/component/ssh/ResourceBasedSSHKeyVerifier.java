@@ -16,6 +16,7 @@
  */
 package org.apache.camel.component.ssh;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -27,8 +28,10 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.apache.camel.CamelContext;
+import org.apache.camel.spi.Resource;
 import org.apache.camel.support.ResourceHelper;
 import org.apache.camel.util.IOHelper;
 import org.apache.sshd.client.keyverifier.ServerKeyVerifier;
@@ -61,6 +64,39 @@ public class ResourceBasedSSHKeyVerifier implements ServerKeyVerifier {
 
     @Override
     public boolean verifyServerKey(ClientSession sshClientSession, SocketAddress remoteAddress, PublicKey serverKey) {
+//        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+//        try {
+//            //            Resource r = ResourceHelper.resolveMandatoryResource(camelContext, "/edDSA");
+//            //            System.out.println("/edDSA is: " + r);
+//            Stream.of("/", "/edDSA", "/edDSA/hostkey.pem", "/edDSA/known_hosts_eddsa").forEach(n -> {
+//                try {
+//
+//                    var name = n;
+//                    Resource r = ResourceHelper.resolveMandatoryResource(camelContext, name);
+//                    System.out.println(name + " resolved as: ");
+//                    System.out.println(r.getURI());
+//                    Stream.of(new File(r.getURI().getPath()).listFiles()).forEach(f -> System.out.println(" --" + f.getName()));
+//                } catch (Exception e) {
+//                    System.out.println("Failed!");
+//                }
+//                try {
+//                    var name = n.substring(1);
+//                    var r = ResourceHelper.resolveMandatoryResource(camelContext, name);
+//                    System.out.println(name + " resolved as: ");
+//                    System.out.println(r.getURI());
+//                    Stream.of(new File(r.getURI().getPath()).listFiles())
+//                            .forEach(f -> System.out.println(" -- " + f.getName()));
+//                } catch (Exception e) {
+//                    System.out.println("Failed!");
+//                }
+//            });
+//            //            Stream.of(new File(r.getURI().getPath()).listFiles()).forEach(f -> System.out.println(f.getName()));
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+//        }
+
         log.debug("Trying to find known_hosts file {}", knownHostsResource);
         InputStream knownHostsInputStream = null;
         try {
@@ -74,7 +110,11 @@ public class ResourceBasedSSHKeyVerifier implements ServerKeyVerifier {
                 return Arrays.areEqual(matchingKey.getEncoded(), serverKey.getEncoded());
             }
         } catch (IOException ioException) {
+
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            ioException.printStackTrace();
             log.debug(String.format("Could not find known_hosts file %s", knownHostsResource), ioException);
+
         } finally {
             IOHelper.close(knownHostsInputStream);
         }

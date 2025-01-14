@@ -20,21 +20,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.security.spec.DSAPublicKeySpec;
-import java.security.spec.ECParameterSpec;
-import java.security.spec.ECPoint;
-import java.security.spec.ECPublicKeySpec;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.RSAPublicKeySpec;
+import java.security.*;
+import java.security.spec.*;
 
 import org.apache.sshd.common.cipher.ECCurves;
 import org.bouncycastle.jcajce.spec.OpenSSHPublicKeySpec;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SSHPublicKeyHolder {
+    protected final Logger log = LoggerFactory.getLogger(getClass());
+
     private static final String SSH_RSA = "ssh-rsa";
     private static final String SSH_DSS = "ssh-dss";
 
@@ -205,10 +202,44 @@ public class SSHPublicKeyHolder {
         }
 
         if (SSH_ED25519.equals(keyType)) {
+            System.out.println(">>>> starting with ED25519");
+            //            NamedParameterSpec paramSpec = new NamedParameterSpec("Ed25519"); // Curve name for Ed25519
+            //            EdECPublicKeySpec edECPublicKeySpec = new EdECPublicKeySpec(paramSpec, ecPoint);
+            //
             OpenSSHPublicKeySpec ed25519PublicKeySpec = new OpenSSHPublicKeySpec(edKeyEncoded.toByteArray());
-            KeyFactory factory = KeyFactory.getInstance("ED25519", new BouncyCastleProvider());
-            returnValue = factory.generatePublic(ed25519PublicKeySpec);
+            for (Provider p : Security.getProviders()) {
+                try {
+                    KeyFactory factory = KeyFactory.getInstance("ED25519", p);
+                    returnValue = factory.generatePublic(ed25519PublicKeySpec);
+                    //
+                    //            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ED25519");
+                    //            KeyPair keyPair = keyPairGenerator.generateKeyPair();
+                    //
+                    //            // Step 2: Extract the Public Key
+                    //            PublicKey originalPublicKey = keyPair.getPublic();
+                    //
+                    //            // Step 3: Encode the Public Key to OpenSSH Format
+                    //            byte[] openSSHEncoded = originalPublicKey.getEncoded();
+                    //
+                    //            // Step 5: Use KeyFactory to Reconstruct the Public Key
+                    //            KeyFactory keyFactory = KeyFactory.getInstance("Ed25519");
+                    //            returnValue = keyFactory.generatePublic(edECPublicKeySpec);
+                    //
+                } catch (Exception e) {
+                    log.debug(String.format("Cannot generate %s using provider %s.", "ED25519", p.getName()));
+//                    e.printStackTrace();
+                }
+                if(returnValue != null) {
+                    System.out.println(">>>> ending with ED25519 used " + p);
+                    break;
+                }
+            }
         }
+
+        //            OpenSSHPublicKeySpec ed25519PublicKeySpec = new OpenSSHPublicKeySpec(edKeyEncoded.toByteArray());
+        //            KeyFactory factory = KeyFactory.getInstance("ED25519", new BouncyCastleProvider());
+        //            returnValue = factory.generatePublic(ed25519PublicKeySpec);
+        //        }
 
         if (keyType.startsWith(SSH_ECDSA_PREFIX)) {
             ECPublicKeySpec spec = new ECPublicKeySpec(ecPoint, ecParams);
