@@ -1005,6 +1005,11 @@ public class MulticastProcessor extends BaseProcessorSupport
             if (isShareUnitOfWork()) {
                 prepareSharedUnitOfWork(copy, exchange);
             }
+            if (isParallelProcessing()) {
+                //we do not want to copy JPA entityManager (which is not meant for concurrent use) in parallel mode
+                //jpa component takes care of the entityManager if property is removed
+                copy.removeProperty(Exchange.JPA_ENTITY_MANAGER);
+            }
 
             // and add the pair
             Route route = ExchangeHelper.getRoute(exchange);

@@ -64,13 +64,18 @@ public class JpaParallelSplitterTest extends AbstractJpaTest {
                         //select all
                         .to("jpa://" + SendEmail.class.getName() + "?query=SELECT e FROM SendEmail e")
                         .split(body())
-                        .parallelProcessing()
-                        .threads(10, 10)
                         .process(ex -> {
                             SendEmail se = ex.getIn().getBody(SendEmail.class);
                             se.setAddress("something@correct.org");
                         })
-                        .to("jpa://" + SendEmail.class.getName());
+                        .multicast()
+                        .parallelProcessing()
+                        .threads(10, 10)
+                        //                        .to("direct:a")
+                        .to("direct:b");
+
+                from("direct:a").to("jpa://" + SendEmail.class.getName());
+                from("direct:b  ").to("jpa://" + SendEmail.class.getName());
 
             }
         };
