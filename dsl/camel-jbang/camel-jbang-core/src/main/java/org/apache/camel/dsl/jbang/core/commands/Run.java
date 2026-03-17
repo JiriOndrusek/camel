@@ -365,6 +365,9 @@ public class Run extends CamelCommand {
             description = "Skip plugins during export")
     boolean skipPlugins;
 
+    @CommandLine.Option(names = { "--java-version" }, description = "Java version", defaultValue = "21")
+    protected String javaVersion = "21";
+
     public Run(CamelJBangMain main) {
         super(main);
     }
@@ -1231,6 +1234,7 @@ public class Run extends CamelCommand {
         eq.symbolicLink = this.dev;
         eq.mavenWrapper = true;
         eq.gradleWrapper = false;
+        eq.javaVersion = javaVersion;
         eq.springBootVersion = this.springBootVersion;
         eq.camelVersion = this.camelVersion;
         eq.camelSpringBootVersion = PropertyResolver.fromSystemProperty(CAMEL_SPRING_BOOT_VERSION,
