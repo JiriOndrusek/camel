@@ -19,6 +19,7 @@ package org.apache.camel.telemetry.decorators;
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
+import org.apache.camel.telemetry.Op;
 import org.apache.camel.telemetry.Span;
 import org.apache.camel.telemetry.TagConstants;
 
@@ -104,5 +105,15 @@ public abstract class AbstractHttpSpanDecorator extends AbstractSpanDecorator {
                 span.setTag(TagConstants.HTTP_STATUS, responseCode.toString());
             }
         }
+    }
+
+    @Override
+    public String getSpanKind(Op operation) {
+        // HTTP components use CLIENT for outgoing requests and SERVER for incoming requests
+        return switch (operation) {
+            case EVENT_SENT -> "CLIENT";
+            case EVENT_RECEIVED -> "SERVER";
+            default -> "INTERNAL";
+        };
     }
 }

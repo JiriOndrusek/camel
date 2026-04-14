@@ -21,6 +21,7 @@ import java.util.*;
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.spi.EndpointServiceLocation;
+import org.apache.camel.telemetry.Op;
 import org.apache.camel.telemetry.Span;
 import org.apache.camel.telemetry.SpanContextPropagationExtractor;
 import org.apache.camel.telemetry.SpanContextPropagationInjector;
@@ -174,5 +175,11 @@ public abstract class AbstractSpanDecorator implements SpanDecorator {
     @Override
     public SpanContextPropagationInjector getInjector(Exchange exchange) {
         return new CamelHeadersSpanContextPropagationInjector(exchange.getIn().getHeaders());
+    }
+
+    @Override
+    public String getSpanKind(Op operation) {
+        // Default span kind is INTERNAL for all operations
+        return "INTERNAL";
     }
 }

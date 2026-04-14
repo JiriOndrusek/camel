@@ -38,4 +38,23 @@ public interface SpanDecorator {
 
     SpanContextPropagationInjector getInjector(Exchange exchange);
 
+    /**
+     * Returns the span kind for the given operation.
+     * <p>
+     * The span kind indicates the role of the span in a distributed trace. Possible values:
+     * <ul>
+     * <li>"INTERNAL" - default, for local operations</li>
+     * <li>"CLIENT" - for outgoing HTTP requests</li>
+     * <li>"SERVER" - for incoming HTTP requests</li>
+     * <li>"PRODUCER" - for message producers</li>
+     * <li>"CONSUMER" - for message consumers</li>
+     * </ul>
+     *
+     * @param  operation The operation type (EVENT_SENT, EVENT_RECEIVED, EVENT_PROCESS)
+     * @return           The span kind as a string
+     */
+    default String getSpanKind(Op operation) {
+        return "INTERNAL";
+    }
+
 }
