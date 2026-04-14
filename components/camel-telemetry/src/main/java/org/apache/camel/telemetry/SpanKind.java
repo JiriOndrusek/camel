@@ -16,34 +16,24 @@
  */
 package org.apache.camel.telemetry;
 
-import org.apache.camel.Endpoint;
-import org.apache.camel.Exchange;
-
 /**
- * This interface represents a decorator specific to the component/endpoint being instrumented.
+ * Span kind constants for telemetry tracing.
+ * <p>
+ * These values describe the relationship between the span and its parent:
+ * <ul>
+ * <li>CLIENT - The span covers a client-side call to a remote service</li>
+ * <li>SERVER - The span covers server-side handling of a remote request</li>
+ * <li>PRODUCER - The span covers the production of a message to a remote system (e.g., message broker, queue, HTTP
+ * endpoint)</li>
+ * <li>CONSUMER - The span covers the consumption of a message from a remote system (e.g., message broker, queue, HTTP
+ * endpoint)</li>
+ * <li>INTERNAL - The span represents internal operations with no remote interaction</li>
+ * </ul>
  */
-public interface SpanDecorator {
-
-    void beforeTracingEvent(Span span, Exchange exchange, Endpoint endpoint);
-
-    void afterTracingEvent(Span span, Exchange exchange);
-
-    String getComponent();
-
-    String getComponentClassName();
-
-    String getOperationName(Exchange exchange, Endpoint endpoint);
-
-    SpanContextPropagationExtractor getExtractor(Exchange exchange);
-
-    SpanContextPropagationInjector getInjector(Exchange exchange);
-
-    /**
-     * This method returns the SpanKind for a given operation.
-     *
-     * @param  op The operation type
-     * @return    The span kind to use for this operation
-     */
-    SpanKind getSpanKind(Op op);
-
+public enum SpanKind {
+    CLIENT,
+    SERVER,
+    PRODUCER,
+    CONSUMER,
+    INTERNAL
 }

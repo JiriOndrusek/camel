@@ -25,3 +25,49 @@ segments is no longer accepted and will result in an `InvalidTopicNameException`
 If your Camel routes use topic URIs with extra `/` characters in the topic name portion
 (e.g., `pulsar:persistent://public/default/my-topic/sub-path`), you must replace the extra `/` with
 another separator such as `-` (e.g., `pulsar:persistent://public/default/my-topic-sub-path`).
+
+=== camel-telemetry
+
+The telemetry API has been enhanced with span type classification for improved observability.
+Span decorators now determine the appropriate `SpanKind` based on the operation type and automatically
+add it as a `span.kind` tag to all spans.
+
+==== Span Kind Tag
+
+All spans now include a `span.kind` tag with one of the following values:
+- `client`: Outbound synchronous calls to remote services (e.g., HTTP client requests)
+- `server`: Inbound synchronous request handling (e.g., HTTP server endpoints)
+- `producer`: Sending messages/data to remote systems (e.g., Kafka producer)
+- `consumer`: Receiving messages/data from remote systems (e.g., Kafka consumer)
+- `internal`: Internal operations with no remote interaction (e.g., direct, seda)
+
+This tag is automatically set by the framework based on the component type and operation.
+
+==== SpanDecorator Interface Change
+
+The `SpanDecorator` interface now includes a `getSpanKind(Op op)` method to determine the appropriate
+span kind based on the operation type.
+
+**Impact on Custom SpanDecorator Implementations**
+
+If you have implemented custom span decorator classes, you need to implement the new `getSpanKind(Op op)` method:
+
+[source,java]
+----
+@Override
+public SpanKind getSpanKind(Op op) {
+    // Return appropriate span kind based on the operation type:
+    // For HTTP components:
+    //   EVENT_SENT -> CLIENT, EVENT_RECEIVED -> SERVER, EVENT_PROCESS -> INTERNAL
+    // For messaging components:
+    //   EVENT_SENT -> PRODUCER, EVENT_RECEIVED -> CONSUMER, EVENT_PROCESS -> INTERNAL
+    return switch (op) {
+        case EVENT_SENT -> SpanKind.PRODUCER;
+        case EVENT_RECEIVED -> SpanKind.CONSUMER;
+        case EVENT_PROCESS -> SpanKind.INTERNAL;
+    };
+}
+----
+
+The default implementation in `AbstractSpanDecorator` returns `SpanKind.INTERNAL` for all operations.
+HTTP and messaging decorators have appropriate implementations already provided.

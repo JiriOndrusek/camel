@@ -272,6 +272,8 @@ public abstract class Tracer extends ServiceSupport implements CamelTracingServi
         String spanName = spanDecorator.getOperationName(exchange, endpoint);
         Span span = spanLifecycleManager.create(spanName, parentSpan, spanDecorator.getExtractor(exchange));
         span.setTag(TagConstants.OP, op.toString());
+        SpanKind spanKind = spanDecorator.getSpanKind(op);
+        span.setTag(TagConstants.SPAN_KIND, spanKind.name().toLowerCase());
         spanDecorator.beforeTracingEvent(span, exchange, endpoint);
         spanLifecycleManager.activate(span);
         spanStorageManager.push(exchange, span);
@@ -288,6 +290,8 @@ public abstract class Tracer extends ServiceSupport implements CamelTracingServi
         }
         Span span = spanLifecycleManager.create(processorName, parentSpan, spanDecorator.getExtractor(exchange));
         span.setTag(TagConstants.OP, Op.EVENT_PROCESS.toString());
+        SpanKind spanKind = spanDecorator.getSpanKind(Op.EVENT_PROCESS);
+        span.setTag(TagConstants.SPAN_KIND, spanKind.name().toLowerCase());
         spanDecorator.beforeTracingEvent(span, exchange, null);
         spanLifecycleManager.activate(span);
         spanStorageManager.push(exchange, span);

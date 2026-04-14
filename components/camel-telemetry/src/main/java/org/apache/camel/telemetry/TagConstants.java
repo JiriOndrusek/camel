@@ -23,6 +23,7 @@ public class TagConstants {
     public static final String EXCHANGE_ID = "exchangeId";
 
     public static final String OP = "op";
+    public static final String SPAN_KIND = "span.kind";
 
     // General attributes
     public static final String SERVER_ADDRESS = "server.address";
