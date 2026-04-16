@@ -24,6 +24,7 @@ import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.context.Scope;
+import org.apache.camel.telemetry.Op;
 import org.apache.camel.telemetry.TagConstants;
 
 public class OpenTelemetrySpanAdapter implements org.apache.camel.telemetry.Span {
@@ -35,6 +36,8 @@ public class OpenTelemetrySpanAdapter implements org.apache.camel.telemetry.Span
     private final Baggage baggage;
     private Scope scope;
     private Scope baggageScope;
+    private String op;
+    private boolean isHttp, isMessaging;
 
     protected OpenTelemetrySpanAdapter(Span otelSpan, Baggage baggage) {
         this.otelSpan = otelSpan;
@@ -76,7 +79,35 @@ public class OpenTelemetrySpanAdapter implements org.apache.camel.telemetry.Span
 
     @Override
     public void setTag(String key, String value) {
+        if (key == TagConstants.OP) {
+            this.op = value;
+        }
+        if (key == TagConstants.MESSAGE_BUS_DESTINATION) {
+            this.isMessaging = true;
+        }
+        if (key == TagConstants.OP) {
+            this.isHttp = true;
+            if(this.op != null) {
+                this.otelSpan.setAttribute("kind", determineKind());
+            }
+        }
         this.otelSpan.setAttribute(key, value);
+    }
+
+
+    public String kind() {
+        // Do any conversion here using that op value now
+
+        return determineKind();
+    }
+
+    private String determineKind() {
+        return switch (Op.valueOf(op)) {
+            case EVENT_RECEIVED -> isMessaging ? "CONSUMER" : isHttp ? "SERVER" : "INTERNAL";
+            case EVENT_SENT -> isMessaging ? "PRODUCER" : isHttp ? "CLIENT" : "INTERNAL";
+            default -> "INTERNAL";
+        };
+
     }
 
     @Override
