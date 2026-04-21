@@ -28,8 +28,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -83,6 +85,7 @@ public class MavenDownloaderImpl extends ServiceSupport implements MavenDownload
     public static final String MAVEN_CENTRAL_REPO = "https://repo1.maven.org/maven2";
     public static final String APACHE_SNAPSHOT_REPO = "https://repository.apache.org/snapshots";
 
+    private static final String EXTRA_DEFAULT_REPOS_RESOURCE = "camel-extra-default-repos.properties";
     private static final String EXTRA_DEFAULT_REPOS_PROPERTY = "camel.extra.repos";
 
     private static final RepositoryPolicy POLICY_DEFAULT = new RepositoryPolicy(
@@ -511,7 +514,36 @@ public class MavenDownloaderImpl extends ServiceSupport implements MavenDownload
      * the system property.
      */
     private void loadExtraDefaultRepositories(List<RemoteRepository> repositories) {
-        // Load from system property (comma-separated id=url pairs)
+        Set<String> repoSpecs = new LinkedHashSet<>();
+
+        // 1. Load from classpath resources (all matching files across all JARs)
+        try {
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            if (classLoader == null) {
+                classLoader = MavenDownloaderImpl.class.getClassLoader();
+            }
+            Enumeration<URL> resources = classLoader.getResources(EXTRA_DEFAULT_REPOS_RESOURCE);
+            while (resources.hasMoreElements()) {
+                URL resourceUrl = resources.nextElement();
+                try (InputStream is = resourceUrl.openStream()) {
+                    Properties props = new Properties();
+                    props.load(is);
+                    for (String key : props.stringPropertyNames()) {
+                        String url = props.getProperty(key);
+                        if (url != null && !url.isBlank()) {
+                            repoSpecs.add(key + "=" + url);
+                        }
+                    }
+                    LOG.debug("Loaded extra default repositories from {}", resourceUrl);
+                } catch (IOException e) {
+                    LOG.warn("Failed to load extra default repositories from {}: {}", resourceUrl, e.getMessage());
+                }
+            }
+        } catch (IOException e) {
+            LOG.debug("No extra default repositories found on classpath: {}", e.getMessage());
+        }
+
+        // 2. Load from system property (comma-separated id=url pairs)
         String sysProp = System.getProperty(EXTRA_DEFAULT_REPOS_PROPERTY);
         if (sysProp != null && !sysProp.isBlank()) {
             Set<String> repoSpecs = Arrays.stream(sysProp.split("\\s*,\\s*"))
