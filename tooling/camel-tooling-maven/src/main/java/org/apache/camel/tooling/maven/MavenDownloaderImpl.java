@@ -334,6 +334,9 @@ public class MavenDownloaderImpl extends ServiceSupport implements MavenDownload
         // mirroring and proxying (handled by org.eclipse.aether.RepositorySystem#newResolutionRepositories())
         List<RemoteRepository> originalRepositories = configureDefaultRepositories(settings);
 
+        // Load extra default repositories (system property)
+        loadExtraDefaultRepositories(originalRepositories);
+
         remoteRepositories.addAll(repositorySystem.newResolutionRepositories(repositorySystemSession,
                 originalRepositories));
 
@@ -357,9 +360,6 @@ public class MavenDownloaderImpl extends ServiceSupport implements MavenDownload
             apacheSnapshotsResolutionRepository = repositorySystem.newResolutionRepositories(repositorySystemSession,
                     Collections.singletonList(apacheSnapshotsRepository)).get(0);
         }
-
-        // Load extra default repositories (classpath properties file + system property)
-        loadExtraDefaultRepositories(originalRepositories);
     }
 
     /**
