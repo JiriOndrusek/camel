@@ -1054,6 +1054,23 @@ public abstract class ExportBaseCommand extends CamelCommand {
         Files.createDirectories(targetDir);
         Path appPropsPath = targetDir.resolve("application.properties");
         Files.writeString(appPropsPath, content.toString(), StandardCharsets.UTF_8);
+
+        // let plugins post-process the exported properties
+        invokeCustomizeExportedProperties(targetDir.getParent().getParent().getParent());
+    }
+
+    protected void invokeCustomizeExportedProperties(Path buildDir) throws Exception {
+        if (!skipPlugins && runtime != null) {
+            Set<PluginExporter> exporters = PluginHelper.getActivePlugins(getMain(), mavenResolver.repos()).values()
+                    .stream()
+                    .map(Plugin::getExporter)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toSet());
+            for (PluginExporter exporter : exporters) {
+                exporter.customizeExportedProperties(buildDir, runtime, getMain().getOut());
+            }
+        }
     }
 
     protected void prepareApplicationProperties(Properties properties) {

@@ -72,4 +72,17 @@ public interface PluginExporter {
      * Add plugin specific source files to the exported project.
      */
     void addSourceFiles(Path buildDir, String packageName, Printer printer) throws Exception;
+
+    /**
+     * Post-process the exported application properties. Called after the application.properties file has been written
+     * to the export directory. Plugins can use this to translate, add, or remove properties based on the target
+     * runtime.
+     *
+     * @param buildDir the root directory of the exported project
+     * @param runtime  the target runtime type (quarkus, springBoot, main)
+     * @param printer  for printing messages to the user
+     */
+    default void customizeExportedProperties(Path buildDir, RuntimeType runtime, Printer printer) throws Exception {
+        // noop
+    }
 }
