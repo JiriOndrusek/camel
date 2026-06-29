@@ -59,6 +59,51 @@ public interface WeaviateVectorDbEndpointBuilderFactory {
             return this;
         }
         /**
+         * gRPC host for Weaviate server connection.
+         * 
+         * The option is a: <code>java.lang.String</code> type.
+         * 
+         * Group: producer
+         * 
+         * @param grpcHost the value to set
+         * @return the dsl builder
+         */
+        default WeaviateVectorDbEndpointBuilder grpcHost(String grpcHost) {
+            doSetProperty("grpcHost", grpcHost);
+            return this;
+        }
+        /**
+         * gRPC port for Weaviate server connection.
+         * 
+         * The option is a: <code>java.lang.Integer</code> type.
+         * 
+         * Default: 50051
+         * Group: producer
+         * 
+         * @param grpcPort the value to set
+         * @return the dsl builder
+         */
+        default WeaviateVectorDbEndpointBuilder grpcPort(Integer grpcPort) {
+            doSetProperty("grpcPort", grpcPort);
+            return this;
+        }
+        /**
+         * gRPC port for Weaviate server connection.
+         * 
+         * The option will be converted to a <code>java.lang.Integer</code>
+         * type.
+         * 
+         * Default: 50051
+         * Group: producer
+         * 
+         * @param grpcPort the value to set
+         * @return the dsl builder
+         */
+        default WeaviateVectorDbEndpointBuilder grpcPort(String grpcPort) {
+            doSetProperty("grpcPort", grpcPort);
+            return this;
+        }
+        /**
          * Weaviate server host to connect to.
          * 
          * The option is a: <code>java.lang.String</code> type.

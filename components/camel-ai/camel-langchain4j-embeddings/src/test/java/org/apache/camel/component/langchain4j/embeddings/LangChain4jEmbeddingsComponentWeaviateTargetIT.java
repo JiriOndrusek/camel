@@ -17,18 +17,14 @@
 package org.apache.camel.component.langchain4j.embeddings;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModel;
-import io.weaviate.client.base.Result;
-import io.weaviate.client.v1.data.model.WeaviateObject;
-import io.weaviate.client.v1.schema.model.WeaviateClass;
+import io.weaviate.client6.v1.api.collections.WeaviateObject;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.qdrant.QdrantAction;
 import org.apache.camel.component.weaviate.WeaviateVectorDb;
 import org.apache.camel.component.weaviate.WeaviateVectorDbAction;
 import org.apache.camel.component.weaviate.WeaviateVectorDbComponent;
@@ -63,7 +59,10 @@ public class LangChain4jEmbeddingsComponentWeaviateTargetIT extends CamelTestSup
 
         var qc = context.getComponent(WeaviateVectorDb.SCHEME, WeaviateVectorDbComponent.class);
         qc.getConfiguration().setScheme("http");
-        qc.getConfiguration().setHost(WEAVIATE.getWeaviateEndpointUrl());
+        qc.getConfiguration().setHost(WEAVIATE.getWeaviateHost());
+        qc.getConfiguration().setGrpcHost(WEAVIATE.getWeaviateHost());
+        qc.getConfiguration().setGrpcPort(WEAVIATE.getWeaviateGrpcPort());
+        qc.getConfiguration().setHost(WEAVIATE.getWeaviateHost() + ":" + WEAVIATE.getWeaviatePort());
         context.getRegistry().bind("embedding-model", new AllMiniLmL6V2EmbeddingModel());
 
         return context;
@@ -73,9 +72,7 @@ public class LangChain4jEmbeddingsComponentWeaviateTargetIT extends CamelTestSup
     @Order(1)
     public void createCollection() {
         Exchange result = fluentTemplate.to(WEAVIATE_URI)
-                .withHeader(WeaviateVectorDbHeaders.ACTION, QdrantAction.CREATE_COLLECTION)
-                .withBody(
-                        WeaviateClass.builder().className("embeddings").build())
+                .withHeader(WeaviateVectorDbHeaders.ACTION, WeaviateVectorDbAction.CREATE_COLLECTION)
                 .request(Exchange.class);
 
         assertThat(result).isNotNull();
@@ -98,8 +95,8 @@ public class LangChain4jEmbeddingsComponentWeaviateTargetIT extends CamelTestSup
 
         assertThat(result).isNotNull();
         assertThat(result.getException()).isNull();
-        Result<WeaviateObject> res = (Result<WeaviateObject>) result.getIn().getBody();
-        CREATEID = res.getResult().getId();
+        WeaviateObject<Map<String, Object>> res = (WeaviateObject<Map<String, Object>>) result.getIn().getBody();
+        CREATEID = res.uuid();
     }
 
     @Test
@@ -131,17 +128,16 @@ public class LangChain4jEmbeddingsComponentWeaviateTargetIT extends CamelTestSup
 
         assertThat(result).isNotNull();
         assertThat(result.getException()).isNull();
-        Result<WeaviateObject> res = (Result<WeaviateObject>) result.getIn().getBody();
-        assertThat(res.hasErrors()).isFalse();
 
-        List<WeaviateObject> list = (List) res.getResult();
-        for (WeaviateObject wo : list) {
+        java.util.Optional<WeaviateObject<Map<String, Object>>> res
+                = (java.util.Optional<WeaviateObject<Map<String, Object>>>) result.getIn().getBody();
+        assertThat(res).isPresent();
 
-            Map<String, Object> map = wo.getProperties();
-            assertThat(map).containsKey("sky");
-            assertThat(map).containsKey("age");
-            assertThat(map).containsKey("dog");
-        }
+        WeaviateObject<Map<String, Object>> wo = res.get();
+        Map<String, Object> props = wo.properties();
+        assertThat(props).containsKey("sky");
+        assertThat(props).containsKey("age");
+        assertThat(props).containsKey("dog");
     }
 
     @Test
