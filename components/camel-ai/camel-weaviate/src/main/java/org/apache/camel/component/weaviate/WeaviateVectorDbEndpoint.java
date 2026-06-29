@@ -117,46 +117,35 @@ public class WeaviateVectorDbEndpoint extends DefaultEndpoint {
     private WeaviateClient createClient() throws WeaviateException {
         String scheme = configuration.getScheme() != null ? configuration.getScheme() : "http";
         String host = configuration.getHost();
+        if (host == null) {
+            throw new IllegalArgumentException("Weaviate host must be configured");
+        }
 
         // Parse host:port if port is embedded in the host string
         String httpHost = host;
         int httpPort = 8080;
-        if (host != null && host.contains(":")) {
+        if (host.contains(":")) {
             String[] parts = host.split(":");
             httpHost = parts[0];
             httpPort = Integer.parseInt(parts[1]);
         }
 
-        String grpcHost = configuration.getGrpcHost() != null ? configuration.getGrpcHost() : httpHost;
-        int grpcPort = configuration.getGrpcPort() != null ? configuration.getGrpcPort() : 50051;
-
         final String resolvedScheme = scheme;
         final String resolvedHttpHost = httpHost;
         final int resolvedHttpPort = httpPort;
-        final String resolvedGrpcHost = grpcHost;
-        final int resolvedGrpcPort = grpcPort;
+        final String resolvedGrpcHost = configuration.getGrpcHost() != null ? configuration.getGrpcHost() : httpHost;
+        final int resolvedGrpcPort = configuration.getGrpcPort() != null ? configuration.getGrpcPort() : 50051;
 
-        WeaviateClient weaviate;
-
-        if (configuration.getApiKey() != null) {
-            weaviate = WeaviateClient.connectToCustom(
-                    conn -> conn
-                            .scheme(resolvedScheme)
-                            .httpHost(resolvedHttpHost)
-                            .httpPort(resolvedHttpPort)
-                            .grpcHost(resolvedGrpcHost)
-                            .grpcPort(resolvedGrpcPort)
-                            .authentication(Authentication.apiKey(configuration.getApiKey())));
-        } else {
-            weaviate = WeaviateClient.connectToCustom(
-                    conn -> conn
-                            .scheme(resolvedScheme)
-                            .httpHost(resolvedHttpHost)
-                            .httpPort(resolvedHttpPort)
-                            .grpcHost(resolvedGrpcHost)
-                            .grpcPort(resolvedGrpcPort));
-        }
-
-        return weaviate;
+        return WeaviateClient.connectToCustom(conn -> {
+            conn.scheme(resolvedScheme)
+                    .httpHost(resolvedHttpHost)
+                    .httpPort(resolvedHttpPort)
+                    .grpcHost(resolvedGrpcHost)
+                    .grpcPort(resolvedGrpcPort);
+            if (configuration.getApiKey() != null) {
+                conn.authentication(Authentication.apiKey(configuration.getApiKey()));
+            }
+            return conn;
+        });
     }
 }

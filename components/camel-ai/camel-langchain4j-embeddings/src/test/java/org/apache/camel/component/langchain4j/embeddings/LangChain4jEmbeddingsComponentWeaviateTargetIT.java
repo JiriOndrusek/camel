@@ -18,6 +18,7 @@ package org.apache.camel.component.langchain4j.embeddings;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModel;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
@@ -59,10 +60,9 @@ public class LangChain4jEmbeddingsComponentWeaviateTargetIT extends CamelTestSup
 
         var qc = context.getComponent(WeaviateVectorDb.SCHEME, WeaviateVectorDbComponent.class);
         qc.getConfiguration().setScheme("http");
-        qc.getConfiguration().setHost(WEAVIATE.getWeaviateHost());
+        qc.getConfiguration().setHost(WEAVIATE.getWeaviateHost() + ":" + WEAVIATE.getWeaviatePort());
         qc.getConfiguration().setGrpcHost(WEAVIATE.getWeaviateHost());
         qc.getConfiguration().setGrpcPort(WEAVIATE.getWeaviateGrpcPort());
-        qc.getConfiguration().setHost(WEAVIATE.getWeaviateHost() + ":" + WEAVIATE.getWeaviatePort());
         context.getRegistry().bind("embedding-model", new AllMiniLmL6V2EmbeddingModel());
 
         return context;
@@ -129,8 +129,8 @@ public class LangChain4jEmbeddingsComponentWeaviateTargetIT extends CamelTestSup
         assertThat(result).isNotNull();
         assertThat(result.getException()).isNull();
 
-        java.util.Optional<WeaviateObject<Map<String, Object>>> res
-                = (java.util.Optional<WeaviateObject<Map<String, Object>>>) result.getIn().getBody();
+        Optional<WeaviateObject<Map<String, Object>>> res
+                = (Optional<WeaviateObject<Map<String, Object>>>) result.getIn().getBody();
         assertThat(res).isPresent();
 
         WeaviateObject<Map<String, Object>> wo = res.get();

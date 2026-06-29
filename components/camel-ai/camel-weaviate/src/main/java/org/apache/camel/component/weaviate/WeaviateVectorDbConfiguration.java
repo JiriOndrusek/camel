@@ -37,16 +37,19 @@ public class WeaviateVectorDbConfiguration implements Cloneable {
     @UriParam
     private String host;
 
+    @Deprecated
     @Metadata(label = "producer",
               description = "Proxy host to connect to weaviate through")
     @UriParam
     private String proxyHost;
 
+    @Deprecated
     @Metadata(label = "producer",
               description = "Proxy port to connect to weaviate through")
     @UriParam
     private Integer proxyPort;
 
+    @Deprecated
     @Metadata(label = "producer",
               description = "Proxy scheme to connect to weaviate through")
     @UriParam
@@ -144,48 +147,50 @@ public class WeaviateVectorDbConfiguration implements Cloneable {
         this.host = host;
     }
 
-    /*
-     * Get the proxy host used for connecting to weaviate.
+    /**
+     * @deprecated The Weaviate v6 client does not support proxy configuration.
      */
+    @Deprecated
     public String getProxyHost() {
         return proxyHost;
     }
 
     /**
-     * Set the proxy host used to connect to weaviate.
-     *
-     * @param proxyHost proxy host
+     * @deprecated The Weaviate v6 client does not support proxy configuration.
      */
+    @Deprecated
     public void setProxyHost(String proxyHost) {
         this.proxyHost = proxyHost;
     }
 
-    /*
-     * Get the proxy port used to connect to weaviate.
+    /**
+     * @deprecated The Weaviate v6 client does not support proxy configuration.
      */
+    @Deprecated
     public Integer getProxyPort() {
         return proxyPort;
     }
 
-    /*
-     * Set the proxy port used to connect to weaviate.
+    /**
+     * @deprecated The Weaviate v6 client does not support proxy configuration.
      */
+    @Deprecated
     public void setProxyPort(Integer proxyPort) {
         this.proxyPort = proxyPort;
     }
 
-    /*
-     * Get the scheme (http/https/etc) used for connecting to proxy.
+    /**
+     * @deprecated The Weaviate v6 client does not support proxy configuration.
      */
+    @Deprecated
     public String getProxyScheme() {
         return proxyScheme;
     }
 
     /**
-     * Set the scheme used to for connecting to the proxy.
-     *
-     * @param proxyScheme
+     * @deprecated The Weaviate v6 client does not support proxy configuration.
      */
+    @Deprecated
     public void setProxyScheme(String proxyScheme) {
         this.proxyScheme = proxyScheme;
     }

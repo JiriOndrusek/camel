@@ -26,7 +26,6 @@ import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.collections.CollectionHandle;
 import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
-import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.api.collections.query.QueryResponse;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
@@ -165,8 +164,8 @@ public class WeaviateVectorDbProducer extends DefaultProducer {
         String collectionName = resolveCollectionName(in);
 
         CollectionHandle<Map<String, Object>> collection = client.collections.use(collectionName);
-        collection.data.deleteMany(Filter.uuid().containsAny(indexId));
-        populateResponse(true, exchange);
+        boolean deleted = collection.data.deleteById(indexId);
+        populateResponse(deleted, exchange);
     }
 
     private void deleteCollection(Exchange exchange) throws Exception {
