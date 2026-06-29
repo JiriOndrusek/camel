@@ -205,3 +205,12 @@ surface on the first operation instead of during endpoint initialization.
 
 The v6 client no longer supports HTTP proxy configuration.
 The `proxyHost`, `proxyPort`, and `proxyScheme` endpoint options have been removed.
+
+==== New operations
+
+Four new operations have been added to the Weaviate component, leveraging v6 client capabilities:
+
+* `BATCH_CREATE` — Insert multiple objects in a single call. The exchange body must be a `List<WeaviateObject<Map<String, Object>>>`. Returns an `InsertManyResponse`.
+* `HYBRID_QUERY` — Keyword + vector hybrid search. The exchange body is the query text (`String`). Supports `CamelWeaviateQueryTopK` (default 10), `CamelWeaviateHybridAlpha` (0.0 = pure BM25, 1.0 = pure vector), and `CamelWeaviateFields` headers. Returns a `QueryResponse<Map<String, Object>>`.
+* `BM25_QUERY` — Keyword-only (BM25) search. The exchange body is the query text (`String`). Supports `CamelWeaviateQueryTopK` and `CamelWeaviateFields` headers. Returns a `QueryResponse<Map<String, Object>>`.
+* `AGGREGATE` — Returns aggregate statistics for a collection. No body required for total count only. Optionally pass a `List<PropertyAggregation>` (from `io.weaviate.client6.v1.api.collections.aggregate`) as the body to request per-property metrics (e.g., text top-occurrences, numeric min/max/mean/sum). The optional `CamelWeaviateAggregateObjectLimit` header (`Integer`) limits how many objects are considered. Returns an `AggregateResponse` with `totalCount()` and typed per-property accessors.

@@ -22,7 +22,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import io.weaviate.client6.v1.api.collections.Vectors;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
+import io.weaviate.client6.v1.api.collections.aggregate.Aggregate;
+import io.weaviate.client6.v1.api.collections.aggregate.AggregateResponse;
+import io.weaviate.client6.v1.api.collections.aggregate.PropertyAggregation;
+import io.weaviate.client6.v1.api.collections.data.InsertManyResponse;
 import io.weaviate.client6.v1.api.collections.query.QueryResponse;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.weaviate.WeaviateTestSupport;
@@ -91,6 +96,119 @@ public class WeaviateContainerIT extends WeaviateTestSupport {
 
         assertThat(res).isNotNull();
         assertThat(CREATEID).isNotNull();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    @Order(3)
+    public void batchCreate() {
+
+        WeaviateObject<Map<String, Object>> obj1 = new WeaviateObject.Builder<Map<String, Object>>()
+                .properties(Map.of("sky", "green", "age", "10"))
+                .vectors(Vectors.of(new float[] { 4.0f, 5.0f, 6.0f }))
+                .build();
+        WeaviateObject<Map<String, Object>> obj2 = new WeaviateObject.Builder<Map<String, Object>>()
+                .properties(Map.of("sky", "red", "age", "20"))
+                .vectors(Vectors.of(new float[] { 7.0f, 8.0f, 9.0f }))
+                .build();
+
+        Exchange result = fluentTemplate
+                .to(getUri())
+                .withHeader(WeaviateVectorDbHeaders.ACTION, WeaviateVectorDbAction.BATCH_CREATE)
+                .withBody(List.of(obj1, obj2))
+                .withHeader(WeaviateVectorDbHeaders.COLLECTION_NAME, COLLECTION)
+                .request(Exchange.class);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getException()).isNull();
+
+        InsertManyResponse res = (InsertManyResponse) result.getIn().getBody();
+        assertThat(res.uuids()).hasSize(2);
+        assertThat(res.errors()).isEmpty();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    @Order(4)
+    public void hybridQuery() {
+
+        Exchange result = fluentTemplate
+                .to(getUri())
+                .withHeader(WeaviateVectorDbHeaders.ACTION, WeaviateVectorDbAction.HYBRID_QUERY)
+                .withBody("blue")
+                .withHeader(WeaviateVectorDbHeaders.COLLECTION_NAME, COLLECTION)
+                .withHeader(WeaviateVectorDbHeaders.QUERY_TOP_K, 10)
+                .withHeader(WeaviateVectorDbHeaders.HYBRID_ALPHA, 0.5f)
+                .request(Exchange.class);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getException()).isNull();
+
+        QueryResponse<Map<String, Object>> queryResponse
+                = (QueryResponse<Map<String, Object>>) result.getIn().getBody();
+        assertThat(queryResponse).isNotNull();
+        assertThat(queryResponse.objects()).isNotEmpty();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    @Order(5)
+    public void bm25Query() {
+
+        Exchange result = fluentTemplate
+                .to(getUri())
+                .withHeader(WeaviateVectorDbHeaders.ACTION, WeaviateVectorDbAction.BM25_QUERY)
+                .withBody("blue")
+                .withHeader(WeaviateVectorDbHeaders.COLLECTION_NAME, COLLECTION)
+                .withHeader(WeaviateVectorDbHeaders.QUERY_TOP_K, 10)
+                .request(Exchange.class);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getException()).isNull();
+
+        QueryResponse<Map<String, Object>> queryResponse
+                = (QueryResponse<Map<String, Object>>) result.getIn().getBody();
+        assertThat(queryResponse).isNotNull();
+        assertThat(queryResponse.objects()).isNotEmpty();
+    }
+
+    @Test
+    @Order(6)
+    public void aggregate() {
+
+        Exchange result = fluentTemplate
+                .to(getUri())
+                .withHeader(WeaviateVectorDbHeaders.ACTION, WeaviateVectorDbAction.AGGREGATE)
+                .withHeader(WeaviateVectorDbHeaders.COLLECTION_NAME, COLLECTION)
+                .request(Exchange.class);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getException()).isNull();
+
+        AggregateResponse res = (AggregateResponse) result.getIn().getBody();
+        assertThat(res.totalCount()).isGreaterThanOrEqualTo(1);
+    }
+
+    @Test
+    @Order(6)
+    public void aggregateWithMetrics() {
+
+        List<PropertyAggregation> metrics = List.of(
+                Aggregate.text("sky", b -> b.topOccurrencesCount().topOccurrencesValue()));
+
+        Exchange result = fluentTemplate
+                .to(getUri())
+                .withHeader(WeaviateVectorDbHeaders.ACTION, WeaviateVectorDbAction.AGGREGATE)
+                .withHeader(WeaviateVectorDbHeaders.COLLECTION_NAME, COLLECTION)
+                .withBody(metrics)
+                .request(Exchange.class);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getException()).isNull();
+
+        AggregateResponse res = (AggregateResponse) result.getIn().getBody();
+        assertThat(res.totalCount()).isGreaterThanOrEqualTo(1);
+        assertThat(res.text("sky").topOccurrences()).isNotEmpty();
     }
 
     @Test

@@ -391,6 +391,30 @@ public interface WeaviateVectorDbEndpointBuilderFactory {
         public String weaviateKeyValue() {
             return "CamelWeaviateKeyValue";
         }
+        /**
+         * Alpha value for hybrid search (0.0 = pure BM25, 1.0 = pure vector).
+         * 
+         * The option is a: {@code Float} type.
+         * 
+         * Group: producer
+         * 
+         * @return the name of the header {@code WeaviateHybridAlpha}.
+         */
+        public String weaviateHybridAlpha() {
+            return "CamelWeaviateHybridAlpha";
+        }
+        /**
+         * Maximum number of objects to consider for the aggregate operation.
+         *
+         * The option is a: {@code Integer} type.
+         *
+         * Group: producer
+         *
+         * @return the name of the header {@code WeaviateAggregateObjectLimit}.
+         */
+        public String weaviateAggregateObjectLimit() {
+            return "CamelWeaviateAggregateObjectLimit";
+        }
     }
     static WeaviateVectorDbEndpointBuilder endpointBuilder(String componentName, String path) {
         class WeaviateVectorDbEndpointBuilderImpl extends AbstractEndpointBuilder implements WeaviateVectorDbEndpointBuilder, AdvancedWeaviateVectorDbEndpointBuilder {
