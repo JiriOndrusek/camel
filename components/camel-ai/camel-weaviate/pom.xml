@@ -35,7 +35,7 @@
         <camel.surefire.parallel>true</camel.surefire.parallel>
         <camel.surefire.parallel.factor>4</camel.surefire.parallel.factor>
 
-        <!-- Milvus is not available on these platforms -->
+        <!-- Weaviate is not available on these platforms -->
         <skipITs.s390x>true</skipITs.s390x>
         <skipTests.s390x>true</skipTests.s390x>
     </properties>
@@ -54,8 +54,9 @@
 
         <dependency>
             <groupId>io.weaviate</groupId>
-            <artifactId>client</artifactId>
-            <version>${weaviate-client-version}</version>
+            <artifactId>client6</artifactId>
+            <version>${weaviate-client6-version}</version>
+            <classifier>all</classifier>
         </dependency>
 
         <!-- test infra -->

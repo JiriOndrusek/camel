@@ -59,6 +59,51 @@ public interface WeaviateVectorDbEndpointBuilderFactory {
             return this;
         }
         /**
+         * gRPC host for Weaviate server connection.
+         * 
+         * The option is a: <code>java.lang.String</code> type.
+         * 
+         * Group: producer
+         * 
+         * @param grpcHost the value to set
+         * @return the dsl builder
+         */
+        default WeaviateVectorDbEndpointBuilder grpcHost(String grpcHost) {
+            doSetProperty("grpcHost", grpcHost);
+            return this;
+        }
+        /**
+         * gRPC port for Weaviate server connection.
+         * 
+         * The option is a: <code>java.lang.Integer</code> type.
+         * 
+         * Default: 50051
+         * Group: producer
+         * 
+         * @param grpcPort the value to set
+         * @return the dsl builder
+         */
+        default WeaviateVectorDbEndpointBuilder grpcPort(Integer grpcPort) {
+            doSetProperty("grpcPort", grpcPort);
+            return this;
+        }
+        /**
+         * gRPC port for Weaviate server connection.
+         * 
+         * The option will be converted to a <code>java.lang.Integer</code>
+         * type.
+         * 
+         * Default: 50051
+         * Group: producer
+         * 
+         * @param grpcPort the value to set
+         * @return the dsl builder
+         */
+        default WeaviateVectorDbEndpointBuilder grpcPort(String grpcPort) {
+            doSetProperty("grpcPort", grpcPort);
+            return this;
+        }
+        /**
          * Weaviate server host to connect to.
          * 
          * The option is a: <code>java.lang.String</code> type.
@@ -82,6 +127,7 @@ public interface WeaviateVectorDbEndpointBuilderFactory {
          * @param proxyHost the value to set
          * @return the dsl builder
          */
+        @Deprecated
         default WeaviateVectorDbEndpointBuilder proxyHost(String proxyHost) {
             doSetProperty("proxyHost", proxyHost);
             return this;
@@ -96,6 +142,7 @@ public interface WeaviateVectorDbEndpointBuilderFactory {
          * @param proxyPort the value to set
          * @return the dsl builder
          */
+        @Deprecated
         default WeaviateVectorDbEndpointBuilder proxyPort(Integer proxyPort) {
             doSetProperty("proxyPort", proxyPort);
             return this;
@@ -111,6 +158,7 @@ public interface WeaviateVectorDbEndpointBuilderFactory {
          * @param proxyPort the value to set
          * @return the dsl builder
          */
+        @Deprecated
         default WeaviateVectorDbEndpointBuilder proxyPort(String proxyPort) {
             doSetProperty("proxyPort", proxyPort);
             return this;
@@ -125,6 +173,7 @@ public interface WeaviateVectorDbEndpointBuilderFactory {
          * @param proxyScheme the value to set
          * @return the dsl builder
          */
+        @Deprecated
         default WeaviateVectorDbEndpointBuilder proxyScheme(String proxyScheme) {
             doSetProperty("proxyScheme", proxyScheme);
             return this;
@@ -401,6 +450,18 @@ public interface WeaviateVectorDbEndpointBuilderFactory {
          */
         public String weaviateKeyValue() {
             return "CamelWeaviateKeyValue";
+        }
+        /**
+         * Alpha value for hybrid search (0.0 = pure BM25, 1.0 = pure vector).
+         * 
+         * The option is a: {@code Float} type.
+         * 
+         * Group: producer
+         * 
+         * @return the name of the header {@code WeaviateHybridAlpha}.
+         */
+        public String weaviateHybridAlpha() {
+            return "CamelWeaviateHybridAlpha";
         }
     }
     static WeaviateVectorDbEndpointBuilder endpointBuilder(String componentName, String path) {
