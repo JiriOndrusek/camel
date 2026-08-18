@@ -3389,6 +3389,20 @@ public interface ComponentsBuilderFactory {
         return Langchain4jEmbeddingstoreComponentBuilderFactory.langchain4jEmbeddingstore();
     }
     /**
+     * LangChain4j Ingest (camel-langchain4j-ingest)
+     * Ingest documents into a LangChain4j embedding store: split into segments,
+     * embed and store.
+     * 
+     * Category: ai
+     * Since: 4.23
+     * Maven coordinates: org.apache.camel:camel-langchain4j-ingest
+     * 
+     * @return the dsl builder
+     */
+    static Langchain4jIngestComponentBuilderFactory.Langchain4jIngestComponentBuilder langchain4jIngest() {
+        return Langchain4jIngestComponentBuilderFactory.langchain4jIngest();
+    }
+    /**
      * LangChain4j Tools (camel-langchain4j-tools)
      * LangChain4j Tools and Function Calling Features
      * 

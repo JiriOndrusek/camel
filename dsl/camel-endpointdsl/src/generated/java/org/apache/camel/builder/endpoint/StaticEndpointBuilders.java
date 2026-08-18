@@ -11159,6 +11159,50 @@ public class StaticEndpointBuilders {
         return LangChain4jEmbeddingStoreEndpointBuilderFactory.endpointBuilder(componentName, path);
     }
     /**
+     * LangChain4j Ingest (camel-langchain4j-ingest)
+     * Ingest documents into a LangChain4j embedding store: split into segments,
+     * embed and store.
+     * 
+     * Category: ai
+     * Since: 4.23
+     * Maven coordinates: org.apache.camel:camel-langchain4j-ingest
+     * 
+     * Syntax: <code>langchain4j-ingest:pipelineName</code>
+     * 
+     * Path parameter: pipelineName (required)
+     * The name of the ingestion pipeline; stamped into the metadata of every
+     * stored segment
+     * 
+     * @param path pipelineName
+     * @return the dsl builder
+     */
+    public static LangChain4jIngestEndpointBuilderFactory.LangChain4jIngestEndpointBuilder langchain4jIngest(String path) {
+        return langchain4jIngest("langchain4j-ingest", path);
+    }
+    /**
+     * LangChain4j Ingest (camel-langchain4j-ingest)
+     * Ingest documents into a LangChain4j embedding store: split into segments,
+     * embed and store.
+     * 
+     * Category: ai
+     * Since: 4.23
+     * Maven coordinates: org.apache.camel:camel-langchain4j-ingest
+     * 
+     * Syntax: <code>langchain4j-ingest:pipelineName</code>
+     * 
+     * Path parameter: pipelineName (required)
+     * The name of the ingestion pipeline; stamped into the metadata of every
+     * stored segment
+     * 
+     * @param componentName to use a custom component name for the endpoint
+     * instead of the default name
+     * @param path pipelineName
+     * @return the dsl builder
+     */
+    public static LangChain4jIngestEndpointBuilderFactory.LangChain4jIngestEndpointBuilder langchain4jIngest(String componentName, String path) {
+        return LangChain4jIngestEndpointBuilderFactory.endpointBuilder(componentName, path);
+    }
+    /**
      * LangChain4j Tools (camel-langchain4j-tools)
      * LangChain4j Tools and Function Calling Features
      * 

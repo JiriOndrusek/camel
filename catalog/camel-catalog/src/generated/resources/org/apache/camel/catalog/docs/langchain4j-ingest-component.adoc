@@ -1,0 +1,113 @@
+= LangChain4j Ingest Component
+:doctitle: LangChain4j Ingest
+:shortname: langchain4j-ingest
+:artifactid: camel-langchain4j-ingest
+:description: Ingest documents into a LangChain4j embedding store: split into segments, embed and store.
+:since: 4.23
+:supportlevel: Preview
+:tabs-sync-option:
+:component-header: Only producer is supported
+//Manually maintained attributes
+:group: AI
+
+*Since Camel {since}*
+
+*{component-header}*
+
+The LangChain4j Ingest component turns any Camel route into a document-ingestion pipeline for
+https://github.com/langchain4j/langchain4j[LangChain4j] embedding stores. The producer takes the
+message body, splits it into segments with a recursive splitter, embeds the segments in batches
+and writes them to the configured embedding store — the split-embed-store step of a RAG
+(retrieval augmented generation) ingestion pipeline in a single endpoint.
+
+Because it is a plain producer, any of the hundreds of Camel consumers can feed it: files, S3
+buckets, Kafka topics, HTTP endpoints and so on.
+
+== URI format
+
+[source]
+----
+langchain4j-ingest:pipelineName[?options]
+----
+
+Where *pipelineName* names the ingestion pipeline. The name is stamped into the metadata of
+every stored segment, so segments written by different pipelines can be told apart inside a
+shared store.
+
+// component options: START
+include::partial$component-configure-options.adoc[]
+include::partial$component-endpoint-options.adoc[]
+include::partial$component-endpoint-headers.adoc[]
+// component options: END
+
+== Usage
+
+=== Ingesting documents
+
+The producer needs an `EmbeddingStore` (directly, via an `EmbeddingStoreFactory`, or autowired
+from the registry) and an `EmbeddingModel` (configured or autowired). The message body is the
+document text — either a plain `String` or a LangChain4j `Document`:
+
+[tabs]
+====
+Java::
++
+[source,java]
+----
+from("file:documents?noop=true&idempotent=true")
+    .setHeader(LangChain4jIngestHeaders.DOCUMENT_ID, header(Exchange.FILE_NAME))
+    .to("langchain4j-ingest:docs?maxSegmentSize=500&maxOverlapSize=50");
+----
+
+YAML::
++
+[source,yaml]
+----
+- route:
+    from:
+      uri: file:documents
+      parameters:
+        noop: true
+        idempotent: true
+    steps:
+      - setHeader:
+          name: CamelLangChain4jIngestDocumentId
+          expression:
+            header: CamelFileName
+      - to:
+          uri: langchain4j-ingest:docs
+          parameters:
+            maxSegmentSize: 500
+            maxOverlapSize: 50
+----
+====
+
+The reply body is a `LangChain4jIngestResult` with the pipeline name, the document id, the
+number of segments written and the outcome: `INGESTED`, or `EMPTY` when the body was blank and
+nothing was written.
+
+=== The document id
+
+The `CamelLangChain4jIngestDocumentId` header identifies the ingested document — a file name,
+an S3 key, a Kafka message key. Identity is the consumer's business, so set the header from
+whatever the consumer of your source provides. When present, the id is stamped into the
+metadata of every stored segment, so retrieval can cite the source document and a later
+ingestion can find the document's segments again.
+
+=== Segment metadata
+
+Every stored segment carries two metadata entries:
+
+* `camel_ingest_pipeline` — the pipeline name (the endpoint path)
+* `camel_ingest_document_id` — the document id header value, when present
+
+Additional metadata can be attached per document with `langchain4j.metadata.*` headers
+(provided by `camel-langchain4j-core`): a header `langchain4j.metadata.source=crm` becomes a
+`source=crm` metadata entry on every segment of that document.
+
+=== Re-ingestion semantics
+
+The component writes whatever it is given and remembers nothing: ingesting the same document
+twice leaves two copies of its segments in the store. Keeping a store in step with a changing
+source — skipping unchanged documents, replacing changed ones, removing deleted ones — needs a
+record of what was written and is out of scope for this component today.
