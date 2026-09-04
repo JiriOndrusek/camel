@@ -1,0 +1,122 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: langchain4j-ingest-tika-sink
+  labels:
+    camel.apache.org/kamelet.type: "sink"
+  annotations:
+    camel.apache.org/kamelet.support.level: "Preview"
+    camel.apache.org/kamelet.group: "AI"
+    camel.apache.org/provider: "Apache Software Foundation"
+spec:
+  definition:
+    title: "LangChain4j Ingest Tika Sink"
+    description: |-
+      Ingest PDF, office and similar documents into a LangChain4j EmbeddingStore: Apache Tika
+      extracts the text in-process, which is then split into overlapping segments, embedded in
+      batches and written to the store.
+
+      The document id is captured before the parse, so a document whose metadata Tika copies
+      over the headers cannot forge its own identity. Each format needs its Tika parser module
+      on the classpath, for example org.apache.tika:tika-parser-pdf-module for PDF.
+    type: object
+    properties:
+      pipelineName:
+        title: Pipeline Name
+        description: The pipeline name, stamped on every written segment.
+        type: string
+        default: ingest
+      documentIdHeader:
+        title: Document Id Header
+        description: Name of the header carrying the stable document id.
+        type: string
+        default: CamelIngestDocumentId
+      maxSegmentSize:
+        title: Max Segment Size
+        description: Maximum size of one segment, in characters.
+        type: integer
+        default: 500
+      maxOverlapSize:
+        title: Max Overlap Size
+        description: How much of the previous segment each segment repeats, in characters.
+        type: integer
+        default: 50
+      embeddingBatchSize:
+        title: Embedding Batch Size
+        description: How many segments are embedded per request to the embedding model.
+        type: integer
+        default: 32
+      maxDocumentSize:
+        title: Max Document Size
+        description: Maximum size of one document in characters, applied to the extracted
+          text; unset means no limit. The pipeline holds a document in memory whole, so set
+          the cap when the source can deliver oversized payloads. An oversized document fails
+          the exchange cleanly.
+        type: integer
+      documentSplitter:
+        title: Document Splitter
+        description: A DocumentSplitter bean replacing the default recursive splitting, as a
+          `#bean:name` reference; maxSegmentSize and maxOverlapSize are then ignored.
+        type: string
+      embeddingStore:
+        title: Embedding Store
+        description: The EmbeddingStore bean to write to, as a `#bean:name` reference.
+        type: string
+      embeddingModel:
+        title: Embedding Model
+        description: The EmbeddingModel bean to embed with, as a `#bean:name` reference.
+        type: string
+      idempotentRepository:
+        title: Idempotent Repository
+        description: An IdempotentRepository bean remembering ingested document ids, as a
+          `#bean:name` reference.
+        type: string
+  dependencies:
+    - "camel:langchain4j-ingest"
+    - "camel:tika"
+    - "camel:kamelet"
+  template:
+    beans:
+      - name: tikaTextDecode
+        type: "#class:org.apache.camel.component.langchain4j.ingest.TikaTextDecode"
+    from:
+      uri: "kamelet:source"
+      steps:
+        # captured before the parse: Tika copies document metadata over the headers, so a
+        # crafted document could otherwise forge its own identity
+        - setProperty:
+            name: "CamelLangChain4jIngestDocumentId"
+            simple: "${header[{{documentIdHeader}}]}"
+        # tika answers plain text (body only, blocks newline-separated); the decode step reads
+        # the bytes as the pinned UTF-8, out of reach of the document-steered charset heuristic
+        - to: "tika:parse?tikaParseOutputFormat=text&tikaParseOutputEncoding=UTF-8"
+        - process:
+            ref: "{{tikaTextDecode}}"
+        - to:
+            uri: "langchain4j-ingest:{{pipelineName}}"
+            parameters:
+              maxSegmentSize: "{{maxSegmentSize}}"
+              maxOverlapSize: "{{maxOverlapSize}}"
+              embeddingBatchSize: "{{embeddingBatchSize}}"
+              maxDocumentSize: "{{?maxDocumentSize}}"
+              documentSplitter: "{{?documentSplitter}}"
+              embeddingStore: "{{?embeddingStore}}"
+              embeddingModel: "{{?embeddingModel}}"
+              idempotentRepository: "{{?idempotentRepository}}"

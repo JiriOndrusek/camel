@@ -1,0 +1,68 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: langchain4j-ingest-file-source
+  labels:
+    camel.apache.org/kamelet.type: "source"
+  annotations:
+    camel.apache.org/kamelet.support.level: "Preview"
+    camel.apache.org/kamelet.group: "AI"
+    camel.apache.org/provider: "Apache Software Foundation"
+spec:
+  definition:
+    title: "LangChain4j Ingest File Source"
+    description: |-
+      Watch a directory as the source of an ingestion pipeline, with the defaults a knowledge
+      base needs: documents are left in place (noop), unchanged files are remembered in a
+      duplicate register keyed on path, modification time and size, a file still being copied
+      in is waited for (readLock=changed), and the file name is exposed as the document id in
+      the CamelIngestDocumentId header.
+    required:
+      - directory
+    type: object
+    properties:
+      directory:
+        title: Directory
+        description: The directory to ingest documents from.
+        type: string
+      recursive:
+        title: Recursive
+        description: Whether subdirectories are ingested too.
+        type: boolean
+        default: true
+  dependencies:
+    - "camel:file"
+    - "camel:kamelet"
+  template:
+    from:
+      uri: "file:{{directory}}"
+      parameters:
+        noop: "true"
+        idempotent: "true"
+        # an edited file gets a new key and re-ingests
+        idempotentKey: "${file:absolute.path}:${file:modified}:${file:size}"
+        recursive: "{{recursive}}"
+        readLock: "changed"
+        charset: "UTF-8"
+      steps:
+        - setHeader:
+            name: "CamelIngestDocumentId"
+            simple: "${header.CamelFileName}"
+        - to: "kamelet:sink"

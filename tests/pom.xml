@@ -41,6 +41,7 @@
     <modules>
         <module>test-bundles</module>
         <module>camel-itest</module>
+        <module>camel-langchain4j-ingest-kamelet-test</module>
         <module>camel-streamcaching-test</module>
     </modules>
 </project>
